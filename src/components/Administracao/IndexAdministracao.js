@@ -22,7 +22,7 @@ class IndexAdministracao extends Component {
     componentDidMount() {
         console.log("MOunt")
         console.log(keycloak)
-        keycloak.init({ onLoad: 'login-required', checkLoginIframe: false, enableLogging : true}).then(authenticated => {
+        keycloak.init({ onLoad: 'login-required' }).then(authenticated => {
             this.setState({ keycloak: keycloak, authenticated: authenticated })
         })
     }
