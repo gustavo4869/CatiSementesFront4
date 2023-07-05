@@ -1,0 +1,79 @@
+﻿.modal-usuario-wrapper {
+    display:contents;
+}
+
+.container-modal-usuario .ReactModal__Content--after-open {
+    width: 600px;
+    height: 500px;
+    overflow: hidden;
+    inset: 20% 30% !important;
+}
+
+.modal-usuario-header {
+    text-align: center;
+    height: 60px;
+}
+
+.modal-usuario-header font {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 40px;
+    letter-spacing: 0.05em;
+    color: #000000;
+}
+
+    .modal-usuario-header button {
+        position: absolute;
+        right: 5px;
+        width: 38px;
+        height: 39px;
+        background: #F7F7F7;
+        font-family: 'Inter';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 18px;
+        letter-spacing: 0.05em;
+        color: #000000;
+        border-radius: 100px;
+        border: unset;
+    }
+
+.label-modal-usuario {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 22px;
+    letter-spacing: 0.05em;
+    color: #000000;
+}
+
+.input-modal-usuario {
+    background: linear-gradient(0deg, #F6F6F6, #F6F6F6), #F6F6F6;
+}
+
+.btn-salvar-usuario {
+    text-align: center;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 900;
+    font-size: 18px;
+    line-height: 21px;
+    align-items: center;
+    letter-spacing: 0.05em;
+    color: #E5E5E5;
+    backdrop-filter: blur(2px);
+    width: 131px;
+    height: 48px;
+    background: #1A5A2D;
+    border-radius: 10px;
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+}
+
+.erro {
+    border: 2px solid red;
+}

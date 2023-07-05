@@ -1,0 +1,2 @@
+C:\Users\gusta\source\repos\CatiSementesFront4\obj\Debug\catisementesfront4.esproj.SuggestedBindingRedirects.cache
+C:\Users\gusta\source\repos\CatiSementesFront4\obj\Debug\catisementesfront4.esproj.CoreCompileInputs.cache

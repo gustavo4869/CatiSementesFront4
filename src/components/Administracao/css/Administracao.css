@@ -1,0 +1,8 @@
+﻿.container-menu {
+    height: 460px !important;
+    display: flex;
+    padding-left: 300px;
+    padding-right: 50px;
+    align-items: center;
+    text-align: center;
+}

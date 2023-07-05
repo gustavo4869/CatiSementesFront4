@@ -1,0 +1,95 @@
+﻿.container-menu-lateral-administracao {
+    box-sizing: border-box;
+    position: absolute;
+    width: 237px;
+    height: 460px;
+    left: 0px;
+    background: #F2F2F2;
+    border: 1px solid #F2F2F2;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+    text-align: center;
+    padding-top: 5px;
+}
+
+.titulo-menu {
+    box-sizing: border-box;
+    width: 224px;
+    height: 58.59px;
+    background: #0F377E;
+    border: 1px solid #C4C4C4;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+    display: inline-grid;
+    text-align: center;
+    align-items: center;
+}
+
+    .titulo-menu font {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 900;
+        font-size: 20px;
+        line-height: 23px;
+        letter-spacing: 0.05em;
+        color: #F7F7F7;
+        backdrop-filter: blur(2px);
+    }
+
+.opcao-menu {
+    box-sizing: border-box;
+    width: 224px;
+    height: 33.96px;
+    background: #FCFCFC;
+    border: 1px solid #C4C4C4;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+    display: inline-grid;
+    text-align: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+    .opcao-menu font {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 900;
+        font-size: 18px;
+        line-height: 21px;
+        letter-spacing: 0.05em;
+        color: #0F377E;
+        backdrop-filter: blur(2px);
+    }
+
+.produtos-menu {
+    box-sizing: border-box;
+    width: 224px;
+    height: 58.59px;
+    background: #F0F0F0;
+    border: 1px solid #C4C4C4;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+    display: inline-grid;
+    text-align: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+    .produtos-menu font {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 900;
+        font-size: 20px;
+        line-height: 23px;
+        letter-spacing: 0.05em;
+        color: #575656;
+        backdrop-filter: blur(2px);
+    }
+
+.active {
+    background: #0F377E !important;
+}
+
+    .active font {
+        color: #F7F7F7 !important;
+    }

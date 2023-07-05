@@ -1,0 +1,8 @@
+﻿.container-menu-index {
+    height: 460px !important;
+    display: flex;
+    padding-left: 50px !important;
+    padding-right: 50px;
+    align-items: center;
+    text-align: center;
+}

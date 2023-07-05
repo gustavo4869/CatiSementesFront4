@@ -1,0 +1,47 @@
+﻿.sobre-container {
+    overflow: hidden;
+    background-color: #F5F5F5;
+    height: 460px;
+}
+
+.titulo-sobre {
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 800;
+    font-size: 50px;
+    line-height: 59px;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0.05em;
+    color: #0F377E;
+}
+
+.container-conteudo-sobre {
+    display: inline-table;
+    margin-left: 5%;
+    margin-right: 5%;
+    padding-top: 3%;
+    padding-bottom: 3%;
+}
+
+.container-conteudo-texto {
+    text-align: left;
+    display: flex;
+}
+
+    .container-conteudo-texto p {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 33px;
+        display: flex;
+        align-items: center;
+        letter-spacing: 0.05em;
+        color: #2F2F2F;
+    }
+
+    .container-conteudo-texto img {
+        width: 500px;
+        height: 309px;
+    }

@@ -1,0 +1,167 @@
+﻿.container-produto-conteudo {
+    height: 460px !important;
+    padding-left: 300px;
+    padding-right: 50px;
+    align-items: center;
+    text-align: center;
+    overflow-y: auto;
+}
+
+.container-busca {
+    height: 80px;
+    display: flex;
+    padding-top: 10px;
+}
+
+    .container-busca input {
+        box-sizing: border-box;
+        width: 60%;
+        height: 47px;
+        background: #FCFCFC;
+        border: 1px solid #C4C4C4;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 10px;
+    }
+
+    .container-busca button {
+        width: 20%;
+        height: 48px;
+        background: #1A5A2D;
+        border-radius: 10px;
+        margin-left: 60px;
+    }
+
+        .container-busca button font {
+            font-family: 'Roboto';
+            font-style: normal;
+            font-weight: 900;
+            font-size: 18px;
+            letter-spacing: 0.05em;
+            color: #E5E5E5;
+            backdrop-filter: blur(2px);
+        }
+
+.container-titulo {
+    display: flex;
+}
+
+    .container-titulo img {
+        width: 60px;
+        height: 59.1px;
+    }
+
+    .container-titulo font {
+        margin-left: 10px;
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 900;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        text-align: center;
+        letter-spacing: 0.05em;
+        color: #0F377E;
+        backdrop-filter: blur(2px);
+    }
+
+.container-acoes {
+    display: block;
+    text-align: right;
+}
+
+    .container-acoes .btn-editar {
+        width: 86px;
+        height: 39px;
+        background: #0F377E;
+        border-radius: 10px;
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 900;
+        font-size: 18px;
+        letter-spacing: 0.05em;
+        color: #E5E5E5;
+        backdrop-filter: blur(2px);
+    }
+
+    .container-acoes .btn-excluir {
+        margin-left: 15px;
+        width: 106px;
+        height: 39px;
+        background: #C60000;
+        border-radius: 10px;
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 900;
+        font-size: 18px;
+        letter-spacing: 0.05em;
+        color: #E5E5E5;
+        backdrop-filter: blur(2px);
+    }
+
+.container-tabela-produtos {
+    margin-top: 20px;
+}
+
+.row-tabela-produtos {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+    .container-tabela-produtos table {
+        background: #F6F6F6;
+        border: 1px solid #E5E5E5;
+    }
+
+    .container-tabela-produtos label {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 900;
+        font-size: 18px;
+        line-height: 21px;
+        display: flex;
+        align-items: center;
+        text-align: center;
+        letter-spacing: 0.05em;
+        color: #0F377E;
+        backdrop-filter: blur(2px);
+        margin-bottom: 10px;
+    }
+
+    .container-tabela-produtos label img {
+        font-family: 'Roboto';
+        font-style: normal;
+        font-weight: 900;
+        font-size: 18px;
+        line-height: 21px;
+        display: flex;
+        align-items: center;
+        text-align: center;
+        letter-spacing: 0.05em;
+        color: #0F377E;
+        backdrop-filter: blur(2px);
+        margin-right: 10px;
+    }
+
+.hidden {
+    display: none;
+}
+
+::placeholder {
+    text-align: center
+}
+
+::-webkit-input-placeholder {
+    text-align: center;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+    text-align: center;
+}
+
+::-moz-placeholder { /* Firefox 19+ */
+    text-align: center;
+}
+
+:-ms-input-placeholder {
+    text-align: center;
+}
