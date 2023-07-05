@@ -3,8 +3,8 @@
 /* Services -> Keycloak */
 //const urlBaseKeycloak = "http://localhost:8080/auth/admin/realms/CatiSementes/";
 //const urlBaseKeycloakUsers = "http://localhost:8080/auth/admin/realms/CatiSementes/users/";
-const urlBaseKeycloak = "http://10.153.18.52:8080/auth/admin/realms/CatiSementes/";
-const urlBaseKeycloakUsers = "http://10.153.18.52:8080/auth/admin/realms/CatiSementes/users/";
+const urlBaseKeycloak = "http://10.153.18.52:8080/admin/realms/CatiSementes/";
+const urlBaseKeycloakUsers = "http://10.153.18.52:8080/admin/realms/CatiSementes/users/";
 var bearerToken = "";
 /* Services -> Keycloak */
 
