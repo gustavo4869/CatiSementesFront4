@@ -1,11 +1,8 @@
 ﻿import axios from 'axios';
-import KeycloakService from './KeycloakService';
 
 /* Services -> Keycloak */
 const urlBaseApi = "http://191.233.142.249/APICAT";
 var bearerToken = "";
-//const urlBaseApi = "https://localhost:44324";
-//const urlBaseApi = "http://localhost:5267";
 /* Services -> Keycloak */
 
 class ApiService {
@@ -15,7 +12,7 @@ class ApiService {
 
         var url = urlBaseApi + '/GetAllCategoria';
 
-        if (bearerToken == "") {
+        if (bearerToken === "") {
             //bearerToken = await KeycloakService.GetBearerToken();
         }
 
@@ -202,14 +199,6 @@ class ApiService {
     static async ClassificacaoGetAll() {
         console.log("ClassificacaoGetAll")
         var url = urlBaseApi + '/GetAllClassif';
-
-        const config = {
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept",
-                "Origin": "https://localhost:44488"
-            }
-        };
 
         var result = [];
 

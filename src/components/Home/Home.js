@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useKeycloak, withKeycloak } from "@react-keycloak/web";
 
 import { BrowserRouter, Route, Link } from 'react-router-dom';
 import imgHome from "../images/background-home.png";

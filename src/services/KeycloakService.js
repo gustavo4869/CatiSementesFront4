@@ -31,7 +31,7 @@ class KeycloakService {
                     console.log(response)
                     var usuarios = [];
                     response.data.forEach(function (usuario) {
-                        if (usuario.username != "admin") {
+                        if (usuario.username !== "admin") {
                             var unidadeAdministrativa = "";
                             var cargo = "";
                             var cpf = "";
@@ -134,7 +134,7 @@ class KeycloakService {
             return await axios.put(urlBaseKeycloakUsers + idUsuario, usuario, config)
                 .then(response => {
 
-                    if (senha != "") {
+                    if (senha !== "") {
                         var objSenha = {
                             "type": "password",
                             "temporary": false,
@@ -251,17 +251,13 @@ class KeycloakService {
     }
 
     static async GetBearerToken() {
-        if (bearerToken == "") {
+        if (bearerToken === "") {
             var urlBearer = urlBaseKeycloak + "protocol/openid-connect/token"
 
             const params = new URLSearchParams();
             params.append("client_id", "cat-api");
             params.append("client_secret", "F73XAOepGEUFZqhO6bOaLYTRIhGQNVMp");
             params.append("grant_type", "client_credentials");
-
-            const config = {
-                headers: { "Access-Control-Allow-Origin": "*" }
-            };
 
             await axios.post(urlBearer, params)
                 .then(response => {
