@@ -14,4 +14,7 @@
   <ItemGroup>
     <None Remove="src\components\Administracao\CardMenuPrincipal.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="src\services\ApiService.cs" />
+  </ItemGroup>
 </Project>

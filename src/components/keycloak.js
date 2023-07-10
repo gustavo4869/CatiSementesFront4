@@ -3,9 +3,10 @@
 console.log("Component keycloak")
 
 const keycloak = new Keycloak({
-    url: "http://10.153.18.52:8080",
+    //url: "http://10.153.18.52:8080",
+    url: "http://localhost:8080",
     realm: "CatiSementes",
-    clientId: "CatiSementesFront",
+    clientId: "CatiSementesFront"
 });
 
 export default keycloak;

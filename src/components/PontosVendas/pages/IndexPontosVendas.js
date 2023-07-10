@@ -3,6 +3,7 @@ import keycloak from '../../keycloak';
 import axios from 'axios';
 
 import ApiService from '../../../services/ApiService';
+import PontoVendaService from '../../../services/PontoVendaService';
 import ExternalService from '../../../services/ExternalService';
 
 import KeycloakStart from '../../shared/KeycloakStart';
@@ -44,6 +45,7 @@ class IndexPontosVendas extends Component {
         this.toggleModalPontoVenda = React.createRef();
         this.carregarTodosProdutosAtivos = this.carregarTodosProdutosAtivos.bind(this);
         this.checkAllProduto = this.checkAllProduto.bind(this);
+        this.carregarTipoPdv = this.carregarTipoPdv.bind(this);
     }
 
     componentDidMount() {
@@ -57,8 +59,14 @@ class IndexPontosVendas extends Component {
 
             this.carregarClassificacoes();
             this.carregarMunicipios();
+            this.carregarTipoPdv();
         });
 
+    }
+
+    async carregarTipoPdv() {
+        console.log("Carregar tipo Pdv")
+        await PontoVendaService.getAllTipoPdv();
     }
 
     async carregarMunicipios() {
@@ -98,7 +106,7 @@ class IndexPontosVendas extends Component {
 
     async carregarTodosProdutosAtivos() {
         const produtos = await ApiService.ProdutoGetAll();
-        this.setState({ produtos: produtos.filter(f => f.flgAtivo != false) });
+        this.setState({ produtos: produtos.filter(f => f.flgAtivo !== false) });
         console.log("TodosProdutos")
         console.log(produtos)
     }
@@ -107,7 +115,7 @@ class IndexPontosVendas extends Component {
         console.log("Excluir produtos")
         var selecionados = Array.from(document.getElementsByClassName("radio-btn-produto")).filter(f => f.checked);
 
-        if (selecionados.length == 0) {
+        if (selecionados.length === 0) {
             console.log("Selecione um produto para excluir");
             return;
         }
@@ -117,7 +125,7 @@ class IndexPontosVendas extends Component {
         for (var i = 0; i < selecionados.length; i++) {
             var selecionado = selecionados[i];
             var produtoId = selecionado.getAttribute("produtoid");
-            var produtoExcluir = this.state.produtos.filter(f => f.idprod == produtoId)[0];
+            var produtoExcluir = this.state.produtos.filter(f => f.idprod === produtoId)[0];
             produtoExcluir.flgAtivo = false;
             console.log("Produto Id")
             console.log(produtoExcluir)
@@ -144,13 +152,13 @@ class IndexPontosVendas extends Component {
         var checkbox = Array.from(document.getElementsByClassName("radio-btn-produto"));
         var chkSelecionados = checkbox.filter(f => f.checked);
 
-        if (chkSelecionados.length > 1 || chkSelecionados.length == 0) {
+        if (chkSelecionados.length > 1 || chkSelecionados.length === 0) {
             console.log("Selecione apenas 1 produto");
             return;
         }
 
         var idProduto = chkSelecionados[0].getAttribute("produtoid");
-        var produto = this.state.produtos.filter(f => f.idprod == idProduto)[0];
+        var produto = this.state.produtos.filter(f => f.idprod === idProduto)[0];
 
         console.log("Produto selecionado")
         console.log(produto)
@@ -214,7 +222,7 @@ class IndexPontosVendas extends Component {
                                     <Carregando />
                                     :
                                     <div className="row container-tabela-produtos">
-                                        {this.state.produtos.filter(f => f.classificacao == "Grãos").length > 0 ? this.state.classificacoes.filter(f => f.desClass == "Grãos").map((classificacao) => (
+                                        {this.state.produtos.filter(f => f.classificacao === "Grãos").length > 0 ? this.state.classificacoes.filter(f => f.desClass === "Grãos").map((classificacao) => (
                                             <div key={classificacao.idclass} className="row row-tabela-produtos">
                                                 <label className="label-tabela-produtos" onClick={() => this.toggleTabela(classificacao.idclass)}><img src={setaBaixo}></img>{classificacao.desClass}</label>
                                                 <table id={"tabela-" + classificacao.idclass} className="hidden">
@@ -232,7 +240,7 @@ class IndexPontosVendas extends Component {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {this.state.produtos.filter(f => f.classificacao == "Grãos").map((produto) => (
+                                                        {this.state.produtos.filter(f => f.classificacao === "Grãos").map((produto) => (
                                                             <tr>
                                                                 <td><input type="checkbox" className="radio-btn-graos radio-btn-produto" produtoid={produto.idprod} /></td>
                                                                 <td>{produto.idprod}</td>
