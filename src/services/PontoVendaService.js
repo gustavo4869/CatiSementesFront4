@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const urlBaseApi = "http://10.153.18.53/apipdv/";
+//const urlBaseApi = "http://10.153.18.53/apipdv/";
+const urlBaseApi = "http://191.233.142.249/apipdv/";
 
 class PontoVendaService {
-
     static async getAllTipoPdv(skip = 0, take = 10) {
         var retorno = {
             sucesso: false,
@@ -13,8 +13,14 @@ class PontoVendaService {
 
         const url = urlBaseApi + "GetAllTipoPdv?skip=" + skip + "&take=" + take;
 
+        const config = {
+            headers: {
+                "Access-Control-Allow-Origin": "*"
+            }
+        };
+
         try {
-            await axios.get(url)
+            await axios.get(url, config)
                 .then(response => {
                     console.log("|response")
                     console.log(response)
