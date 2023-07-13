@@ -3,7 +3,9 @@ import keycloak from '../../keycloak';
 import axios from 'axios';
 
 import ApiService from '../../../services/ApiService';
-import PontoVendaService from '../../../services/PontoVendaService';
+import PontoVendaService from '../../../services/pontoVenda/PontoVendaService';
+import CasaAgriculturaService from '../../../services/pontoVenda/CasaAgriculturaService';
+import RegionalService from '../../../services/pontoVenda/RegionalService';
 import ExternalService from '../../../services/ExternalService';
 
 import KeycloakStart from '../../shared/KeycloakStart';
@@ -31,14 +33,15 @@ class IndexPontosVendas extends Component {
             keycloakToken: null,
             produtoEditar: null,
             showModal: false,
-            classificacoes: [],
+            tiposPdv: [],
+            comboPdv: [],
             produtos: [],
+            comboCa: [],
+            comboReg: [],
             municipios: []
         };
 
-        this.carregarMunicipios = this.carregarMunicipios.bind(this);
-        this.carregarClassificacoes = this.carregarClassificacoes.bind(this);
-        this.novoProduto = this.novoProduto.bind(this);
+        this.novoPontoVenda = this.novoPontoVenda.bind(this);
         this.excluirProdutos = this.excluirProdutos.bind(this);
         this.editarProdutos = this.editarProdutos.bind(this);
         this.toggleTabela = this.toggleTabela.bind(this);
@@ -46,61 +49,86 @@ class IndexPontosVendas extends Component {
         this.carregarTodosProdutosAtivos = this.carregarTodosProdutosAtivos.bind(this);
         this.checkAllProduto = this.checkAllProduto.bind(this);
         this.carregarTipoPdv = this.carregarTipoPdv.bind(this);
+        this.carregarCa = this.carregarCa.bind(this);
+        this.carregarRegional = this.carregarRegional.bind(this);
+        this.carregarMunicipios = this.carregarMunicipios.bind(this);
     }
 
     componentDidMount() {
         keycloak.init({ onLoad: 'login-required' }).then(authenticated => {
-            keycloak.loadUserInfo();
+            console.log('Keycloak')
+            console.log(keycloak)
             this.setState({
                 keycloak: keycloak,
                 authenticated: authenticated,
                 keycloakToken: keycloak.token
             })
 
-            this.carregarClassificacoes();
-            this.carregarMunicipios();
             this.carregarTipoPdv();
+            this.carregarCa();
+            this.carregarRegional();
+            this.carregarMunicipios();
         });
 
     }
 
     async carregarTipoPdv() {
         console.log("Carregar tipo Pdv")
-        await PontoVendaService.getAllTipoPdv();
+
+        this.setState({ processando: true });        
+        var resultado = await PontoVendaService.getAllTipoPdv();
+        var pdv = [];        
+        var comboPdv = [];
+        console.log(resultado)
+
+        if (resultado.sucesso) {
+            pdv = resultado.pdv; 
+            comboPdv = resultado.comboPdv;
+        }
+
+        this.setState({
+            processando: false,
+            tiposPdv: pdv,
+            comboPdv: comboPdv
+        });
+    }
+
+    async carregarCa() {
+        this.setState({ processando: true });
+        const cas = await CasaAgriculturaService.getAllCa(0, 100);
+        console.log("carregar ca")
+        console.log(cas)
+        this.setState({
+            processando: false,
+            comboCa: cas.comboCa
+        });
+    }
+
+    async carregarRegional() {
+        this.setState({ processando: true });
+        const regionais = await RegionalService.getAllRegional(0, 100);
+        console.log("carregar regional")
+        console.log(regionais)
+        this.setState({
+            processando: false,
+            comboRegional: regionais.comboRegional
+        });
     }
 
     async carregarMunicipios() {
         this.setState({ processando: true });
         const municipios = await ExternalService.buscarMunicipios();
-        console.log("CarregarMunicipios")
+        console.log("Municipios")
         console.log(municipios)
         this.setState({
             processando: false,
             municipios: municipios.dados
         });
-    }
+    }    
 
-    novoProduto() {
+    novoPontoVenda() {
         this.setState({ produtoEditar: null }, () => {
             this.toggleModalPontoVenda.current.toggleModalPontoVenda();
-        });
-    }
-
-    async carregarClassificacoes() {
-        this.setState({ processando: true });
-        const classificacoes = await ApiService.ClassificacaoGetAll();
-
-        var produto = {
-            flgAtivo: true
-        };
-
-        const produtos = await ApiService.BuscarProduto(produto);
-        console.log("TodasClassificacoes")
-        console.log(produtos) 
-        this.setState({
-            classificacoes: classificacoes.data,
-            produtos: produtos.data.filter(f => f.flgAtivo),
-            processando: false
         });
     }
 
@@ -204,12 +232,13 @@ class IndexPontosVendas extends Component {
                                     </div>
                                     <div className="col-10 container-input">
                                         <input type="text" placeholder="Buscar produtos" disabled={true} />
-                                        <button className="btn-editar" disabled={this.state.processando || this.state.keycloak.hasRealmRole("Visualizador")} onClick={this.novoProduto}><font>Criar Ponto de Venda</font></button>
+                                        <button className="btn-editar" disabled={this.state.processando || this.state.keycloak.hasRealmRole("Visualizador")} onClick={this.novoPontoVenda}><font>Criar Ponto de Venda</font></button>
                                         <ModalPontoVenda
                                             ref={this.toggleModalPontoVenda}
-                                            classificacoes={this.state.classificacoes}
-                                            buscarProdutos={this.carregarClassificacoes}
+                                            tipoPdv={this.state.comboPdv}                                            
                                             produtoEditar={this.state.produtoEditar}
+                                            comboCa={this.state.comboCa}
+                                            comboRegional={this.state.comboRegional}
                                             municipios={this.state.municipios}
                                         />
                                     </div>

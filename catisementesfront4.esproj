@@ -15,6 +15,15 @@
     <None Remove="src\components\Administracao\CardMenuPrincipal.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Remove="src\services\ApiService.cs" />
+    <Folder Include="src\configuration\" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptConfiguration Remove="server\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="server\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="server\index.js" />
   </ItemGroup>
 </Project>

@@ -2,10 +2,13 @@
 import ReactModal from 'react-modal';
 import Select from 'react-select';
 
-import ApiService from '../../../services/ApiService';
+import RegionalService from '../../../services/pontoVenda/RegionalService';
+import CasaAgriculturaService from '../../../services/pontoVenda/CasaAgriculturaService';
+import PontoVendaService from '../../../services/pontoVenda/PontoVendaService';
 import Util from '../../Util/Util';
 import './css/ModalAtributos.css';
 import 'react-responsive-modal/styles.css';
+import Notificacao from '../../Util/Notificacao';
 
 class ModalPontoVenda extends Component {
     constructor(props) {
@@ -13,22 +16,34 @@ class ModalPontoVenda extends Component {
 
         this.state = {
             showModalPontoVenda: false,
-            classificacoes: this.props.classificacoes,
+            tipoPdv: this.props.tipoPdv,
             especies: [],
-            processando: false,            
+            processando: false,
             camposVisiveis: {
+                cidade: false,
                 casaAgricultura: false,
-                catiRegional: false
+                catiRegional: false,
+                cidadeIsMulti: false
             },
             pontoVenda: {
-                tipo: "",
-                nome: "",
-                status: "",
-                cidades: [],
-                casasAgricultura: [],
-                catiRegional: "",
-                centro: ""
-            }
+                idPdv: 0,
+                desUnidade: "",
+                idReg: 0,
+                idTpPdv: 0,
+                usuCriacao: "",
+                pdvCas: [],
+                pdvCidades: [],
+            },
+            tipoStatusPontoVenda: [
+                {
+                    label: "Ativo",
+                    value: 1
+                },
+                {
+                    label: "Inativo",
+                    value: 2
+                }
+            ]
         };
 
         this.toggleModalPontoVenda = this.toggleModalPontoVenda.bind(this);
@@ -37,9 +52,16 @@ class ModalPontoVenda extends Component {
         this.salvarPontoVenda = this.salvarPontoVenda.bind(this);
         this.onChangePontoVenda = this.onChangePontoVenda.bind(this);
         this.onChangeCidade = this.onChangeCidade.bind(this);
+        this.onChangeNome = this.onChangeNome.bind(this);
+        this.onChangeCatiRegional = this.onChangeCatiRegional.bind(this);
+        this.onChangeCentro = this.onChangeCentro.bind(this);
+        this.onChangeStatus = this.onChangeStatus.bind(this);
+        this.onChangeCasaAgricultura = this.onChangeCasaAgricultura.bind(this);
+        this.erroAoSalvar = this.erroAoSalvar.bind(this);
     }
 
     toggleModalPontoVenda() {
+        console.log(this.props)
         this.setState(state => ({
             showModalPontoVenda: !state.showModalPontoVenda
         }));
@@ -57,32 +79,32 @@ class ModalPontoVenda extends Component {
         const casaAgriculturaPontoVenda = document.getElementById("casaAgriculturaPontoVenda").value;
         const catiRegionalPontoVenda = document.getElementById("catiRegionalPontoVenda").value;
 
-        if (tipoPontoVenda == 0) {
+        if (tipoPontoVenda === 0) {
             Util.exibirMensagemErro("Selecione o tipo de ponto de venda");
             return false;
         }
 
-        if (nomeUnidadePontoVenda == "") {
+        if (nomeUnidadePontoVenda === "") {
             Util.exibirMensagemErro("Digite o nome da unidade do ponto de venda");
             return false;
         }
 
-        if (statusPontoVenda == 0) {
+        if (statusPontoVenda === 0) {
             Util.exibirMensagemErro("Selecione o status do ponto de venda");
             return false;
         }
 
-        if (cidadePontoVenda == 0) {
+        if (cidadePontoVenda === 0) {
             Util.exibirMensagemErro("Selecione ao menos 1 cidade do ponto de venda");
             return false;
         }
 
-        if (this.state.camposVisiveis.casaAgricultura && casaAgriculturaPontoVenda == 0) {
+        if (this.state.camposVisiveis.casaAgricultura && casaAgriculturaPontoVenda === 0) {
             Util.exibirMensagemErro("Selecione ao menos 1 casa da agricultura do ponto de venda");
             return false;
         }
 
-        if (this.state.camposVisiveis.catiRegional && catiRegionalPontoVenda == 0) {
+        if (this.state.camposVisiveis.catiRegional && catiRegionalPontoVenda === 0) {
             Util.exibirMensagemErro("Selecione a CATI regional do ponto de venda");
             return false;
         }
@@ -93,42 +115,209 @@ class ModalPontoVenda extends Component {
     limparFormularioPontoVenda() {
         document.querySelectorAll("select").forEach(function (select) { select.value = "" });
         document.querySelectorAll("input[type=text]").forEach(function (text) { text.value = "" });
+        this.visibilidadeCamposPontoVenda("");
     }
 
     async salvarPontoVenda() {
-        //if (this.validarFormularioPontoVenda()) {
-        //    this.setState({ processando: true });
-        //
-        //    const idClassificacao = document.getElementById("classificacaoNomeCientifico").value;
-        //    const idEspecie = document.getElementById("especieNomeCientifico").value;
-        //    const nomeCientifico = document.getElementById("nomeCientifico").value;
-        //
-        //    const result = await ApiService.AdicionarNomeCientifico(idClassificacao, idEspecie, nomeCientifico);
-        //    if (result) {
-        //        Util.exibirMensagemSucesso("Nome científico criado");
-        //        this.props.buscarDadosAtributos();
-        //        this.toggleModalNomeCientifico();
-        //    }
-        //    else {
-        //        Util.exibirMensagemErro("Erro ao adicionar nome cientifico")
-        //    }
-        //
-        //    this.setState({ processando: false });
-        //}
+        console.log("Salvar Ponto Venda")
+        const tipoPontoVenda = this.state.pontoVenda.idTpPdv;
+        console.log(tipoPontoVenda)
+        var resultado = {};
+        var mensagemSucesso = "";
+
+        this.setState({ processando: true });
+        switch (tipoPontoVenda) {
+            case 1: // Cati Regional                
+                const regional = {
+                    idReg: this.state.pontoVenda.idReg,
+                    desReg: this.state.pontoVenda.desUnidade,
+                    usuCriacao: ""
+                }
+                console.log("Salvar")
+                console.log(this.state.pontoVenda);
+                console.log(regional);
+                resultado = await RegionalService.addRegional(regional);
+                if (!resultado.sucesso) {
+                    this.erroAoSalvar(resultado.mensagem);
+                    return;
+                }
+                mensagemSucesso = resultado.mensagem;
+                break;
+
+            case 2: // Núcleo de Sementes             
+                console.log("Salvar")
+                console.log(this.state.pontoVenda);
+                resultado = await PontoVendaService.addPdv(this.state.pontoVenda);
+                if (!resultado.sucesso) {
+                    this.erroAoSalvar(resultado.mensagem);
+                    return;
+                }
+                mensagemSucesso = resultado.mensagem;
+                break;
+
+            case 3: // Núcleo de Mudas
+                console.log("Salvar")
+                console.log(this.state.pontoVenda);
+                resultado = await PontoVendaService.addPdv(this.state.pontoVenda);
+                if (!resultado.sucesso) {
+                    this.erroAoSalvar(resultado.mensagem);
+                    return;
+                }
+                mensagemSucesso = resultado.mensagem;
+                break;
+
+            case 4: // Casa da Agricultura
+                const ca = {
+                    idCa: this.state.pontoVenda.pdvCas[0] ?? 0,
+                    idReg: this.state.pontoVenda.idReg,
+                    desCa: this.state.pontoVenda.desUnidade,
+                    usuCriacao: ""
+                };
+                console.log("Salvar")
+                console.log(this.state.pontoVenda)
+                console.log(ca)
+                resultado = await CasaAgriculturaService.addCa(ca);
+                if (!resultado.sucesso) {
+                    this.erroAoSalvar(resultado.mensagem);
+                    return;
+                }
+                mensagemSucesso = resultado.mensagem;
+                break;
+
+            default:
+                console.log('default');
+                break;
+        }
+
+        Notificacao.sucesso("Sucesso", mensagemSucesso)
+        this.limparFormularioPontoVenda();
+        this.toggleModalPontoVenda();
+        this.setState({ processando: true });
     }
 
-    async onChangePontoVenda() {
+    erroAoSalvar(mensagem) {
+        Notificacao.erro("Erro", mensagem);
+        this.setState({ processando: false });
+    }
+
+    visibilidadeCamposPontoVenda(codigo) {
+        var camposVisiveis = {
+            cidade: false,
+            casaAgricultura: false,
+            catiRegional: false,
+            cidadeIsMulti: false
+        };
+
+        switch (codigo) {
+            case 1: // Cati Regional
+                camposVisiveis.cidade = false;
+                camposVisiveis.casaAgricultura = false;
+                camposVisiveis.catiRegional = false;
+                camposVisiveis.cidadeIsMulti = true;
+                break;
+
+            case 2: // Nucleo de Sementes
+                camposVisiveis.cidade = true;
+                camposVisiveis.catiRegional = true;
+                camposVisiveis.casaAgricultura = true;
+                camposVisiveis.cidadeIsMulti = true;
+                break;
+
+            case 3: // Nucleo de Mudas
+                camposVisiveis.cidade = true;
+                camposVisiveis.catiRegional = true;
+                camposVisiveis.casaAgricultura = false;
+                camposVisiveis.cidadeIsMulti = false;
+                break;
+
+            case 4: // Casa de Agricultura
+                camposVisiveis.cidade = false;
+                camposVisiveis.catiRegional = true;
+                camposVisiveis.casaAgricultura = false;
+                camposVisiveis.cidadeIsMulti = false;
+                break;
+
+            case "5": // Centro
+                camposVisiveis.catiRegional = false;
+                camposVisiveis.casaAgricultura = false;
+                camposVisiveis.cidadeIsMulti = true;
+                break;
+
+            default:
+                camposVisiveis.cidade = false;
+                camposVisiveis.catiRegional = false;
+                camposVisiveis.casaAgricultura = false;
+                camposVisiveis.cidadeIsMulti = true;
+                break;
+        }
+
+        this.setState({ camposVisiveis: camposVisiveis }, () => { console.log(this.state) });
+    }
+
+    async onChangePontoVenda(options, action) {
         console.log("Change Ponto Venda")
+        console.log(options)
+        this.visibilidadeCamposPontoVenda(options.value);
+        var pdv = this.state.pontoVenda;
+        pdv.idTpPdv = options.value;
+        this.setState({ pontoVenda: pdv });       
     }
 
     onChangeCidade(options, action) {
+        var pdv = this.state.pontoVenda;
         var cidadesSelecionadas = [];
         options.forEach(function (option) {
-            cidadesSelecionadas.push(option.value);
+            const cidade = {
+                idPcid: 0,
+                idPdv: 0,
+                codIbge: option.value
+            }
+            cidadesSelecionadas.push(cidade);
         });
+        pdv.pdvCidades = cidadesSelecionadas;
+
+        this.setState({ pontoVenda: pdv });
+    }
+
+    onChangeCasaAgricultura(options, action) {
+        console.log(this.state)
+        var pdv = this.state.pontoVenda;
+        var casSelecionadas = [];
+        options.forEach(function (option) {
+            const ca = {
+                idPca: 0,
+                idPdv: 0,
+                idCa: option.value
+            }
+            casSelecionadas.push(ca);
+        });
+        pdv.pdvCas = casSelecionadas;
+
+        this.setState({ pontoVenda: pdv });
+    }
+
+    onChangeNome(event) {
+        var pdv = this.state.pontoVenda;
+        pdv.desUnidade = event.target.value;
+        this.setState({
+            pontoVenda: pdv
+        });
+    }
+
+    onChangeStatus(status) {
+    }
+
+    onChangeCatiRegional(options) {
+        var pdv = this.state.pontoVenda;
+        pdv.idReg = options.value;
+
+        this.setState({ pontoVenda: pdv });
+    }
+
+    onChangeCentro(centro) {
         this.setState({
             pontoVenda: {
-                cidades: cidadesSelecionadas
+                centro: centro
             }
         });
     }
@@ -151,30 +340,35 @@ class ModalPontoVenda extends Component {
                                 <div className="col-6">
                                     <div className="form-group">
                                         <label htmlFor="tipoPontoVenda" className="label-form-modal">Tipo de PDV</label>
-                                        <select id="tipoPontoVenda" className="form-control input-form-modal" onChange={this.onChangePontoVenda}>
-                                            <option key="0" value="0">Selecione</option>                                            
-                                        </select>
+                                        <Select
+                                            id="tipoPontoVenda"
+                                            name="tipoPontoVenda"
+                                            className=""
+                                            onChange={this.onChangePontoVenda}
+                                            placeholder="Selecione..."
+                                            options={this.props.tipoPdv}
+                                        />
                                     </div>
                                 </div>
                                 <div className="col-6">
                                     <div className="form-group">
                                         <label htmlFor="nomeUnidadePontoVenda" className="label-form-modal">Nome Unidade</label>
-                                        <input type="text" className="form-control input-form-modal" id="nomeUnidadePontoVenda" />
+                                        <input type="text" className="form-control input-form-modal" id="nomeUnidadePontoVenda" onChange={this.onChangeNome} />
                                     </div>
                                 </div>
                                 <div className="col-6">
                                     <div className="form-group">
                                         <label htmlFor="statusPontoVenda" className="label-form-modal">Status</label>
-                                        <select id="statusPontoVenda" className="form-control input-form-modal">
-                                            <option key="0" value="0">Selecione</option>
-                                            <option key="1" value="1">Ativo</option>
-                                            <option key="2" value="2">Inativo</option>
-                                        </select>
+                                        <Select
+                                            id="statusPontoVenda"
+                                            options={this.state.tipoStatusPontoVenda}
+                                            placeholder="Selecione..."
+                                        />
                                     </div>
                                 </div>
-                                <div className="col-6">
+                                <div className={"col-6 " + (this.state.camposVisiveis.cidade ? "" : "hidden-form")}>
                                     <div className="form-group">
-                                        <label htmlFor="cidadePontoVenda" className="label-form-modal">Cidade</label>                                        
+                                        <label htmlFor="cidadePontoVenda" className="label-form-modal">Cidade</label>
                                         <Select
                                             isMulti
                                             name="cidadePontoVenda"
@@ -190,23 +384,34 @@ class ModalPontoVenda extends Component {
                                 <div className={"col-6 " + (this.state.camposVisiveis.casaAgricultura ? "" : "hidden-form")}>
                                     <div className="form-group">
                                         <label htmlFor="casaAgriculturaPontoVenda" className="label-form-modal">Casas da Agricultura</label>
-                                        <select id="casaAgriculturaPontoVenda" className="form-control input-form-modal">
-                                            <option key="0" value="0">Selecione</option>
-                                        </select>
+                                        <Select
+                                            id="casaAgriculturaPontoVenda"
+                                            name="casaAgriculturaPontoVenda"
+                                            isMulti={true}
+                                            className=""
+                                            onChange={this.onChangeCasaAgricultura}
+                                            placeholder="Selecione..."
+                                            options={this.props.comboCa}
+                                        />
                                     </div>
                                 </div>
                                 <div className={"col-6 " + (this.state.camposVisiveis.catiRegional ? "" : "hidden-form")}>
                                     <div className="form-group">
                                         <label htmlFor="catiRegionalPontoVenda" className="label-form-modal">CATI Regional</label>
-                                        <select id="catiRegionalPontoVenda" className="form-control input-form-modal">
-                                            <option key="0" value="0">Selecione</option>
-                                        </select>
+                                        <Select
+                                            id="catiRegionalPontoVenda"
+                                            name="catiRegionalPontoVenda"
+                                            className=""
+                                            onChange={this.onChangeCatiRegional}
+                                            placeholder="Selecione..."
+                                            options={this.props.comboRegional}
+                                        />
                                     </div>
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="col-12 container-btn-salvar-atributo">
-                                    <button type="button" className="btn-salvar-atributo" id="btnSalvarNomeCientifico" disabled={this.state.processando} onClick={this.salvarNomeCientifico}>SALVAR</button>
+                                    <button type="button" className="btn-salvar-atributo" id="btnSalvarNomeCientifico" disabled={this.state.processando} onClick={this.salvarPontoVenda}>SALVAR</button>
                                 </div>
                             </div>
                         </form>

@@ -40,7 +40,7 @@ class IndexUsuario extends Component {
     componentDidMount() {
         keycloak.init({ onLoad: 'login-required' }).then(authenticated => {
             keycloak.loadUserInfo();
-            
+            console.log(keycloak.token)
             this.setState({
                 keycloak: keycloak,
                 authenticated: authenticated,

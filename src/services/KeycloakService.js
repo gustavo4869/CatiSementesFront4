@@ -1,8 +1,9 @@
 ﻿import axios from 'axios';
+import configData from "../configuration/config.json";
 
 /* Services -> Keycloak */
-const urlBaseKeycloak = "http://10.153.18.52:8080/admin/realms/CatiSementes/";
-const urlBaseKeycloakUsers = "http://10.153.18.52:8080/admin/realms/CatiSementes/users/";
+const urlBaseKeycloak = configData.urlBaseApiKeycloak;
+const urlBaseKeycloakUsers = configData.urlBaseApiKeycloakUsers;
 var bearerToken = "";
 /* Services -> Keycloak */
 
@@ -17,11 +18,13 @@ class KeycloakService {
 
         const config = {
             headers: {
+                "Access-Control-Allow-Origin": "http://localhost:8080",
                 Authorization: 'Bearer ' + token,
                 'Accept': 'application/json'
             }
         };
 
+        console.log("BuscarUsuarios")
         console.log(config)
 
         try {
