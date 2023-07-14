@@ -38,7 +38,8 @@ class IndexPontosVendas extends Component {
             produtos: [],
             comboCa: [],
             comboReg: [],
-            municipios: []
+            municipios: [],
+            pdvs: []
         };
 
         this.novoPontoVenda = this.novoPontoVenda.bind(this);
@@ -46,12 +47,16 @@ class IndexPontosVendas extends Component {
         this.editarProdutos = this.editarProdutos.bind(this);
         this.toggleTabela = this.toggleTabela.bind(this);
         this.toggleModalPontoVenda = React.createRef();
-        this.carregarTodosProdutosAtivos = this.carregarTodosProdutosAtivos.bind(this);
+        this.carregarTodosPdvAtivos = this.carregarTodosPdvAtivos.bind(this);
         this.checkAllProduto = this.checkAllProduto.bind(this);
         this.carregarTipoPdv = this.carregarTipoPdv.bind(this);
         this.carregarCa = this.carregarCa.bind(this);
         this.carregarRegional = this.carregarRegional.bind(this);
         this.carregarMunicipios = this.carregarMunicipios.bind(this);
+        this.tratarTextoCidades = this.tratarTextoCidades.bind(this);
+        this.tratarTextoCasaAgricultura = this.tratarTextoCasaAgricultura.bind(this);
+        this.getTipoPdv = this.getTipoPdv.bind(this);
+        this.carregarDados = this.carregarDados.bind(this);
     }
 
     componentDidMount() {
@@ -64,25 +69,30 @@ class IndexPontosVendas extends Component {
                 keycloakToken: keycloak.token
             })
 
-            this.carregarTipoPdv();
-            this.carregarCa();
-            this.carregarRegional();
-            this.carregarMunicipios();
+            this.carregarDados();
         });
 
+    }
+
+    async carregarDados() {
+        await this.carregarTipoPdv();
+        await this.carregarCa();
+        await this.carregarRegional();
+        await this.carregarMunicipios();
+        await this.carregarTodosPdvAtivos();
     }
 
     async carregarTipoPdv() {
         console.log("Carregar tipo Pdv")
 
-        this.setState({ processando: true });        
+        this.setState({ processando: true });
         var resultado = await PontoVendaService.getAllTipoPdv();
-        var pdv = [];        
+        var pdv = [];
         var comboPdv = [];
         console.log(resultado)
 
         if (resultado.sucesso) {
-            pdv = resultado.pdv; 
+            pdv = resultado.pdv;
             comboPdv = resultado.comboPdv;
         }
 
@@ -124,7 +134,7 @@ class IndexPontosVendas extends Component {
             processando: false,
             municipios: municipios.dados
         });
-    }    
+    }
 
     novoPontoVenda() {
         this.setState({ produtoEditar: null }, () => {
@@ -132,11 +142,39 @@ class IndexPontosVendas extends Component {
         });
     }
 
-    async carregarTodosProdutosAtivos() {
-        const produtos = await ApiService.ProdutoGetAll();
-        this.setState({ produtos: produtos.filter(f => f.flgAtivo !== false) });
-        console.log("TodosProdutos")
-        console.log(produtos)
+    async carregarTodosPdvAtivos() {
+        this.setState({ processando: true });
+        const pdvs = await PontoVendaService.getAllPdv();
+        const municipios = this.state.municipios;
+        if (pdvs.sucesso) {
+            var pdvsAtivos = pdvs.pdv.filter(f => f.flgAtivo !== false);
+            var pdvTratado = [];
+            pdvsAtivos.forEach(function (pdv) {
+                var prev = pdv;
+                var cidades = [];
+                prev.pdvCidades.forEach(function (cidade) {
+                    var cid = {
+                        idPcid: cidade.idPcid,
+                        idPdv: cidade.idPdv,
+                        codIbge: cidade.codIbge,
+                        desCidade: municipios.filter(f => f.value === cidade.codIbge)[0].label
+                    }
+                    cidades.push(cid);
+                });
+                prev.pdvCidades = cidades;
+                pdvTratado.push(prev);
+            });
+
+            console.log("PDV Tratado")
+            console.log(pdvTratado)
+
+            this.setState({
+                pdvs: pdvTratado,
+                processando: false
+            });
+            console.log("Todos Pdvs")
+            console.log(pdvs)
+        }
     }
 
     async excluirProdutos() {
@@ -166,7 +204,7 @@ class IndexPontosVendas extends Component {
         }
 
         if (sucessoExclusao) {
-            console.log("Produtos Excluidos com sucesso")            
+            console.log("Produtos Excluidos com sucesso")
         }
         else {
             console.log("Houve erro ao excluir " + contadorErros.toString() + " produtos");
@@ -193,7 +231,7 @@ class IndexPontosVendas extends Component {
 
         this.setState({ produtoEditar: produto }, () => {
             this.toggleModalPontoVenda.current.toggleModalPontoVenda();
-        });        
+        });
     }
 
     toggleTabela(classificacao) {
@@ -216,6 +254,48 @@ class IndexPontosVendas extends Component {
         }
     }
 
+    tratarTextoCidades(cidades) {
+        var textoCidade = "";
+        cidades.forEach(function (cidade, index) {
+            if (cidades.length === 1) {
+                textoCidade = cidade.desCidade;
+                return;
+            }
+
+            if (index === cidades.length - 1) {
+                textoCidade += cidade.desCidade;
+            }
+            else {
+                textoCidade += cidade.desCidade + ", ";
+            }
+        });
+
+        return textoCidade;
+    }
+
+    tratarTextoCasaAgricultura(cas) {
+        var textoCa = "";
+        cas.forEach(function (ca, index) {
+            if (cas.length === 1) {
+                textoCa = ca.desCa;
+                return;
+            }
+
+            if (index === cas.length - 1) {
+                textoCa += ca.desCa;
+            }
+            else {
+                textoCa += ca.desCa + ", ";
+            }
+        });
+
+        return textoCa;
+    }
+
+    getTipoPdv(idTpPdv) {
+        return this.state.tiposPdv.filter(f => f.idTpPdv === idTpPdv)[0];
+    }
+
     render() {
         if (this.state.keycloak) {
             if (this.state.authenticated) {
@@ -235,7 +315,7 @@ class IndexPontosVendas extends Component {
                                         <button className="btn-editar" disabled={this.state.processando || this.state.keycloak.hasRealmRole("Visualizador")} onClick={this.novoPontoVenda}><font>Criar Ponto de Venda</font></button>
                                         <ModalPontoVenda
                                             ref={this.toggleModalPontoVenda}
-                                            tipoPdv={this.state.comboPdv}                                            
+                                            tipoPdv={this.state.comboPdv}
                                             produtoEditar={this.state.produtoEditar}
                                             comboCa={this.state.comboCa}
                                             comboRegional={this.state.comboRegional}
@@ -250,52 +330,147 @@ class IndexPontosVendas extends Component {
                                 {this.state.processando ?
                                     <Carregando />
                                     :
-                                    <div className="row container-tabela-produtos">
-                                        {this.state.produtos.filter(f => f.classificacao === "Grãos").length > 0 ? this.state.classificacoes.filter(f => f.desClass === "Grãos").map((classificacao) => (
-                                            <div key={classificacao.idclass} className="row row-tabela-produtos">
-                                                <label className="label-tabela-produtos" onClick={() => this.toggleTabela(classificacao.idclass)}><img src={setaBaixo}></img>{classificacao.desClass}</label>
-                                                <table id={"tabela-" + classificacao.idclass} className="hidden">
+                                    <div>
+                                        <div className="row container-tabela-produtos">
+
+                                            <div key={this.getTipoPdv(1).idTpPdv} className="row row-tabela-produtos">
+                                                <label className="label-tabela-produtos" onClick={() => this.toggleTabela(this.getTipoPdv(1).idTpPdv)}><img src={setaBaixo}></img>{this.getTipoPdv(1).desTpPdv}</label>
+                                                <table id={"tabela-" + this.getTipoPdv(1).idTpPdv} className="hidden">
                                                     <thead>
                                                         <tr>
-                                                            <th>Selecionar todos <br /> <input type="checkbox" onClick={() => this.checkAllProduto(classificacao.desClass)} /></th>
+                                                            <th>Selecionar todos <br /> <input type="checkbox" onClick={() => this.checkAllProduto(this.getTipoPdv(1).idTpPdv)} /></th>
                                                             <th>ID</th>
-                                                            <th>Descrição</th>
-                                                            <th>Classificação</th>
-                                                            <th>Espécie</th>
-                                                            <th>Sistema de Produção</th>
-                                                            <th>Tratamento</th>
-                                                            <th>Tipo</th>
-                                                            <th>Peso Embalagem (kg)</th>
+                                                            <th>Nome Unidade</th>
+                                                            <th>Regional</th>
+                                                            <th>Tipo Ponto Venda</th>
+                                                            <th>Casa Agricultura</th>
+                                                            <th>Cidades</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {this.state.produtos.filter(f => f.classificacao === "Grãos").map((produto) => (
+                                                        {this.state.pdvs.filter(f => f.idTpPdv === 1).length > 0 ? this.state.pdvs.filter(f => f.idTpPdv === 1).map((pdv) => (
                                                             <tr>
-                                                                <td><input type="checkbox" className="radio-btn-graos radio-btn-produto" produtoid={produto.idprod} /></td>
-                                                                <td>{produto.idprod}</td>
-                                                                <td>{produto.desProd}</td>
-                                                                <td>{produto.classificacao}</td>
-                                                                <td>{produto.especie}</td>
-                                                                <td>{produto.sistemaProducao}</td>
-                                                                <td>{produto.tratamento}</td>
-                                                                <td>{produto.tipo}</td>
-                                                                <td>{produto.pesoEmbalagem}</td>
+                                                                <td><input type="checkbox" className="radio-btn-graos radio-btn-produto" id={pdv.idpdv} /></td>
+                                                                <td>{pdv.idpdv}</td>
+                                                                <td>{pdv.desUnidade}</td>
+                                                                <td>{pdv.desRegional}</td>
+                                                                <td>{pdv.desTipoPdv}</td>
+                                                                <td>{this.tratarTextoCasaAgricultura(pdv.pdvCas)}</td>
+                                                                <td>{this.tratarTextoCidades(pdv.pdvCidades)}</td>
                                                             </tr>
-                                                        ))}
+                                                        )) : ""}
                                                     </tbody>
                                                 </table>
                                             </div>
-                                        )) : ""}
+                                        </div>
+                                        <div className="row container-tabela-produtos">
+                                            <div key={this.getTipoPdv(2).idTpPdv} className="row row-tabela-produtos">
+                                                <label className="label-tabela-produtos" onClick={() => this.toggleTabela(this.getTipoPdv(2).idTpPdv)}>
+                                                    <img src={setaBaixo}></img> {this.getTipoPdv(2).desTpPdv}
+                                                </label>
+                                                <table id={"tabela-" + this.getTipoPdv(2).idTpPdv} className="hidden">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Selecionar todos <br /> <input type="checkbox" onClick={() => this.checkAllProduto(this.getTipoPdv(2).idTpPdv)} /></th>
+                                                            <th>ID</th>
+                                                            <th>Nome Unidade</th>
+                                                            <th>Regional</th>
+                                                            <th>Tipo Ponto Venda</th>
+                                                            <th>Casa Agricultura</th>
+                                                            <th>Cidades</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {this.state.pdvs.filter(f => f.idTpPdv === 2).length > 0 ? this.state.pdvs.filter(f => f.idTpPdv === 2).map((pdv) => (
+                                                            <tr>
+                                                                <td><input type="checkbox" className="radio-btn-graos radio-btn-produto" id={pdv.idpdv} /></td>
+                                                                <td>{pdv.idpdv}</td>
+                                                                <td>{pdv.desUnidade}</td>
+                                                                <td>{pdv.desRegional}</td>
+                                                                <td>{pdv.desTipoPdv}</td>
+                                                                <td>{this.tratarTextoCasaAgricultura(pdv.pdvCas)}</td>
+                                                                <td>{this.tratarTextoCidades(pdv.pdvCidades)}</td>
+                                                            </tr>
+                                                        )) : ""}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div className="row container-tabela-produtos">
+                                            <div key={this.getTipoPdv(3).idTpPdv} className="row row-tabela-produtos">
+                                                <label className="label-tabela-produtos" onClick={() => this.toggleTabela(this.getTipoPdv(3).idTpPdv)}>
+                                                    <img src={setaBaixo}></img>{this.getTipoPdv(3).desTpPdv}
+                                                </label>
+                                                <table id={"tabela-" + this.getTipoPdv(3).idTpPdv} className="hidden">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Selecionar todos <br /> <input type="checkbox" onClick={() => this.checkAllProduto(this.getTipoPdv(3).idTpPdv)} /></th>
+                                                            <th>ID</th>
+                                                            <th>Nome Unidade</th>
+                                                            <th>Regional</th>
+                                                            <th>Tipo Ponto Venda</th>
+                                                            <th>Casa Agricultura</th>
+                                                            <th>Cidades</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {this.state.pdvs.filter(f => f.idTpPdv === 3).length > 0 ? this.state.pdvs.filter(f => f.idTpPdv === 3).map((pdv) => (
+                                                            <tr>
+                                                                <td><input type="checkbox" className="radio-btn-graos radio-btn-produto" id={pdv.idpdv} /></td>
+                                                                <td>{pdv.idpdv}</td>
+                                                                <td>{pdv.desUnidade}</td>
+                                                                <td>{pdv.desRegional}</td>
+                                                                <td>{pdv.desTipoPdv}</td>
+                                                                <td>{this.tratarTextoCasaAgricultura(pdv.pdvCas)}</td>
+                                                                <td>{this.tratarTextoCidades(pdv.pdvCidades)}</td>
+                                                            </tr>
+                                                        )) : ""}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div className="row container-tabela-produtos">
+                                            <div key={this.getTipoPdv(4).idTpPdv} className="row row-tabela-produtos">
+                                                <label className="label-tabela-produtos" onClick={() => this.toggleTabela(this.getTipoPdv(4).idTpPdv)}>
+                                                    <img src={setaBaixo}></img>{this.getTipoPdv(4).desTpPdv}
+                                                </label>
+                                                <table id={"tabela-" + this.getTipoPdv(4).idTpPdv} className="hidden">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Selecionar todos <br /> <input type="checkbox" onClick={() => this.checkAllProduto(this.getTipoPdv(4).idTpPdv)} /></th>
+                                                            <th>ID</th>
+                                                            <th>Nome Unidade</th>
+                                                            <th>Regional</th>
+                                                            <th>Tipo Ponto Venda</th>
+                                                            <th>Casa Agricultura</th>
+                                                            <th>Cidades</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {this.state.pdvs.filter(f => f.idTpPdv === 4).length > 0 ? this.state.pdvs.filter(f => f.idTpPdv === 4).map((pdv) => (
+                                                            <tr>
+                                                                <td><input type="checkbox" className="radio-btn-graos radio-btn-produto" id={pdv.idpdv} /></td>
+                                                                <td>{pdv.idpdv}</td>
+                                                                <td>{pdv.desUnidade}</td>
+                                                                <td>{pdv.desRegional}</td>
+                                                                <td>{pdv.desTipoPdv}</td>
+                                                                <td>{this.tratarTextoCasaAgricultura(pdv.pdvCas)}</td>
+                                                                <td>{this.tratarTextoCidades(pdv.pdvCidades)}</td>
+                                                            </tr>
+                                                        )) : ""}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                 }
-
                             </div>
                         </div>
                     );
                 }
                 else {
                     return (<h1>Você não tem acesso!</h1>);
-                }                
+                }
             }
             else {
                 return (<KeycloakNoAuth />)
