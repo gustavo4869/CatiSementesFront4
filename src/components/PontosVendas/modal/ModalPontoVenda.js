@@ -30,7 +30,7 @@ class ModalPontoVenda extends Component {
                 desUnidade: "",
                 idReg: 0,
                 idTpPdv: 0,
-                usuCriacao: "",
+                usuCriacao: this.props.nomeUsuario,
                 pdvCas: [],
                 pdvCidades: [],
             },

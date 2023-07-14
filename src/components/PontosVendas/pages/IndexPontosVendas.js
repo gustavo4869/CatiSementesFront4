@@ -39,7 +39,8 @@ class IndexPontosVendas extends Component {
             comboCa: [],
             comboReg: [],
             municipios: [],
-            pdvs: []
+            pdvs: [],
+            nomeUsuario: ""
         };
 
         this.novoPontoVenda = this.novoPontoVenda.bind(this);
@@ -296,6 +297,26 @@ class IndexPontosVendas extends Component {
         return this.state.tiposPdv.filter(f => f.idTpPdv === idTpPdv)[0];
     }
 
+    async loadUsername() {
+        var usuario = "Usuário";
+
+        if (!this.state.keycloak) {
+            return usuario;
+        }
+
+        if (!this.state.keycloak.userInfo) {
+            await this.state.keycloak.loadUserInfo()
+                .then(function (userInfo) {
+                    usuario = userInfo.preferred_username;
+                });
+
+            this.setState({ nomeUsuario: usuario });
+        }
+        else {
+            this.setState({ nomeUsuario: this.state.keycloak.userInfo.preferred_username });
+        }
+    }
+
     render() {
         if (this.state.keycloak) {
             if (this.state.authenticated) {
@@ -320,6 +341,7 @@ class IndexPontosVendas extends Component {
                                             comboCa={this.state.comboCa}
                                             comboRegional={this.state.comboRegional}
                                             municipios={this.state.municipios}
+                                            nomeUsuario={this.state.nomeUsuario}
                                         />
                                     </div>
                                 </div>
