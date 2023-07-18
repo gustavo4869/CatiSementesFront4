@@ -17,7 +17,7 @@ class ModalPontoVenda extends Component {
         this.state = {
             showModalPontoVenda: false,
             tipoPdv: this.props.tipoPdv,
-            comboRegional: this.props.comboRegional,
+            comboRegional: this.props.comboRegional ?? [],
             processando: false,
             camposVisiveis: {
                 cidade: false,
