@@ -1,5 +1,6 @@
 ﻿.container-footer {
-    height: 70px;
+    height: 100px;
+    background: #fff;
     border-top: 5px solid #0F377E;
 }
 

@@ -1,7 +1,7 @@
 {
   "urlBaseApiPontoVenda": "http://191.233.142.249/apipdv/",
-  "urlBaseApiKeycloak": "http://localhost:8080/admin/realms/CatiSementes/",
-  "urlBaseApiKeycloakUsers": "http://localhost:8080/admin/realms/CatiSementes/users",
+  "urlBaseApiKeycloak": "http://10.153.18.52:8080/admin/realms/CatiSementes/",
+  "urlBaseApiKeycloakUsers": "http://10.153.18.52:8080/admin/realms/CatiSementes/users",
   "urlBaseKeycloak": "http://10.153.18.52:8080",
   "keycloakRealm": "CatiSementes",
   "keycloakClientId": "CatiSementesFront"

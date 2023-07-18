@@ -35,7 +35,7 @@ class Administracao extends Component {
                             <MenuLateralAdministracao menuAtivo="ADMINISTRADOR" />
                             <div className="row container-menu">
                                 <CardMenuPrincipal texto="GERENCIAR USUÁRIOS" imagem={logoUsuarios} url="/usuarios/index" />
-                                <CardMenuPrincipal texto="PONTOS DE VENDAS" imagem={logoUnidades} />
+                                <CardMenuPrincipal texto="PONTOS DE VENDAS" imagem={logoUnidades} url="/pontovenda/index"/>
                                 <CardMenuPrincipal texto="GERENCIAR PRODUTOS E ATRIBUTOS" imagem={logoProdutos} url="/produtos/index" />
                             </div>
                         </div>

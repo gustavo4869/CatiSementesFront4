@@ -246,6 +246,59 @@ class RegionalService {
             return retorno;
         }
     }
+
+    static async excluirReg(idReg) {
+        var retorno = {
+            sucesso: false,
+            mensagem: ""
+        };
+
+        var reg = {
+            idReg: idReg,
+            flgAtivo: false
+        }
+
+        const url = configData.urlBaseApiPontoVenda + "excluirRegional";
+
+        const config = {
+            headers: {
+                "Access-Control-Allow-Origin": "*"
+            }
+        };
+
+        try {
+            await axios.put(url, reg, config)
+                .then(response => {
+                    console.log("|response")
+                    console.log(response)
+                    if (response.data.success) {
+                        retorno.sucesso = true;
+                        retorno.mensagem = "Regional excluida com sucesso";
+                    }
+                    else {
+                        retorno.sucesso = false;
+                        retorno.mensagem = "ExcluirRegional - Erro ao excluir Regional";
+                    }
+                    return retorno;
+                })
+                .catch(error => {
+                    console.log("Erro Regional")
+                    console.log(error.response.data)
+
+                    retorno.sucesso = false;
+                    retorno.mensagem = error.response.data.errors[0];
+                    return retorno;
+                });
+
+            return retorno;
+        }
+        catch (error) {
+            console.log(error.response.data.errors);
+            retorno.sucesso = false;
+            retorno.mensagem = error.response.data.errors;
+            return retorno;
+        }
+    }
 }
 
 export default RegionalService;

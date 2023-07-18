@@ -249,6 +249,59 @@ class CasaAgriculturaService {
             return retorno;
         }
     }
+
+    static async excluirCa(idCa) {
+        var retorno = {
+            sucesso: false,
+            mensagem: ""
+        };
+
+        var ca = {
+            idCa: idCa,
+            flgAtivo: false
+        }
+
+        const url = configData.urlBaseApiPontoVenda + "excluirCa";
+
+        const config = {
+            headers: {
+                "Access-Control-Allow-Origin": "*"
+            }
+        };
+
+        try {
+            await axios.put(url, ca, config)
+                .then(response => {
+                    console.log("|response")
+                    console.log(response)
+                    if (response.data.success) {
+                        retorno.sucesso = true;
+                        retorno.mensagem = "Casa da Agricultura excluida com sucesso";
+                    }
+                    else {
+                        retorno.sucesso = false;
+                        retorno.mensagem = "ExcluirCa - Erro ao excluir Casa da Agricultura";
+                    }
+                    return retorno;
+                })
+                .catch(error => {
+                    console.log("Erro Ca")
+                    console.log(error.response.data)
+
+                    retorno.sucesso = false;
+                    retorno.mensagem = error.response.data.errors[0];
+                    return retorno;
+                });
+
+            return retorno;
+        }
+        catch (error) {
+            console.log(error.response.data.errors);
+            retorno.sucesso = false;
+            retorno.mensagem = error.response.data.errors;
+            return retorno;
+        }
+    }
 }
 
 export default CasaAgriculturaService;

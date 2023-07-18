@@ -1,4 +1,7 @@
-﻿.container-produto-conteudo {
+﻿.container-produto {
+    height: 80vh;
+}
+.container-produto-conteudo {
     height: 460px !important;
     padding-left: 300px;
     padding-right: 50px;

@@ -26,7 +26,7 @@ export class NavMenu extends Component {
   render() {
     return (
       <header>
-        <Navbar className="navbar-cati navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow" container light>
+        <Navbar className="navbar-cati navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow" container-nav light>
           <NavbarBrand tag={Link} to="/">
             <img className="imgLogoHeader" src={logoHeader}></img>            
           </NavbarBrand>
