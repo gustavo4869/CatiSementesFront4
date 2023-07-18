@@ -17,7 +17,7 @@ class ModalPontoVenda extends Component {
         this.state = {
             showModalPontoVenda: false,
             tipoPdv: this.props.tipoPdv,
-            especies: [],
+            comboRegional: this.props.comboRegional,
             processando: false,
             camposVisiveis: {
                 cidade: false,
@@ -464,8 +464,8 @@ class ModalPontoVenda extends Component {
                                             className=""
                                             onChange={this.onChangeCatiRegional}
                                             placeholder="Selecione..."
-                                            options={this.props.comboRegional}
-                                            defaultValue={this.props.comboRegional.filter(f => f.value === this.state.pontoVenda.idReg) || ""}
+                                            options={this.state.comboRegional}
+                                            defaultValue={this.state.comboRegional.filter(f => f.value === this.state.pontoVenda.idReg) || ""}
                                         />
                                     </div>
                                 </div>
