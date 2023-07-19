@@ -158,10 +158,11 @@ class GerenciarProdutos extends Component {
     }
 
     checkAllProduto(classificacao) {
-        console.log("Check All Produto: " + classificacao)
-        var checks = document.getElementsByClassName("radio-btn-" + classificacao);
+        var checks = document.getElementsByClassName("radio-btn-produto");
         for (var i = 0; i < checks.length; i++) {
-            checks[i].checked = !checks[i].checked;
+            if (checks[i].getAttribute('produtoclass') === classificacao) {
+                checks[i].checked = !checks[i].checked;
+            }
         }
     }
 
@@ -198,7 +199,7 @@ class GerenciarProdutos extends Component {
                                     <Carregando />
                                     :
                                     <div className="row container-tabela-produtos">
-                                        {this.state.produtos.filter(f => f.classificacao == "Grãos").length > 0 ? this.state.classificacoes.filter(f => f.desClass == "Grãos").map((classificacao) => (
+                                        {this.state.produtos.filter(f => f.classificacao === "Grãos").length > 0 ? this.state.classificacoes.filter(f => f.desClass === "Grãos").map((classificacao) => (
                                             <div key={classificacao.idclass} className="row row-tabela-produtos">
                                                 <label className="label-tabela-produtos" onClick={() => this.toggleTabela(classificacao.idclass)}><img src={setaBaixo}></img>{classificacao.desClass}</label>
                                                 <table id={"tabela-" + classificacao.idclass} className="hidden">
@@ -216,9 +217,9 @@ class GerenciarProdutos extends Component {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {this.state.produtos.filter(f => f.classificacao == "Grãos").map((produto) => (
+                                                        {this.state.produtos.filter(f => f.classificacao === "Grãos").map((produto) => (
                                                             <tr>
-                                                                <td><input type="checkbox" className="radio-btn-graos radio-btn-produto" produtoid={produto.idprod} /></td>
+                                                                <td><input type="checkbox" className="radio-btn-graos radio-btn-produto" produtoclass={produto.classificacao} produtoid={produto.idprod} /></td>
                                                                 <td>{produto.idprod}</td>
                                                                 <td>{produto.desProd}</td>
                                                                 <td>{produto.classificacao}</td>
@@ -233,13 +234,13 @@ class GerenciarProdutos extends Component {
                                                 </table>
                                             </div>
                                         )) : ""}
-                                        {this.state.produtos.filter(f => f.classificacao == "Sementes").length > 0 ? this.state.classificacoes.filter(f => f.desClass == "Sementes").map((classificacao) => (
+                                        {this.state.produtos.filter(f => f.classificacao === "Sementes").length > 0 ? this.state.classificacoes.filter(f => f.desClass === "Sementes").map((classificacao) => (
                                             <div key={classificacao.idclass} className="row row-tabela-produtos">
                                                 <label className="label-tabela-produtos" onClick={() => this.toggleTabela(classificacao.idclass)}><img src={setaBaixo}></img>{classificacao.desClass}</label>
                                                 <table id={"tabela-" + classificacao.idclass} className="hidden">
                                                     <thead>
                                                         <tr>
-                                                            <th>Selecionar todos <br /> <input type="checkbox" disabled={true} /></th>
+                                                            <th>Selecionar todos <br /> <input type="checkbox" onClick={() => this.checkAllProduto(classificacao.desClass)} /></th>
                                                             <th>ID</th>
                                                             <th>Descrição</th>
                                                             <th>Classificação</th>
@@ -265,9 +266,9 @@ class GerenciarProdutos extends Component {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {this.state.produtos.filter(f => f.classificacao == "Sementes").map((produto) => (
+                                                        {this.state.produtos.filter(f => f.classificacao === "Sementes").map((produto) => (
                                                             <tr>
-                                                                <td><input type="checkbox" className="radio-btn-produto" produtoid={produto.idprod} /></td>
+                                                                <td><input type="checkbox" className="radio-btn-produto" produtoclass={produto.classificacao} produtoid={produto.idprod} /></td>
                                                                 <td>{produto.idprod}</td>
                                                                 <td>{produto.desProd}</td>
                                                                 <td>{produto.classificacao}</td>
@@ -296,13 +297,13 @@ class GerenciarProdutos extends Component {
                                                 </table>
                                             </div>
                                         )) : ""}
-                                        {this.state.produtos.filter(f => f.classificacao == "Mudas").length > 0 ? this.state.classificacoes.filter(f => f.desClass == "Mudas").map((classificacao) => (
+                                        {this.state.produtos.filter(f => f.classificacao === "Mudas").length > 0 ? this.state.classificacoes.filter(f => f.desClass === "Mudas").map((classificacao) => (
                                             <div key={classificacao.idclass} className="row row-tabela-produtos">
                                                 <label className="label-tabela-produtos" onClick={() => this.toggleTabela(classificacao.idclass)}><img src={setaBaixo}></img>{classificacao.desClass}</label>
                                                 <table id={"tabela-" + classificacao.idclass} className="hidden">
                                                     <thead>
                                                         <tr>
-                                                            <th>Selecionar todos <br /> <input type="checkbox" disabled={true} /></th>
+                                                            <th>Selecionar todos <br /> <input type="checkbox" onClick={() => this.checkAllProduto(classificacao.desClass)} /></th>
                                                             <th>ID</th>
                                                             <th>Descrição</th>
                                                             <th>Classificação</th>
@@ -322,9 +323,9 @@ class GerenciarProdutos extends Component {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {this.state.produtos.filter(f => f.classificacao == "Mudas").map((produto) => (
+                                                        {this.state.produtos.filter(f => f.classificacao === "Mudas").map((produto) => (
                                                             <tr>
-                                                                <td><input type="checkbox" className="radio-btn-produto" produtoid={produto.idprod} /></td>
+                                                                <td><input type="checkbox" className="radio-btn-produto" produtoclass={produto.classificacao} produtoid={produto.idprod} /></td>
                                                                 <td>{produto.idprod}</td>
                                                                 <td>{produto.desProd}</td>
                                                                 <td>{produto.classificacao}</td>
@@ -347,14 +348,14 @@ class GerenciarProdutos extends Component {
                                                 </table>
                                             </div>
                                         )) : ""}
-                                        {this.state.produtos.filter(f => f.classificacao == "Material de propagação vegetativa").length > 0 ?
-                                            this.state.classificacoes.filter(f => f.desClass == "Material de propagação vegetativa").map((classificacao) => (
+                                        {this.state.produtos.filter(f => f.classificacao === "Material de propagação vegetativa").length > 0 ?
+                                            this.state.classificacoes.filter(f => f.desClass === "Material de propagação vegetativa").map((classificacao) => (
                                                 <div key={classificacao.idclass} className="row row-tabela-produtos">
                                                     <label className="label-tabela-produtos" onClick={() => this.toggleTabela(classificacao.idclass)}><img src={setaBaixo}></img>{classificacao.desClass}</label>
                                                     <table id={"tabela-" + classificacao.idclass} className="hidden">
                                                         <thead>
                                                             <tr>
-                                                                <th>Selecionar todos <br /> <input type="checkbox" disabled={true} /></th>
+                                                                <th>Selecionar todos <br /> <input type="checkbox" onClick={() => this.checkAllProduto(classificacao.desClass)} /></th>
                                                                 <th>ID</th>
                                                                 <th>Descrição</th>
                                                                 <th>Classificação</th>
@@ -362,9 +363,9 @@ class GerenciarProdutos extends Component {
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            {this.state.produtos.filter(f => f.classificacao == "Material de propagação vegetativa").map((produto) => (
+                                                            {this.state.produtos.filter(f => f.classificacao === "Material de propagação vegetativa").map((produto) => (
                                                                 <tr>
-                                                                    <td><input type="checkbox" className="radio-btn-produto" produtoid={produto.idprod} /></td>
+                                                                    <td><input type="checkbox" className="radio-btn-produto" produtoclass={produto.classificacao} produtoid={produto.idprod} /></td>
                                                                     <td>{produto.idprod}</td>
                                                                     <td>{produto.desProd}</td>
                                                                     <td>{produto.classificacao}</td>
@@ -375,14 +376,14 @@ class GerenciarProdutos extends Component {
                                                     </table>
                                                 </div>
                                             )) : ""}
-                                        {this.state.produtos.filter(f => f.classificacao == "Sub-produto mudas").length > 0 ?
-                                            this.state.classificacoes.filter(f => f.desClass == "Sub-produto mudas").map((classificacao) => (
+                                        {this.state.produtos.filter(f => f.classificacao === "Sub-produto mudas").length > 0 ?
+                                            this.state.classificacoes.filter(f => f.desClass === "Sub-produto mudas").map((classificacao) => (
                                                 <div key={classificacao.idclass} className="row row-tabela-produtos">
                                                     <label className="label-tabela-produtos" onClick={() => this.toggleTabela(classificacao.idclass)}><img src={setaBaixo}></img>{classificacao.desClass}</label>
                                                     <table id={"tabela-" + classificacao.idclass} className="hidden">
                                                         <thead>
                                                             <tr>
-                                                                <th>Selecionar todos <br /> <input type="checkbox" disabled={true} /></th>
+                                                                <th>Selecionar todos <br /> <input type="checkbox" onClick={() => this.checkAllProduto(classificacao.desClass)} /></th>
                                                                 <th>ID</th>
                                                                 <th>Descrição</th>
                                                                 <th>Classificação</th>
@@ -390,9 +391,9 @@ class GerenciarProdutos extends Component {
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            {this.state.produtos.filter(f => f.classificacao == "Sub-produto mudas").map((produto) => (
+                                                            {this.state.produtos.filter(f => f.classificacao === "Sub-produto mudas").map((produto) => (
                                                                 <tr>
-                                                                    <td><input type="checkbox" className="radio-btn-produto" produtoid={produto.idprod} /></td>
+                                                                    <td><input type="checkbox" className="radio-btn-produto" produtoclass={produto.classificacao} produtoid={produto.idprod} /></td>
                                                                     <td>{produto.idprod}</td>
                                                                     <td>{produto.desProd}</td>
                                                                     <td>{produto.classificacao}</td>
@@ -403,14 +404,14 @@ class GerenciarProdutos extends Component {
                                                     </table>
                                                 </div>
                                             )) : ""}
-                                        {this.state.produtos.filter(f => f.classificacao == "Serviços").length > 0 ?
-                                            this.state.classificacoes.filter(f => f.desClass == "Serviços").map((classificacao) => (
+                                        {this.state.produtos.filter(f => f.classificacao === "Serviços").length > 0 ?
+                                            this.state.classificacoes.filter(f => f.desClass === "Serviços").map((classificacao) => (
                                                 <div key={classificacao.idclass} className="row row-tabela-produtos">
                                                     <label className="label-tabela-produtos" onClick={() => this.toggleTabela(classificacao.idclass)}><img src={setaBaixo}></img>{classificacao.desClass}</label>
                                                     <table id={"tabela-" + classificacao.idclass} className="hidden">
                                                         <thead>
                                                             <tr>
-                                                                <th>Selecionar todos <br /> <input type="checkbox" disabled={true} /></th>
+                                                                <th>Selecionar todos <br /> <input type="checkbox" onClick={() => this.checkAllProduto(classificacao.desClass)} /></th>
                                                                 <th>ID</th>
                                                                 <th>Descrição</th>
                                                                 <th>Classificação</th>
@@ -419,9 +420,9 @@ class GerenciarProdutos extends Component {
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            {this.state.produtos.filter(f => f.classificacao == "Serviços").map((produto) => (
+                                                            {this.state.produtos.filter(f => f.classificacao === "Serviços").map((produto) => (
                                                                 <tr>
-                                                                    <td><input type="checkbox" className="radio-btn-produto" produtoid={produto.idprod} /></td>
+                                                                    <td><input type="checkbox" className="radio-btn-produto" produtoclass={produto.classificacao} produtoid={produto.idprod} /></td>
                                                                     <td>{produto.idprod}</td>
                                                                     <td>{produto.desprod}</td>
                                                                     <td>{produto.classificacao}</td>
@@ -433,14 +434,14 @@ class GerenciarProdutos extends Component {
                                                     </table>
                                                 </div>
                                             )) : ""}
-                                        {this.state.produtos.filter(f => f.classificacao == "Outros").length > 0 ?
-                                            this.state.classificacoes.filter(f => f.desClass == "Outros").map((classificacao) => (
+                                        {this.state.produtos.filter(f => f.classificacao === "Outros").length > 0 ?
+                                            this.state.classificacoes.filter(f => f.desClass === "Outros").map((classificacao) => (
                                                 <div key={classificacao.idclass} className="row row-tabela-produtos">
                                                     <label className="label-tabela-produtos" onClick={() => this.toggleTabela(classificacao.idclass)}><img src={setaBaixo}></img>{classificacao.desClass}</label>
                                                     <table id={"tabela-" + classificacao.idclass} className="hidden">
                                                         <thead>
                                                             <tr>
-                                                                <th>Selecionar todos <br /> <input type="checkbox" disabled={true} /></th>
+                                                                <th>Selecionar todos <br /> <input type="checkbox" onClick={() => this.checkAllProduto(classificacao.desClass)} /></th>
                                                                 <th>ID</th>
                                                                 <th>Descrição</th>
                                                                 <th>Classificação</th>
@@ -448,9 +449,9 @@ class GerenciarProdutos extends Component {
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            {this.state.produtos.filter(f => f.classificacao == "Outros").map((produto) => (
+                                                            {this.state.produtos.filter(f => f.classificacao === "Outros").map((produto) => (
                                                                 <tr>
-                                                                    <td><input type="checkbox" className="radio-btn-produto" produtoid={produto.idprod} /></td>
+                                                                    <td><input type="checkbox" className="radio-btn-produto" produtoclass={produto.classificacao} produtoid={produto.idprod} /></td>
                                                                     <td>{produto.idprod}</td>
                                                                     <td>{produto.desprod}</td>
                                                                     <td>""</td>

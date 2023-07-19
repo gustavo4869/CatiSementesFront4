@@ -35,9 +35,7 @@ class IndexAdministracao extends Component {
                         <div className="container-administracao">
                             <NavMenuLogado keycloak={this.state.keycloak} />
                             <div className="row container-menu-index">
-                                <CardMenuPrincipal texto="ADMINISTRADOR" imagem={logoAdministrador} url="/Administracao/Administrador" />
-                                <CardMenuPrincipal texto="GERENCIAR PRODUTOS E ATRIBUTOS" imagem={logoProdutos} url="/produtos/index" />
-                                <CardMenuPrincipal texto="PONTOS DE VENDA" imagem={logoPontoVenda} url="/pontovenda/index" />
+                                <CardMenuPrincipal texto="ADMINISTRADOR" imagem={logoAdministrador} url="/Administracao/Administrador" />                                
                             </div>
                         </div>);
                 }

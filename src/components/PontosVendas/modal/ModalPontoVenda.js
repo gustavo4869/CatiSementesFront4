@@ -49,6 +49,7 @@ class ModalPontoVenda extends Component {
         this.onChangeCentro = this.onChangeCentro.bind(this);
         this.onChangeStatus = this.onChangeStatus.bind(this);
         this.onChangeCasaAgricultura = this.onChangeCasaAgricultura.bind(this);
+        this.onChangeListaCidades = this.onChangeListaCidades.bind(this);
         this.erroAoSalvar = this.erroAoSalvar.bind(this);
         this.salvarRegional = this.salvarRegional.bind(this);
         this.salvarCasaAgricultura = this.salvarCasaAgricultura.bind(this);
@@ -133,6 +134,7 @@ class ModalPontoVenda extends Component {
         resultado = await this.salvarPontoVendaInternal();
         if (!resultado.sucesso) {
             this.erroAoSalvar(resultado.mensagem);
+            this.setState({ processando: false });
             return;
         }
         mensagemSucesso = resultado.mensagem;
@@ -236,15 +238,19 @@ class ModalPontoVenda extends Component {
 
     async salvarPontoVendaInternal() {
         var resultado = {};
-        if (this.state.pontoVenda.idPdv !== 0) {
+        var state = this.state.pontoVenda;
+        if (state.idReg === 0) {
+            state.idReg = 1;
+        }
+        if (state.idPdv !== 0) {
             console.log("Editar Ponto Venda IOnternal")
-            console.log(this.state.pontoVenda);
-            resultado = await PontoVendaService.updatePdv(this.state.pontoVenda);
+            console.log(state);
+            resultado = await PontoVendaService.updatePdv(state);
         }
         else {
             console.log("Criar Ponto Venda IOnternal")
-            console.log(this.state.pontoVenda);
-            resultado = await PontoVendaService.addPdv(this.state.pontoVenda);
+            console.log(state);
+            resultado = await PontoVendaService.addPdv(state);
         }
         console.log(resultado)
         return resultado;
@@ -264,45 +270,48 @@ class ModalPontoVenda extends Component {
         };
 
         switch (codigo) {
-            case 1: // Cati Regional
+            case 1:
+                camposVisiveis.cidade = true;
+                camposVisiveis.casaAgricultura = false;
+                camposVisiveis.catiRegional = false;
+                camposVisiveis.cidadeIsMulti = false;
+                break;
+
+            case 2:
+                camposVisiveis.cidade = true;
+                camposVisiveis.catiRegional = false;
+                camposVisiveis.casaAgricultura = true;
+                camposVisiveis.cidadeIsMulti = false;
+                camposVisiveis.nucleoSementes = false;
+                break;
+
+            case 3:
                 camposVisiveis.cidade = false;
-                camposVisiveis.casaAgricultura = false;
-                camposVisiveis.catiRegional = true;
-                camposVisiveis.cidadeIsMulti = true;
-                break;
-
-            case 2: // Nucleo de Sementes
-                camposVisiveis.cidade = true;
-                camposVisiveis.catiRegional = true;
-                camposVisiveis.casaAgricultura = true;
-                camposVisiveis.cidadeIsMulti = true;
-                break;
-
-            case 3: // Nucleo de Mudas
-                camposVisiveis.cidade = true;
-                camposVisiveis.catiRegional = true;
-                camposVisiveis.casaAgricultura = false;
-                camposVisiveis.cidadeIsMulti = false;
-                break;
-
-            case 4: // Casa de Agricultura
-                camposVisiveis.cidade = true;
-                camposVisiveis.catiRegional = true;
-                camposVisiveis.casaAgricultura = true;
-                camposVisiveis.cidadeIsMulti = false;
-                break;
-
-            case "5": // Centro
                 camposVisiveis.catiRegional = false;
                 camposVisiveis.casaAgricultura = false;
-                camposVisiveis.cidadeIsMulti = true;
+                camposVisiveis.cidadeIsMulti = false;
+                break;
+
+            case 4:
+                camposVisiveis.cidade = false;
+                camposVisiveis.catiRegional = true;
+                camposVisiveis.casaAgricultura = false;
+                camposVisiveis.nucleoSementes = true;
+                camposVisiveis.cidadeIsMulti = false;                
+                break;
+
+            case "5":
+                camposVisiveis.cidade = true;
+                camposVisiveis.catiRegional = false;
+                camposVisiveis.casaAgricultura = false;
+                camposVisiveis.cidadeIsMulti = false;
                 break;
 
             default:
                 camposVisiveis.cidade = false;
                 camposVisiveis.catiRegional = false;
                 camposVisiveis.casaAgricultura = false;
-                camposVisiveis.cidadeIsMulti = true;
+                camposVisiveis.cidadeIsMulti = false;
                 break;
         }
 
@@ -321,6 +330,17 @@ class ModalPontoVenda extends Component {
     }
 
     onChangeCidade(options, action) {
+        console.log("Onchange Cidade")
+        console.log(options)
+        var pdv = this.state.pontoVenda;
+        pdv.codIbge = options.value;
+
+        this.setState({ pontoVenda: pdv });
+    }
+
+    onChangeListaCidades(options, action) {
+        console.log("OnChangeListaCidades")
+        console.log(options)
         var pdv = this.state.pontoVenda;
         var cidadesSelecionadas = [];
         options.forEach(function (option) {
@@ -388,7 +408,7 @@ class ModalPontoVenda extends Component {
                     portalClassName="container-modal-atributo"
                 >
                     <div className="modal-atributo-header">
-                        <font className="titulo-header">CRIAR PONTO DE VENDA</font>
+                        <font className="titulo-header">{this.state.pontoVenda.idPdv !== 0 ? "EDITAR" : "CRIAR"} PONTO DE VENDA</font>
                         <button onClick={this.toggleModalPontoVenda}>X</button>
                     </div>
                     <div className="modal-atributo-body">
@@ -414,7 +434,7 @@ class ModalPontoVenda extends Component {
                                         <input type="text" className="form-control input-form-modal" id="nomeUnidadePontoVenda" onChange={this.onChangeNome} value={this.state.pontoVenda.desUnidade} />
                                     </div>
                                 </div>
-                                <div className="col-6 hidden-form">
+                                <div className="col-6">
                                     <div className="form-group">
                                         <label htmlFor="statusPontoVenda" className="label-form-modal">Status</label>
                                         <Select
@@ -424,11 +444,10 @@ class ModalPontoVenda extends Component {
                                         />
                                     </div>
                                 </div>
-                                <div className={"col-6 " + (this.state.camposVisiveis.cidade ? "" : "hidden-form")}>
+                                <div className={"col-6"}>
                                     <div className="form-group">
-                                        <label htmlFor="cidadePontoVenda" className="label-form-modal">Cidade</label>
+                                        <label htmlFor="listaCidadePontoVenda" className="label-form-modal">Cidade</label>
                                         <Select
-                                            isMulti
                                             name="cidadePontoVenda"
                                             id="cidadePontoVenda"
                                             options={this.props.municipios}
@@ -436,13 +455,29 @@ class ModalPontoVenda extends Component {
                                             classNamePrefix="select"
                                             onChange={this.onChangeCidade}
                                             placeholder="Selecione..."        
+                                            defaultValue={this.props.municipios.filter(f => f.value === this.state.pontoVenda.codIbge) || ""}
+                                        />
+                                    </div>
+                                </div>
+                                <div className={"col-12 " + (this.state.camposVisiveis.cidade ? "" : "hidden-form")}>
+                                    <div className="form-group">
+                                        <label htmlFor="listaCidadePontoVenda" className="label-form-modal">Lista de Municípios</label>
+                                        <Select
+                                            isMulti={true}
+                                            name="listaCidadePontoVenda"
+                                            id="listaCidadePontoVenda"
+                                            options={this.props.municipios}
+                                            className="basic-multi-select"
+                                            classNamePrefix="select"
+                                            onChange={this.onChangeListaCidades}
+                                            placeholder="Selecione..."
                                             defaultValue={this.props.municipios.filter(f => this.state.pontoVenda.pdvCidades.map(m => m.codIbge).includes(f.value)) || ""}
                                         />
                                     </div>
                                 </div>
                                 <div className={"col-6 " + (this.state.camposVisiveis.casaAgricultura ? "" : "hidden-form")}>
                                     <div className="form-group">
-                                        <label htmlFor="casaAgriculturaPontoVenda" className="label-form-modal">Casas da Agricultura</label>
+                                        <label htmlFor="casaAgriculturaPontoVenda" className="label-form-modal">Casa de Agricultura</label>
                                         <Select
                                             id="casaAgriculturaPontoVenda"
                                             name="casaAgriculturaPontoVenda"
@@ -452,6 +487,20 @@ class ModalPontoVenda extends Component {
                                             placeholder="Selecione..."
                                             options={this.props.comboCa}
                                             defaultValue={this.props.comboCa.filter(f => this.state.pontoVenda.pdvCas.map(m => m.idCa).includes(f.value)) || ""}
+                                        />
+                                    </div>
+                                </div>
+                                <div className={"col-6 " + (this.state.camposVisiveis.nucleoSementes ? "" : "hidden-form")}>
+                                    <div className="form-group">
+                                        <label htmlFor="nucleoSementesPontoVenda" className="label-form-modal">Núcleo de Sementes</label>
+                                        <Select
+                                            id="nucleoSementesPontoVenda"
+                                            name="nucleoSementesPontoVenda"
+                                            isMulti={true}
+                                            className=""
+                                            onChange={this.onChangeNucleoSementes}
+                                            placeholder="Selecione..."
+                                            options={this.props.comboSementes}
                                         />
                                     </div>
                                 </div>

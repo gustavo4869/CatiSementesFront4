@@ -2,7 +2,7 @@ import axios from 'axios';
 import configData from "../../configuration/config.json";
 
 class PontoVendaService {
-    static async getAllTipoPdv(skip = 0, take = 10) {
+    static async getAllTipoPdv(skip = 0, take = 100) {
         var retorno = {
             sucesso: false,
             mensagem: "",
@@ -53,7 +53,7 @@ class PontoVendaService {
         }
     }
 
-    static async getAllPdv(skip = 0, take = 10) {
+    static async getAllPdv(skip = 0, take = 100) {
         var retorno = {
             sucesso: false,
             mensagem: "",
@@ -102,14 +102,14 @@ class PontoVendaService {
         }
     }
 
-    static async getPdv(idPdv, desUnidade, idReg, idTpPdv, pdvCas, pdvCidades, flgAtivo = true, skip = 0, take = 10) {
+    static async getPdv(desUnidade, skip = 0, take = 100) {
         var retorno = {
             sucesso: false,
             mensagem: "",
             pdv: [],
         };
 
-        const url = configData.urlBaseApiPontoVenda + "GetPdv?IdPdv=" + idPdv + "&DesUnidade=" + desUnidade + "&IdReg=" + idReg + "&IdTpPdv=" + idTpPdv + "&flgAtivo=" + flgAtivo + "&skip=" + skip + "&take=" + take;
+        const url = configData.urlBaseApiPontoVenda + "GetPdv?DesUnidade=" + desUnidade + "&skip=" + skip + "&take=" + take;
 
         const config = {
             headers: {
@@ -241,9 +241,8 @@ class PontoVendaService {
             return retorno;
         }
         catch (error) {
-            console.log(error.response.data.errors);
             retorno.sucesso = false;
-            retorno.mensagem = error.response.data.errors;
+            retorno.mensagem = "Erro Ponto Venda";
             return retorno;
         }
     }
@@ -279,17 +278,17 @@ class PontoVendaService {
                 })
                 .catch(error => {
                     console.log("Erro Ponto Venda")
-                    console.log(error.response.data)
+                    console.log(error)
 
                     retorno.sucesso = false;
-                    retorno.mensagem = error.response.data.errors[0];
+                    retorno.mensagem = "Erro ponto venda";
                     return retorno;
                 });
 
             return retorno;
         }
         catch (error) {
-            console.log(error.response.data.errors);
+            console.log(error);
             retorno.sucesso = false;
             retorno.mensagem = error.response.data.errors;
             return retorno;

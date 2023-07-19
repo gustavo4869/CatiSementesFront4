@@ -7,7 +7,7 @@ import '../css/home.css'
 
 const Home = () => {
         return (
-            <div className="home-container" style={{ backgroundImage: `url(${imgHome})` }}>
+            <div className="home-container">
                 <button className="btn-abrir-modal"><Link to="/Administracao/Index" >Acesse aqui</Link></button>
                 {/*<button className="btn-sobre"><Link to="/sobre">Sobre</Link></button>*/}
                 <div className="container-conteudo">
