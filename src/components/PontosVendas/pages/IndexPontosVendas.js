@@ -249,7 +249,7 @@ class IndexPontosVendas extends Component {
         var selecionados = Array.from(document.getElementsByClassName("radio-btn-pdv")).filter(f => f.checked);
 
         if (selecionados.length === 0) {
-            console.log("Selecione um ponto de venda para excluir");
+            Notificacao.alerta("Ops..", "Selecione um ponto de venda para excluir");
             return;
         }
 
@@ -267,10 +267,10 @@ class IndexPontosVendas extends Component {
         }
 
         if (sucessoExclusao) {
-            console.log("Ponto vendas Excluidos com sucesso")
+            Notificacao.sucesso("Concluído", "Ponto vendas Excluidos com sucesso")
         }
         else {
-            console.log("Houve erro ao excluir " + contadorErros.toString() + " produtos");
+            Notificacao.erro("Erro", "Houve erro ao excluir " + contadorErros.toString() + " produtos");
         }
 
         this.carregarTodosPdvAtivos();
