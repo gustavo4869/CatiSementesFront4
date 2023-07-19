@@ -396,9 +396,17 @@ class IndexPontosVendas extends Component {
             console.log(resultado)
             if (resultado.sucesso) {
                 const pdvTratado = this.tratarListaMunicipiosPdvs(resultado.pdv);
-                this.setState({ pdvs: pdvTratado})
+                this.setState({ pdvs: pdvTratado })
             }
-        }        
+        }
+        else if (valorDigitado.length === 0) {
+            const resultado = await PontoVendaService.getAllPdv();
+            console.log(resultado)
+            if (resultado.sucesso) {
+                const pdvTratado = this.tratarListaMunicipiosPdvs(resultado.pdv);
+                this.setState({ pdvs: pdvTratado })
+            }
+        }
     }
 
     render() {
