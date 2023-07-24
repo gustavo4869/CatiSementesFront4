@@ -1,10 +1,13 @@
 ﻿.container-usuario-conteudo {
-    height: 460px !important;
+    height: 71vh !important;
     padding-left: 300px;
     padding-right: 50px;
     align-items: center;
     text-align: center;
     overflow-y: auto;
+    position: absolute;
+    margin-top: 64px;
+    width: 100%;
 }
 
 .container-busca {

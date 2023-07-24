@@ -16,8 +16,6 @@ class ModalPontoVenda extends Component {
 
         this.state = {
             showModalPontoVenda: false,
-            tipoPdv: this.props.tipoPdv,
-            comboRegional: this.props.comboRegional ?? [],
             processando: false,
             camposVisiveis: {
                 cidade: false,
@@ -25,17 +23,7 @@ class ModalPontoVenda extends Component {
                 catiRegional: false,
                 cidadeIsMulti: false
             },
-            pontoVenda: this.props.pdv,
-            tipoStatusPontoVenda: [
-                {
-                    label: "Ativo",
-                    value: 1
-                },
-                {
-                    label: "Inativo",
-                    value: 2
-                }
-            ]
+            pontoVenda: this.props.pdv
         };
 
         this.toggleModalPontoVenda = this.toggleModalPontoVenda.bind(this);
@@ -50,19 +38,13 @@ class ModalPontoVenda extends Component {
         this.onChangeStatus = this.onChangeStatus.bind(this);
         this.onChangeCasaAgricultura = this.onChangeCasaAgricultura.bind(this);
         this.onChangeListaCidades = this.onChangeListaCidades.bind(this);
+        this.onChangeNucleoSementes = this.onChangeNucleoSementes.bind(this);
         this.erroAoSalvar = this.erroAoSalvar.bind(this);
-        this.salvarRegional = this.salvarRegional.bind(this);
-        this.salvarCasaAgricultura = this.salvarCasaAgricultura.bind(this);
-        this.salvarPontoVendaInternal = this.salvarPontoVendaInternal.bind(this);
-
-        console.log("ModalPontoVenda")
-        console.log(this.props)
-        console.log(this.state)
     }
 
     toggleModalPontoVenda() {
+        console.log("PROPS")
         console.log(this.props)
-        console.log(this.state)
         this.setState(state => ({
             showModalPontoVenda: !state.showModalPontoVenda,
             pontoVenda: this.props.pdv
@@ -125,135 +107,36 @@ class ModalPontoVenda extends Component {
 
     async salvarPontoVenda() {
         console.log("Salvar Ponto Venda")
-        const tipoPontoVenda = this.state.pontoVenda.idTpPdv;
-        console.log(tipoPontoVenda)
-        var resultado = {};
         var mensagemSucesso = "";
+        var resultado = {};
 
         this.setState({ processando: true });
-        resultado = await this.salvarPontoVendaInternal();
+
+        var state = this.state.pontoVenda;
+        if (state.idPdv !== 0) {
+            console.log("Editar Ponto Venda IOnternal")
+            console.log(state);
+            state.usuAlteracao = "gustavo";
+            resultado = await PontoVendaService.updatePdv(state);
+        }
+        else {
+            console.log("Criar Ponto Venda IOnternal")
+            console.log(state);
+            state.usuCriacao = "gustavo";
+            resultado = await PontoVendaService.addPdv(state);
+        }
+
         if (!resultado.sucesso) {
             this.erroAoSalvar(resultado.mensagem);
             this.setState({ processando: false });
             return;
         }
         mensagemSucesso = resultado.mensagem;
-        /*switch (tipoPontoVenda) {
-            case 1: // Cati Regional                
-                resultado = await this.salvarRegional();
-                if (!resultado.sucesso) {
-                    this.erroAoSalvar(resultado.mensagem);
-                    return;
-                }
-                mensagemSucesso = resultado.mensagem;
-                break;
-
-            case 2: // Núcleo de Sementes             
-                resultado = await this.salvarPontoVendaInternal();
-                if (!resultado.sucesso) {
-                    this.erroAoSalvar(resultado.mensagem);
-                    return;
-                }
-                mensagemSucesso = resultado.mensagem;
-                break;
-
-            case 3: // Núcleo de Mudas
-                resultado = await this.salvarPontoVendaInternal();
-                if (!resultado.sucesso) {
-                    this.erroAoSalvar(resultado.mensagem);
-                    return;
-                }
-                mensagemSucesso = resultado.mensagem;
-                break;
-
-            case 4: // Casa da Agricultura
-                resultado = await this.salvarCasaAgricultura();
-                if (!resultado.sucesso) {
-                    this.erroAoSalvar(resultado.mensagem);
-                    return;
-                }
-                mensagemSucesso = resultado.mensagem;
-                break;
-
-            default:
-                console.log('default');
-                break;
-        }*/
-
         Notificacao.sucesso("Sucesso", mensagemSucesso)
         this.limparFormularioPontoVenda();
         this.toggleModalPontoVenda();
-        this.props.carregarTodosPdvAtivos();
+        this.props.carregarDados();
         this.setState({ processando: false });
-    }
-
-    async salvarRegional() {
-        const regional = {
-            idReg: this.state.pontoVenda.idReg,
-            desReg: this.state.pontoVenda.desUnidade,
-            usuCriacao: "gustavo"
-        };
-        var resultado = {};
-
-        if (this.state.pontoVenda.idPdv !== 0) { // Editar
-            console.log("Editar Regional")
-            console.log(this.state.pontoVenda);
-            console.log(regional);
-            resultado = await RegionalService.updateRegional(regional);
-        }
-        else { // Criar
-            console.log("Criar Regional")
-            console.log(this.state.pontoVenda);
-            console.log(regional);
-            resultado = await RegionalService.addRegional(regional);
-        }
-        console.log(resultado)
-        return resultado;       
-    }
-
-    async salvarCasaAgricultura() {
-        const ca = {
-            idCa: this.state.pontoVenda.pdvCas[0] ?? 0,
-            idReg: this.state.pontoVenda.idReg,
-            desCa: this.state.pontoVenda.desUnidade,
-            usuCriacao: "gustavo"
-        };
-        var resultado = {};
-
-        if (this.state.pontoVenda.idPdv !== 0) {
-            console.log("Editar ca")
-            console.log(this.state.pontoVenda)
-            console.log(ca)
-            resultado = await CasaAgriculturaService.updateCa(ca);
-        }
-        else {
-            console.log("Criar ca")
-            console.log(this.state.pontoVenda)
-            console.log(ca)
-            resultado = await CasaAgriculturaService.addCa(ca);
-        }
-        console.log(resultado)
-        return resultado;
-    }
-
-    async salvarPontoVendaInternal() {
-        var resultado = {};
-        var state = this.state.pontoVenda;
-        if (state.idReg === 0) {
-            state.idReg = 1;
-        }
-        if (state.idPdv !== 0) {
-            console.log("Editar Ponto Venda IOnternal")
-            console.log(state);
-            resultado = await PontoVendaService.updatePdv(state);
-        }
-        else {
-            console.log("Criar Ponto Venda IOnternal")
-            console.log(state);
-            resultado = await PontoVendaService.addPdv(state);
-        }
-        console.log(resultado)
-        return resultado;
     }
 
     erroAoSalvar(mensagem) {
@@ -262,6 +145,8 @@ class ModalPontoVenda extends Component {
     }
 
     visibilidadeCamposPontoVenda(codigo) {
+        console.log('visibilidadeCamposPontoVenda')
+        console.log(codigo)
         var camposVisiveis = {
             cidade: false,
             casaAgricultura: false,
@@ -300,11 +185,11 @@ class ModalPontoVenda extends Component {
                 camposVisiveis.cidadeIsMulti = false;                
                 break;
 
-            case "5":
+            case 5:
                 camposVisiveis.cidade = true;
                 camposVisiveis.catiRegional = false;
                 camposVisiveis.casaAgricultura = false;
-                camposVisiveis.cidadeIsMulti = false;
+                camposVisiveis.cidadeIsMulti = true;
                 break;
 
             default:
@@ -345,7 +230,7 @@ class ModalPontoVenda extends Component {
         var cidadesSelecionadas = [];
         options.forEach(function (option) {
             const cidade = {
-                idPcid: 0,
+                idPdvMun: 0,
                 idPdv: 0,
                 codIbge: option.value
             }
@@ -381,7 +266,12 @@ class ModalPontoVenda extends Component {
         });
     }
 
-    onChangeStatus(status) {
+    onChangeStatus(option) {
+        var pdv = this.state.pontoVenda;        
+        pdv.idStatus = option.value;
+        this.setState({
+            pontoVenda: pdv
+        });
     }
 
     onChangeCatiRegional(options) {
@@ -397,6 +287,13 @@ class ModalPontoVenda extends Component {
                 centro: centro
             }
         });
+    }
+
+    onChangeNucleoSementes(option) {
+        var pdv = this.state.pontoVenda;
+        pdv.idNs = option.value;
+
+        this.setState({ pontoVenda: pdv });
     }
 
     render() {
@@ -438,9 +335,12 @@ class ModalPontoVenda extends Component {
                                     <div className="form-group">
                                         <label htmlFor="statusPontoVenda" className="label-form-modal">Status</label>
                                         <Select
+                                            name="statusPontosVenda"
                                             id="statusPontoVenda"
-                                            options={this.state.tipoStatusPontoVenda}
+                                            options={this.props.comboStatus}
                                             placeholder="Selecione..."
+                                            onChange={this.onChangeStatus}
+                                            defaultValue={this.props.comboStatus.filter(f => f.value === this.state.pontoVenda.idStatus) || ""}
                                         />
                                     </div>
                                 </div>
@@ -496,10 +396,10 @@ class ModalPontoVenda extends Component {
                                         <Select
                                             id="nucleoSementesPontoVenda"
                                             name="nucleoSementesPontoVenda"
-                                            isMulti={true}
                                             className=""
                                             onChange={this.onChangeNucleoSementes}
                                             placeholder="Selecione..."
+                                            defaultValue={this.props.comboSementes.filter(f => this.state.pontoVenda.idNs) || ""}
                                             options={this.props.comboSementes}
                                         />
                                     </div>
@@ -513,8 +413,8 @@ class ModalPontoVenda extends Component {
                                             className=""
                                             onChange={this.onChangeCatiRegional}
                                             placeholder="Selecione..."
-                                            options={this.state.comboRegional}
-                                            defaultValue={this.state.comboRegional.filter(f => f.value === this.state.pontoVenda.idReg) || ""}
+                                            options={this.props.comboRegional}
+                                            defaultValue={this.props.comboRegional.filter(f => f.value === this.state.pontoVenda.idReg) || ""}
                                         />
                                     </div>
                                 </div>

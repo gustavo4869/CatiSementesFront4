@@ -1,14 +1,21 @@
-﻿.container-produto {
+﻿.container-ponto-venda {
     height: 80vh;
 }
-.container-produto-conteudo {
-    height: 460px !important;
-    padding-left: 300px;
-    padding-right: 50px;
-    align-items: center;
-    text-align: center;
-    overflow-y: auto;
-}
+    .container-ponto-venda .container-menu-lateral-administracao{
+        margin-top: 64px;
+    }
+
+    .container-ponto-venda-conteudo {
+        margin-top: 64px;
+        width: 100%;
+        height: 71vh !important;
+        position: absolute;
+        padding-left: 300px;
+        padding-right: 50px;
+        align-items: center;
+        text-align: center;
+        overflow-y: auto;
+    }
 
 .container-busca {
     height: 80px;

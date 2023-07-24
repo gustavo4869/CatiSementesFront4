@@ -53,6 +53,57 @@ class PontoVendaService {
         }
     }
 
+    static async getAllStatus(skip = 0, take = 100) {
+        var retorno = {
+            sucesso: false,
+            mensagem: "",
+            status: [],
+            comboStatus: []
+        };
+
+        const url = configData.urlBaseApiPontoVenda + "GetAllStatus?skip=" + skip + "&take=" + take;
+
+        const config = {
+            headers: {
+                "Access-Control-Allow-Origin": "*"
+            }
+        };
+
+        try {
+            await axios.get(url, config)
+                .then(response => {
+                    console.log("|response")
+                    console.log(response)
+                    if (response.data.success) {
+                        retorno.sucesso = true;
+                        retorno.status = response.data.data;
+                        retorno.comboStatus = response.data.data.map(function (x) { return { label: x.desStatus, value: x.idStatus }; })
+                    }
+                    else {
+                        retorno.sucesso = false;
+                        retorno.mensagem = "GetAllStatus - Erro ao consultar status";
+                    }
+                    return retorno;
+                })
+                .catch(error => {
+                    console.log("Erro")
+                    console.log(error)
+
+                    retorno.sucesso = false;
+                    retorno.mensagem = error.response.data.errors[0];
+                    return retorno;
+                });
+
+            return retorno;
+        }
+        catch (error) {
+            console.log(error.response.data.message);
+            retorno.sucesso = false;
+            retorno.mensagem = error.response.data.message;
+            return retorno;
+        }
+    }
+
     static async getAllPdv(skip = 0, take = 100) {
         var retorno = {
             sucesso: false,
@@ -129,6 +180,55 @@ class PontoVendaService {
                     else {
                         retorno.sucesso = false;
                         retorno.mensagem = "GetPdv - Erro ao consultar Ponto de Venda";
+                    }
+                    return retorno;
+                })
+                .catch(error => {
+                    console.log("Erro")
+                    console.log(error)
+
+                    retorno.sucesso = false;
+                    retorno.mensagem = error.response.data.errors[0];
+                    return retorno;
+                });
+
+            return retorno;
+        }
+        catch (error) {
+            console.log(error.response.data.message);
+            retorno.sucesso = false;
+            retorno.mensagem = error.response.data.message;
+            return retorno;
+        }
+    }
+
+    static async getListaByTipoPDV(idTpPdv, skip = 0, take = 100) {
+        var retorno = {
+            sucesso: false,
+            mensagem: "",
+            comboPdv: [],
+        };
+
+        const url = configData.urlBaseApiPontoVenda + "GetListaByTipoPDV?codigo=" + idTpPdv + "&skip=" + skip + "&take=" + take;
+
+        const config = {
+            headers: {
+                "Access-Control-Allow-Origin": "*"
+            }
+        };
+
+        try {
+            await axios.get(url, config)
+                .then(response => {
+                    console.log("|response")
+                    console.log(response)
+                    if (response.data.success) {
+                        retorno.sucesso = true;
+                        retorno.comboPdv = response.data.data.map(function (x) { return { label: x.desUnidade, value: x.idpdv }; })
+                    }
+                    else {
+                        retorno.sucesso = false;
+                        retorno.mensagem = "GetListaByTipoPDV - Erro ao consultar Lista de Ponto de Venda";
                     }
                     return retorno;
                 })
@@ -261,6 +361,8 @@ class PontoVendaService {
             }
         };
 
+        pdv = this.tratarDadosPdv(pdv);
+
         try {
             await axios.put(url, pdv, config)
                 .then(response => {
@@ -295,7 +397,7 @@ class PontoVendaService {
         }
     }
 
-    static async excluirPdv(idPdv) {
+    static async excluirPdv(idPdv, idTpPdv) {
         var retorno = {
             sucesso: false,
             mensagem: ""
@@ -303,6 +405,7 @@ class PontoVendaService {
 
         var pdv = {
             idPdv: idPdv,
+            idTpPdv: idTpPdv,
             flgAtivo: false
         }
 
@@ -331,21 +434,42 @@ class PontoVendaService {
                 })
                 .catch(error => {
                     console.log("Erro Ponto Venda")
-                    console.log(error.response.data)
+                    console.log(error)
 
                     retorno.sucesso = false;
-                    retorno.mensagem = error.response.data.errors[0];
+                    retorno.mensagem = error.message;
                     return retorno;
                 });
 
             return retorno;
         }
         catch (error) {
-            console.log(error.response.data.errors);
             retorno.sucesso = false;
-            retorno.mensagem = error.response.data.errors;
+            retorno.mensagem = error;
             return retorno;
         }
+    }
+
+    static tratarDadosPdv(pdv) {
+        console.log("Tratar Dados Pdv")
+        console.log(pdv)
+        if (pdv.pdvCas.length > 0) {
+            pdv.pdvCas = pdv.pdvCas.map(m => ({
+                "idPdvCa": 0,
+                "idPdv": m.idPdv,
+                "idCa": m.idCa
+            }));
+        }
+        console.log(pdv.pdvCas)
+        if (pdv.pdvCidades.length > 0) {
+            pdv.pdvCidades = pdv.pdvCidades.map(m => ({
+                "idPdvMun": 0,
+                "idPdv": m.idPdv,
+                "codIbge": m.codIbge
+            }));
+        }
+        console.log(pdv.pdvCidades)
+        return pdv;
     }
 }
 

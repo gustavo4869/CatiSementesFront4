@@ -1,4 +1,5 @@
 ﻿.nav-menu-logado {
+    position: absolute;
     width: 100%;
     height: 64px;
     background: #F9BA02;
