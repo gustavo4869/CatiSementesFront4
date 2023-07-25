@@ -374,7 +374,7 @@ class IndexPontosVendas extends Component {
                                     </div>
                                     <div className="col-10 container-input">
                                         <input type="text" placeholder="Buscar pontos de venda" onChange={this.onChangeBuscaPontoVenda} />
-                                        <button className="btn-editar" disabled={this.state.processando || this.state.keycloak.hasRealmRole("Visualizador")} onClick={this.novoPontoVenda}><font>Criar Ponto de Venda</font></button>
+                                        <button className="btn-editar" disabled={this.state.processando || this.state.keycloak.hasRealmRole("Visualizador")} onClick={this.novoPontoVenda}><font>Criar Ponto Venda</font></button>
                                         <ModalPontoVenda
                                             ref={this.toggleModalPontoVenda}
                                             tipoPdv={this.state.comboPdv}

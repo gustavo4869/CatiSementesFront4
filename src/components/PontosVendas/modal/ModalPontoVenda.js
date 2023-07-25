@@ -59,40 +59,32 @@ class ModalPontoVenda extends Component {
     }
 
     validarFormularioPontoVenda() {
-        const tipoPontoVenda = document.getElementById("tipoPontoVenda").value;
-        const nomeUnidadePontoVenda = document.getElementById("nomeUnidadePontoVenda").value;
-        const statusPontoVenda = document.getElementById("statusPontoVenda").value;
-        const cidadePontoVenda = document.getElementById("cidadePontoVenda").value;
-        const casaAgriculturaPontoVenda = document.getElementById("casaAgriculturaPontoVenda").value;
-        const catiRegionalPontoVenda = document.getElementById("catiRegionalPontoVenda").value;
+        const tipoPontoVenda = this.state.pontoVenda.idTpPdv;
+        const nomeUnidadePontoVenda = this.state.pontoVenda.desUnidade;
+        const statusPontoVenda = this.state.pontoVenda.idStatus;
+        const cidadePontoVenda = this.state.pontoVenda.codIbge;
 
         if (tipoPontoVenda === 0) {
+            document.getElementById("tipoPontoVenda").focus();
             Util.exibirMensagemErro("Selecione o tipo de ponto de venda");
             return false;
         }
 
         if (nomeUnidadePontoVenda === "") {
+            document.getElementById("nomeUnidadePontoVenda").focus();
             Util.exibirMensagemErro("Digite o nome da unidade do ponto de venda");
             return false;
         }
 
         if (statusPontoVenda === 0) {
+            document.getElementById("statusPontoVenda").focus();
             Util.exibirMensagemErro("Selecione o status do ponto de venda");
             return false;
         }
 
         if (cidadePontoVenda === 0) {
+            document.getElementById("cidadePontoVenda").focus();
             Util.exibirMensagemErro("Selecione ao menos 1 cidade do ponto de venda");
-            return false;
-        }
-
-        if (this.state.camposVisiveis.casaAgricultura && casaAgriculturaPontoVenda === 0) {
-            Util.exibirMensagemErro("Selecione ao menos 1 casa da agricultura do ponto de venda");
-            return false;
-        }
-
-        if (this.state.camposVisiveis.catiRegional && catiRegionalPontoVenda === 0) {
-            Util.exibirMensagemErro("Selecione a CATI regional do ponto de venda");
             return false;
         }
 
@@ -109,6 +101,10 @@ class ModalPontoVenda extends Component {
         console.log("Salvar Ponto Venda")
         var mensagemSucesso = "";
         var resultado = {};
+
+        if (!this.validarFormularioPontoVenda()) {
+            return;
+        }
 
         this.setState({ processando: true });
 
@@ -346,7 +342,7 @@ class ModalPontoVenda extends Component {
                                 </div>
                                 <div className={"col-6"}>
                                     <div className="form-group">
-                                        <label htmlFor="listaCidadePontoVenda" className="label-form-modal">Cidade</label>
+                                        <label htmlFor="cidadePontoVenda" className="label-form-modal">Cidade</label>
                                         <Select
                                             name="cidadePontoVenda"
                                             id="cidadePontoVenda"
