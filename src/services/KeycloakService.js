@@ -4,6 +4,7 @@ import configData from "../configuration/config.json";
 /* Services -> Keycloak */
 const urlBaseKeycloak = configData.urlBaseApiKeycloak;
 const urlBaseKeycloakUsers = configData.urlBaseApiKeycloakUsers;
+const urlBaseKeycloakNode = configData.urlBaseApiNodeKeycloak;
 var bearerToken = "";
 /* Services -> Keycloak */
 
@@ -16,58 +17,50 @@ class KeycloakService {
             usuarios: []
         };
 
-        const config = {
-            headers: {
-                "Access-Control-Allow-Origin": "http://localhost:8080",
-                Authorization: 'Bearer ' + token,
-                'Accept': 'application/json'
-            }
-        };
-
         console.log("BuscarUsuarios")
-        console.log(config)
 
         try {
-            return axios.get(urlBaseKeycloakUsers, config)
+            return axios.get(urlBaseKeycloakNode + "usuarios")
                 .then(response => {
                     console.log("|response")
                     console.log(response)
-                    var usuarios = [];
-                    response.data.forEach(function (usuario) {
-                        if (usuario.username !== "admin") {
-                            var unidadeAdministrativa = "";
-                            var cargo = "";
-                            var cpf = "";
-                            var nomeCompleto = "";
-                            var telefone = "";
-                            var observacoes = "";
+                    if (response.data.sucesso) {
+                        var usuarios = [];
+                        response.data.dados.forEach(function (usuario) {
+                            if (usuario.username !== "admin") {
+                                var unidadeAdministrativa = "";
+                                var cargo = "";
+                                var cpf = "";
+                                var nomeCompleto = "";
+                                var telefone = "";
+                                var observacoes = "";
 
-                            if (usuario.attributes) {
-                                unidadeAdministrativa = usuario.attributes.UnidadeAdministrativa ? usuario.attributes.UnidadeAdministrativa[0] : "";
-                                cargo = usuario.attributes.Cargo ? usuario.attributes.Cargo[0] : "";
-                                cpf = usuario.attributes.CPF ? usuario.attributes.CPF[0] : "";
-                                nomeCompleto = usuario.attributes.NomeCompleto ? usuario.attributes.NomeCompleto[0] : "";
-                                telefone = usuario.attributes.Telefone ? usuario.attributes.Telefone[0] : "";
-                                observacoes = usuario.attributes.Observacoes ? usuario.attributes.Observacoes[0] : "";
+                                if (usuario.attributes) {
+                                    unidadeAdministrativa = usuario.attributes.UnidadeAdministrativa ? usuario.attributes.UnidadeAdministrativa[0] : "";
+                                    cargo = usuario.attributes.Cargo ? usuario.attributes.Cargo[0] : "";
+                                    cpf = usuario.attributes.CPF ? usuario.attributes.CPF[0] : "";
+                                    nomeCompleto = usuario.attributes.NomeCompleto ? usuario.attributes.NomeCompleto[0] : "";
+                                    telefone = usuario.attributes.Telefone ? usuario.attributes.Telefone[0] : "";
+                                    observacoes = usuario.attributes.Observacoes ? usuario.attributes.Observacoes[0] : "";
+                                }
+
+                                var user = {
+                                    id: usuario.id,
+                                    unidadeAdministrativa: unidadeAdministrativa,
+                                    cargo: cargo,
+                                    email: usuario.email,
+                                    nomeCompleto: nomeCompleto,
+                                    usuario: usuario.username,
+                                    cpf: cpf,
+                                    telefone: telefone,
+                                    observacoes: observacoes
+                                };
+
+                                usuarios.push(user);
                             }
 
-                            var user = {
-                                id: usuario.id,
-                                unidadeAdministrativa: unidadeAdministrativa,
-                                cargo: cargo,
-                                email: usuario.email,
-                                nomeCompleto: nomeCompleto,
-                                usuario: usuario.username,
-                                cpf: cpf,
-                                telefone: telefone,
-                                observacoes: observacoes
-                            };
-
-                            usuarios.push(user);
-                        }
-
-                    });
-
+                        });
+                    }
                     console.log(usuarios)
                     retorno.sucesso = true;
                     retorno.usuarios = usuarios;
@@ -103,118 +96,75 @@ class KeycloakService {
         const config = {
             headers: {
                 "Authorization": 'Bearer ' + token,
-                "Access-Control-Allow-Origin": "*"
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json"
             }
         };
 
         const usuario = {
-            "attributes": {
-                "CPF": cpf,
-                "Telefone": telefone,
-                "NomeCompleto": nomeCompleto,
-                "UnidadeAdministrativa": unidadeAdministrativa,
-                "Cargo": cargo,
-                "Observacoes": observacoes
-            },
-            "credentials": [{
-                "temporary": false,
-                "type": "password",
-                "value": senha
-            }],
-            "groups": [perfil],
+            "cpf": cpf,
+            "telefone": telefone,
+            "nomeCompleto": nomeCompleto,
+            "unidadeAdministrativa": unidadeAdministrativa,
+            "cargo": cargo,
+            "observacoes": observacoes,
+            "senha": senha,
             "email": email,
             "emailVerified": true,
             "enabled": true,
             "firstName": nomeCompleto,
             "lastName": "",
-            "username": login
+            "username": login,
+            "clientRoles": perfil
         };
 
         console.log(usuario)
 
         if (isEdit) {
             console.log("isEdit")
-            return await axios.put(urlBaseKeycloakUsers + idUsuario, usuario, config)
+            await axios.post(urlBaseKeycloakNode + "editarUsuario", usuario, config)
                 .then(response => {
-
-                    if (senha !== "") {
-                        var objSenha = {
-                            "type": "password",
-                            "temporary": false,
-                            "value": senha
-                        };
-
-                        axios.put(urlBaseKeycloakUsers + idUsuario + '/reset-password', objSenha, config)
-                            .then(response => {
-                                console.log("Atualização de senha OK")
-                                console.log(response)
-                                retorno.sucesso = true;
-                                return retorno;
-                            })
-                            .catch(error => {
-                                console.log("Falha atualização de senha")
-                                console.log(error)
-                            });
-                    }
-
-                    retorno.sucesso = true;
-                    return retorno;
+                    console.log("Response")
+                    console.log(response)
+                    retorno.sucesso = response.data.sucesso;
+                    retorno.mensagem = response.data.mensagem;
                 })
                 .catch(error => {
                     console.log("Erro")
                     console.log(error)
 
                     retorno.sucesso = false;
-                    retorno.mensagem = error.message;
-                    return retorno;
+                    retorno.mensagem = error;
                 });
         }
         else {
-            return await axios.post(urlBaseKeycloakUsers, usuario, config)
+            await axios.post(urlBaseKeycloakNode + "criarUsuario", usuario, config)
                 .then(response => {
                     console.log("Response post")
                     console.log(response)
-                    var headerSplit = response.headers.location.split("/");
-                    var userId = headerSplit[headerSplit.length - 1];
-                    var attributes = {
-                        "attributes": {
-                            "CPF": cpf,
-                            "Telefone": telefone,
-                            "NomeCompleto": nomeCompleto,
-                            "UnidadeAdministrativa": unidadeAdministrativa,
-                            "Cargo": cargo,
-                            "Observacoes": observacoes
-                        }
-                    };
-
-                    return axios.put(urlBaseKeycloakUsers + userId, attributes, config)
-                        .then(response => {
-                            console.log("response attr")
-                            console.log(response)
-                            retorno.sucesso = true;
-
-                            retorno.mensagem = "";
-                            retorno.usuarioEditar = response.data;
-                            return retorno;
-                        })
-                        .catch(error => {
-                            console.log("Erro attr");
-                            console.log(error)
-                            return retorno;
-                        });                    
+                    response = response.data;
+                    if (response.sucesso) {
+                        retorno.sucesso = true;
+                        retorno.mensagem = "Usuário incluído com sucesso!";
+                    }
+                    else {
+                        retorno.sucesso = false;
+                        retorno.mensagem = response.mensagem;
+                    }
                 })
                 .catch(error => {
                     console.log("Erro")
                     console.log(error)
 
                     retorno.sucesso = false;
-                    retorno.mensagem = error.message;
-                    return retorno;
+                    retorno.mensagem = error.data;
                 });
         }
+
+        return retorno;
     }
 
-    static async excluirUsuarios(selecionados, token) {
+    static async excluirUsuarios(selecionados) {
         console.log("Excluir usuarios")
         var retorno = {
             sucesso: true,
@@ -228,14 +178,17 @@ class KeycloakService {
                 console.log(id)
 
                 const config = {
-                    headers: { Authorization: `Bearer ${token}` }
+                    headers: { "Content-Type": "application/json" }
                 };
 
-                await axios.delete(urlBaseKeycloakUsers + id, config)
+                const data = {
+                    id: id
+                };
+
+                await axios.post(urlBaseKeycloakNode + "excluirUsuario", data, config)
                     .then(response => {
                         console.log("Sucesso exclusão")
-
-                        retorno.sucesso = true;
+                        retorno.sucesso = response.data.sucesso;
                         retorno.mensagem = "";
                     })
                     .catch(error => {
@@ -243,13 +196,12 @@ class KeycloakService {
                         console.log(error)
 
                         retorno.sucesso = false;
-                        retorno.mensagem = error.message;
+                        retorno.mensagem = error;
 
                         return;
                     });
             }
         }
-
         return retorno;
     }
 

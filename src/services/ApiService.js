@@ -608,7 +608,7 @@ class ApiService {
                 console.log(response)
                 result = {
                     sucesso: true,
-                    erros: response.data.data.filter(d => d.flgAtivo)
+                    dados: response.data.data.filter(d => d.flgAtivo)
                 };
             })
             .catch(error => {

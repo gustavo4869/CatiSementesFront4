@@ -273,7 +273,7 @@ class GerenciarAtributos extends Component {
                                                 <ModalClassificacao buscarDadosAtributos={this.buscarDadosAtributos} ref={this.toggleModalClassificacao} />
                                                 <div className="card-atributo-header">
                                                     <label>Classificação</label>
-                                                    <button onClick={() => this.abrirModal('classificacao')} disabled={this.state.keycloak.hasRealmRole("Visualizador")}><img src={imgBtnAdicionar}></img></button>
+                                                    <button onClick={() => this.abrirModal('classificacao')} disabled={this.state.keycloak.hasRealmRole("Visualizacao")}><img src={imgBtnAdicionar}></img></button>
                                                 </div>
                                                 <div className="card-atributo-body">
                                                     {this.state.dadosAtributos.classificacoes.map((classif) =>
@@ -295,7 +295,7 @@ class GerenciarAtributos extends Component {
                                                 <ModalCultivar buscarDadosAtributos={this.buscarDadosAtributos} ref={this.toggleModalCultivar} classificacoes={this.state.dadosAtributos.classificacoes} />
                                                 <div className="card-atributo-header">
                                                     <label>Cultivar</label>
-                                                    <button onClick={() => this.abrirModal('cultivar')} disabled={this.state.keycloak.hasRealmRole("Visualizador")}><img src={imgBtnAdicionar}></img></button>
+                                                    <button onClick={() => this.abrirModal('cultivar')} disabled={this.state.keycloak.hasRealmRole("Visualizacao")}><img src={imgBtnAdicionar}></img></button>
                                                 </div>
                                                 <div className="card-atributo-body">
                                                     {this.state.dadosAtributos.cultivos.map((cultivo) =>
@@ -317,7 +317,7 @@ class GerenciarAtributos extends Component {
                                                 <ModalEspecie buscarDadosAtributos={this.buscarDadosAtributos} ref={this.toggleModalEspecie} classificacoes={this.state.dadosAtributos.classificacoes} />
                                                 <div className="card-atributo-header">
                                                     <label>Espécie</label>
-                                                    <button onClick={() => this.abrirModal('especie')} disabled={this.state.keycloak.hasRealmRole("Visualizador")}><img src={imgBtnAdicionar}></img></button>
+                                                    <button onClick={() => this.abrirModal('especie')} disabled={this.state.keycloak.hasRealmRole("Visualizacao")}><img src={imgBtnAdicionar}></img></button>
                                                 </div>
                                                 <div className="card-atributo-body">
                                                     {this.state.dadosAtributos.especies.map((especie) =>
@@ -339,7 +339,7 @@ class GerenciarAtributos extends Component {
                                                 <ModalCategoria buscarDadosAtributos={this.buscarDadosAtributos} ref={this.toggleModalCategoria} classificacoes={this.state.dadosAtributos.classificacoes} />
                                                 <div className="card-atributo-header">
                                                     <label>Categoria</label>
-                                                    <button onClick={() => this.abrirModal('categoria')} disabled={this.state.keycloak.hasRealmRole("Visualizador")}><img src={imgBtnAdicionar}></img></button>
+                                                    <button onClick={() => this.abrirModal('categoria')} disabled={this.state.keycloak.hasRealmRole("Visualizacao")}><img src={imgBtnAdicionar}></img></button>
                                                 </div>
                                                 <div className="card-atributo-body">
                                                     {this.state.dadosAtributos.categorias.map((categoria) =>
@@ -361,7 +361,7 @@ class GerenciarAtributos extends Component {
                                                 <ModalSistemaProducao buscarDadosAtributos={this.buscarDadosAtributos} ref={this.toggleModalSistemaProducao} classificacoes={this.state.dadosAtributos.classificacoes} />
                                                 <div className="card-atributo-header">
                                                     <label>Sistema de Produção</label>
-                                                    <button onClick={() => this.abrirModal('sistemaProducao')} disabled={this.state.keycloak.hasRealmRole("Visualizador")}><img src={imgBtnAdicionar}></img></button>
+                                                    <button onClick={() => this.abrirModal('sistemaProducao')} disabled={this.state.keycloak.hasRealmRole("Visualizacao")}><img src={imgBtnAdicionar}></img></button>
                                                 </div>
                                                 <div className="card-atributo-body">
                                                     {this.state.dadosAtributos.sistemasProducao.map((sistemaProducao) =>
@@ -383,7 +383,7 @@ class GerenciarAtributos extends Component {
                                                 <ModalTratamento buscarDadosAtributos={this.buscarDadosAtributos} ref={this.toggleModalTratamento} classificacoes={this.state.dadosAtributos.classificacoes} />
                                                 <div className="card-atributo-header">
                                                     <label>Tratamento</label>
-                                                    <button onClick={() => this.abrirModal('tratamento')} disabled={this.state.keycloak.hasRealmRole("Visualizador")}><img src={imgBtnAdicionar}></img></button>
+                                                    <button onClick={() => this.abrirModal('tratamento')} disabled={this.state.keycloak.hasRealmRole("Visualizacao")}><img src={imgBtnAdicionar}></img></button>
                                                 </div>
                                                 <div className="card-atributo-body">
                                                     {this.state.dadosAtributos.tratamentos.map((tratamento) =>
@@ -405,7 +405,7 @@ class GerenciarAtributos extends Component {
                                                 <ModalPeneira buscarDadosAtributos={this.buscarDadosAtributos} ref={this.toggleModalPeneira} classificacoes={this.state.dadosAtributos.classificacoes} />
                                                 <div className="card-atributo-header">
                                                     <label>Peneira</label>
-                                                    <button onClick={() => this.abrirModal('peneira')} disabled={this.state.keycloak.hasRealmRole("Visualizador")}><img src={imgBtnAdicionar}></img></button>
+                                                    <button onClick={() => this.abrirModal('peneira')} disabled={this.state.keycloak.hasRealmRole("Visualizacao")}><img src={imgBtnAdicionar}></img></button>
                                                 </div>
                                                 <div className="card-atributo-body">
                                                     {this.state.dadosAtributos.peneiras.map((peneira) =>
@@ -427,7 +427,7 @@ class GerenciarAtributos extends Component {
                                                 <ModalLote buscarDadosAtributos={this.buscarDadosAtributos} ref={this.toggleModalLote} classificacoes={this.state.dadosAtributos.classificacoes} />
                                                 <div className="card-atributo-header">
                                                     <label>Lote</label>
-                                                    <button onClick={() => this.abrirModal('lote')} disabled={this.state.keycloak.hasRealmRole("Visualizador")}><img src={imgBtnAdicionar}></img></button>
+                                                    <button onClick={() => this.abrirModal('lote')} disabled={this.state.keycloak.hasRealmRole("Visualizacao")}><img src={imgBtnAdicionar}></img></button>
                                                 </div>
                                                 <div className="card-atributo-body">
                                                     {this.state.dadosAtributos.lotes.map((lote) =>
@@ -449,7 +449,7 @@ class GerenciarAtributos extends Component {
                                                 <ModalSafra buscarDadosAtributos={this.buscarDadosAtributos} ref={this.toggleModalSafra} classificacoes={this.state.dadosAtributos.classificacoes} />
                                                 <div className="card-atributo-header">
                                                     <label>Safra</label>
-                                                    <button onClick={() => this.abrirModal('safra')} disabled={this.state.keycloak.hasRealmRole("Visualizador")}><img src={imgBtnAdicionar}></img></button>
+                                                    <button onClick={() => this.abrirModal('safra')} disabled={this.state.keycloak.hasRealmRole("Visualizacao")}><img src={imgBtnAdicionar}></img></button>
                                                 </div>
                                                 <div className="card-atributo-body">
                                                     {this.state.dadosAtributos.safras.map((safra) =>
@@ -471,7 +471,7 @@ class GerenciarAtributos extends Component {
                                                 <ModalTipo buscarDadosAtributos={this.buscarDadosAtributos} ref={this.toggleModalTipo} classificacoes={this.state.dadosAtributos.classificacoes} />
                                                 <div className="card-atributo-header">
                                                     <label>Tipo</label>
-                                                    <button onClick={() => this.abrirModal('tipo')} disabled={this.state.keycloak.hasRealmRole("Visualizador")}><img src={imgBtnAdicionar}></img></button>
+                                                    <button onClick={() => this.abrirModal('tipo')} disabled={this.state.keycloak.hasRealmRole("Visualizacao")}><img src={imgBtnAdicionar}></img></button>
                                                 </div>
                                                 <div className="card-atributo-body">
                                                     {this.state.dadosAtributos.tipos.map((tipo) =>
@@ -493,7 +493,7 @@ class GerenciarAtributos extends Component {
                                                 <ModalIdade buscarDadosAtributos={this.buscarDadosAtributos} ref={this.toggleModalIdade} classificacoes={this.state.dadosAtributos.classificacoes} />
                                                 <div className="card-atributo-header">
                                                     <label>Idade</label>
-                                                    <button onClick={() => this.abrirModal('idade')} disabled={this.state.keycloak.hasRealmRole("Visualizador")}><img src={imgBtnAdicionar}></img></button>
+                                                    <button onClick={() => this.abrirModal('idade')} disabled={this.state.keycloak.hasRealmRole("Visualizacao")}><img src={imgBtnAdicionar}></img></button>
                                                 </div>
                                                 <div className="card-atributo-body">
                                                     {this.state.dadosAtributos.idades.map((idade) =>
@@ -515,7 +515,7 @@ class GerenciarAtributos extends Component {
                                                 <ModalViveiro buscarDadosAtributos={this.buscarDadosAtributos} ref={this.toggleModalViveiro} classificacoes={this.state.dadosAtributos.classificacoes} />
                                                 <div className="card-atributo-header">
                                                     <label>Viveiro</label>
-                                                    <button onClick={() => this.abrirModal('viveiro')} disabled={this.state.keycloak.hasRealmRole("Visualizador")}><img src={imgBtnAdicionar}></img></button>
+                                                    <button onClick={() => this.abrirModal('viveiro')} disabled={this.state.keycloak.hasRealmRole("Visualizacao")}><img src={imgBtnAdicionar}></img></button>
                                                 </div>
                                                 <div className="card-atributo-body">
                                                     {this.state.dadosAtributos.viveiros.map((viveiro) =>
@@ -537,7 +537,7 @@ class GerenciarAtributos extends Component {
                                                 <ModalUnidade buscarDadosAtributos={this.buscarDadosAtributos} ref={this.toggleModalUnidade} classificacoes={this.state.dadosAtributos.classificacoes} />
                                                 <div className="card-atributo-header">
                                                     <label>Unidade</label>
-                                                    <button onClick={() => this.abrirModal('unidade')} disabled={this.state.keycloak.hasRealmRole("Visualizador")}><img src={imgBtnAdicionar}></img></button>
+                                                    <button onClick={() => this.abrirModal('unidade')} disabled={this.state.keycloak.hasRealmRole("Visualizacao")}><img src={imgBtnAdicionar}></img></button>
                                                 </div>
                                                 <div className="card-atributo-body">
                                                     {this.state.dadosAtributos.unidades.map((unidade) =>
@@ -559,7 +559,7 @@ class GerenciarAtributos extends Component {
                                                 <ModalMaterialPropagacaoVegetativa buscarDadosAtributos={this.buscarDadosAtributos} ref={this.toggleModalMaterialPropagacaoVegetativa} classificacoes={this.state.dadosAtributos.classificacoes} />
                                                 <div className="card-atributo-header">
                                                     <label>Material Propagação Vegetativa</label>
-                                                    <button onClick={() => this.abrirModal('materialPropagacaoVegetativa')} disabled={this.state.keycloak.hasRealmRole("Visualizador")}><img src={imgBtnAdicionar}></img></button>
+                                                    <button onClick={() => this.abrirModal('materialPropagacaoVegetativa')} disabled={this.state.keycloak.hasRealmRole("Visualizacao")}><img src={imgBtnAdicionar}></img></button>
                                                 </div>
                                                 <div className="card-atributo-body">
                                                     {this.state.dadosAtributos.materiais.map((material) =>
@@ -581,7 +581,7 @@ class GerenciarAtributos extends Component {
                                                 <ModalGrupo buscarDadosAtributos={this.buscarDadosAtributos} ref={this.toggleModalGrupo} classificacoes={this.state.dadosAtributos.classificacoes} />
                                                 <div className="card-atributo-header">
                                                     <label>Grupo</label>
-                                                    <button onClick={() => this.abrirModal('grupo')} disabled={this.state.keycloak.hasRealmRole("Visualizador")}><img src={imgBtnAdicionar}></img></button>
+                                                    <button onClick={() => this.abrirModal('grupo')} disabled={this.state.keycloak.hasRealmRole("Visualizacao")}><img src={imgBtnAdicionar}></img></button>
                                                 </div>
                                                 <div className="card-atributo-body">
                                                     {this.state.dadosAtributos.grupos.map((grupo) =>
@@ -603,7 +603,7 @@ class GerenciarAtributos extends Component {
                                                 <ModalSubProdutoMudas buscarDadosAtributos={this.buscarDadosAtributos} ref={this.toggleModalSubProdutoMudas} classificacoes={this.state.dadosAtributos.classificacoes.filter(f => f.desClass == "Sub-produto mudas")} />
                                                 <div className="card-atributo-header">
                                                     <label>Sub-produto Mudas</label>
-                                                    <button onClick={() => this.abrirModal('subProdutoMudas')} disabled={this.state.keycloak.hasRealmRole("Visualizador")}><img src={imgBtnAdicionar}></img></button>
+                                                    <button onClick={() => this.abrirModal('subProdutoMudas')} disabled={this.state.keycloak.hasRealmRole("Visualizacao")}><img src={imgBtnAdicionar}></img></button>
                                                 </div>
                                                 <div className="card-atributo-body">
                                                     {this.state.dadosAtributos.subProdutos.map((subProduto) =>
@@ -625,7 +625,7 @@ class GerenciarAtributos extends Component {
                                                 <ModalEmbalagem buscarDadosAtributos={this.buscarDadosAtributos} ref={this.toggleModalEmbalagem} classificacoes={this.state.dadosAtributos.classificacoes} />
                                                 <div className="card-atributo-header">
                                                     <label>Embalagem</label>
-                                                    <button onClick={() => this.abrirModal('embalagem')} disabled={this.state.keycloak.hasRealmRole("Visualizador")}><img src={imgBtnAdicionar}></img></button>
+                                                    <button onClick={() => this.abrirModal('embalagem')} disabled={this.state.keycloak.hasRealmRole("Visualizacao")}><img src={imgBtnAdicionar}></img></button>
                                                 </div>
                                                 <div className="card-atributo-body">
                                                     {this.state.dadosAtributos.embalagens.map((embalagem) =>
@@ -647,7 +647,7 @@ class GerenciarAtributos extends Component {
                                                 <ModalPesoEmbalagem buscarDadosAtributos={this.buscarDadosAtributos} ref={this.toggleModalPesoEmbalagem} classificacoes={this.state.dadosAtributos.classificacoes} />
                                                 <div className="card-atributo-header">
                                                     <label>Peso Embalagem</label>
-                                                    <button onClick={() => this.abrirModal('pesoEmbalagem')} disabled={this.state.keycloak.hasRealmRole("Visualizador")}><img src={imgBtnAdicionar}></img></button>
+                                                    <button onClick={() => this.abrirModal('pesoEmbalagem')} disabled={this.state.keycloak.hasRealmRole("Visualizacao")}><img src={imgBtnAdicionar}></img></button>
                                                 </div>
                                                 <div className="card-atributo-body">
                                                     {this.state.dadosAtributos.pesoEmbalagens.map((peso) =>
@@ -669,7 +669,7 @@ class GerenciarAtributos extends Component {
                                                 <ModalNomeCientifico buscarDadosAtributos={this.buscarDadosAtributos} ref={this.toggleModalNomeCientifico} classificacoes={this.state.dadosAtributos.classificacoes} />
                                                 <div className="card-atributo-header">
                                                     <label>Nome Científico</label>
-                                                    <button onClick={() => this.abrirModal('nomeCientifico')} disabled={this.state.keycloak.hasRealmRole("Visualizador")}><img src={imgBtnAdicionar}></img></button>
+                                                    <button onClick={() => this.abrirModal('nomeCientifico')} disabled={this.state.keycloak.hasRealmRole("Visualizacao")}><img src={imgBtnAdicionar}></img></button>
                                                 </div>
                                                 <div className="card-atributo-body">
                                                     {this.state.dadosAtributos.nomesCientificos.map((nome) =>
@@ -695,7 +695,7 @@ class GerenciarAtributos extends Component {
                                                 />
                                                 <div className="card-atributo-header">
                                                     <label>Campo de Produção</label>
-                                                    <button onClick={() => this.abrirModal('campoProducao')} disabled={this.state.keycloak.hasRealmRole("Visualizador")}><img src={imgBtnAdicionar}></img></button>
+                                                    <button onClick={() => this.abrirModal('campoProducao')} disabled={this.state.keycloak.hasRealmRole("Visualizacao")}><img src={imgBtnAdicionar}></img></button>
                                                 </div>
                                                 <div className="card-atributo-body">
                                                     {this.state.dadosAtributos.camposProducao.map((campo) =>

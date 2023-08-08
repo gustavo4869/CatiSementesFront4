@@ -68,6 +68,7 @@ class ModalUsuario extends Component {
             this.props.buscarUsuarios();
             this.limparFormularioUsuario();
             this.toggleModal();
+            Notificacao.sucesso("Sucesso", "Usuário atualizado com sucesso");
         }
         else {
             console.log("Erro ao salvar usuário")

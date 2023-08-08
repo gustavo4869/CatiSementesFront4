@@ -179,7 +179,7 @@ class PontoVendaService {
                     }
                     else {
                         retorno.sucesso = false;
-                        retorno.mensagem = "GetPdv - Erro ao consultar Ponto de Venda";
+                        retorno.mensagem = "GetPdv - Erro ao consultar Ponto Venda";
                     }
                     return retorno;
                 })
@@ -228,7 +228,7 @@ class PontoVendaService {
                     }
                     else {
                         retorno.sucesso = false;
-                        retorno.mensagem = "GetListaByTipoPDV - Erro ao consultar Lista de Ponto de Venda";
+                        retorno.mensagem = "GetListaByTipoPDV - Erro ao consultar Lista de Ponto Venda";
                     }
                     return retorno;
                 })
@@ -277,7 +277,7 @@ class PontoVendaService {
                     }
                     else {
                         retorno.sucesso = false;
-                        retorno.mensagem = "GetPdv - Erro ao consultar Ponto de Venda";
+                        retorno.mensagem = "GetPdv - Erro ao consultar Ponto Venda";
                     }
                     return retorno;
                 })
@@ -321,11 +321,11 @@ class PontoVendaService {
                     console.log(response)
                     if (response.data.success) {
                         retorno.sucesso = true;
-                        retorno.mensagem = "Ponto de Venda criado com sucesso";
+                        retorno.mensagem = "Ponto Venda criado com sucesso";
                     }
                     else {
                         retorno.sucesso = false;
-                        retorno.mensagem = "AddPdv - Erro ao criar Ponto de Venda";
+                        retorno.mensagem = "AddPdv - Erro ao criar Ponto Venda";
                     }
                     return retorno;
                 })
@@ -370,11 +370,11 @@ class PontoVendaService {
                     console.log(response)
                     if (response.data.success) {
                         retorno.sucesso = true;
-                        retorno.mensagem = "Ponto de Venda alterada com sucesso";
+                        retorno.mensagem = "Ponto Venda alterada com sucesso";
                     }
                     else {
                         retorno.sucesso = false;
-                        retorno.mensagem = "UpdatePdv - Erro ao alterar Ponto de Venda";
+                        retorno.mensagem = "UpdatePdv - Erro ao alterar Ponto Venda";
                     }
                     return retorno;
                 })
@@ -428,7 +428,7 @@ class PontoVendaService {
                     }
                     else {
                         retorno.sucesso = false;
-                        retorno.mensagem = "ExcluirPdv - Erro ao excluir Ponto de Venda";
+                        retorno.mensagem = "ExcluirPdv - Erro ao excluir Ponto Venda";
                     }
                     return retorno;
                 })

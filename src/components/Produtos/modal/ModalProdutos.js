@@ -136,9 +136,13 @@ class ModalProdutos extends Component {
         const pesoEmbalagens = await ApiService.BuscarPesoEmbalagem(null, idClassificacao, null, true);
         const embalagens = await ApiService.BuscarEmbalagem(null, idClassificacao, null, true);
 
+        console.log("CarregarDadosCOmbos")
+        console.log(idClassificacao)
+        console.log(especies)
+
         this.setState({
             dadosCombosCarregados: true,
-            especies: especies.data,
+            especies: especies.dados,
             categorias: categorias.data,
             sistemasProducao: sistemasProducao.data,
             tratamentos: tratamentos.data,
@@ -499,15 +503,19 @@ class ModalProdutos extends Component {
     }
 
     async onChangeEspecie() {
+        console.log("onChangeEspecie")
         const idClassificacao = document.getElementById("classificacaoProduto").value;
         const idEspecie = document.getElementById("especieProduto").value;
         const cultivos = await ApiService.BuscarCultivar(null, idClassificacao, idEspecie, null, true);
         const nomeCientifico = await ApiService.BuscarNomeCientifico(null, idClassificacao, idEspecie, null, true);
-        const nomeCientificoFilter = nomeCientifico.filter(f => !f.desNm.includes("Não se aplica"));
+        const nomeCientificoFilter = nomeCientifico.data.filter(f => !f.desNm.includes("Não se aplica"));
         const nomeCientificoTratado = nomeCientificoFilter.length > 0 ? nomeCientificoFilter[0] : { idnm: 0, desNm: "" };
 
+        console.log(cultivos)
+        console.log(nomeCientifico)
+
         this.setState({
-            cultivos: cultivos,
+            cultivos: cultivos.data,
             nomeCientificoSelecionado: nomeCientificoTratado
         });
     }

@@ -4,12 +4,10 @@ import keycloak from '../keycloak';
 import NavMenuLogado from '../shared/NavMenuLogado';
 import MenuLateralAdministracao from './MenuLateralAdministracao';
 import CardMenuPrincipal from './CardMenuPrincipal';
+import IndexMenuAdministracao from './IndexMenuAdministracao';
+import IndexMenuComum from './IndexMenuComum';
 import KeycloakStart from '../shared/KeycloakStart';
 import KeycloakNoAuth from '../shared/KeycloakNoAuth';
-
-import logoAdministrador from '../images/administrador 1.png';
-import logoProdutos from '../images/adicionar-produto 1.png';
-import logoPontoVenda from '../images/localizador 1.png';
 
 import './css/IndexAdministracao.css';
 
@@ -24,7 +22,8 @@ class IndexAdministracao extends Component {
         console.log(keycloak)
         keycloak.init({ onLoad: 'login-required' }).then(authenticated => {
             this.setState({ keycloak: keycloak, authenticated: authenticated })
-        })
+        });
+
     }
 
     render() {
@@ -33,14 +32,14 @@ class IndexAdministracao extends Component {
                 if (!this.state.keycloak.hasRealmRole("Comum")) {
                     return (
                         <div className="container-administracao">
-                            <NavMenuLogado keycloak={this.state.keycloak} />
-                            <div className="row container-menu-index">
-                                <CardMenuPrincipal texto="ADMINISTRADOR" imagem={logoAdministrador} url="/Administracao/Administrador" />                                
-                            </div>
+                            <IndexMenuAdministracao keycloak={this.state.keycloak}/>
                         </div>);
                 }
                 else {
-                    return (<h1>Você não tem acesso!</h1>)
+                    return (
+                        <div className="container-administracao">
+                            <IndexMenuComum keycloak={this.state.keycloak} />
+                        </div>);
                 }
             }
             else return (<KeycloakNoAuth />)

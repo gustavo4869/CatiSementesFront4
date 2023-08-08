@@ -39,8 +39,6 @@ class IndexUsuario extends Component {
 
     componentDidMount() {
         keycloak.init({ onLoad: 'login-required' }).then(authenticated => {
-            keycloak.loadUserInfo();
-            console.log(keycloak.token)
             this.setState({
                 keycloak: keycloak,
                 authenticated: authenticated,
@@ -85,16 +83,16 @@ class IndexUsuario extends Component {
     async excluirUsuarios() {
         console.log("Excluir usuarios")
         var selecionados = document.getElementsByClassName("radio-btn-usuario");
-        var result = await KeycloakService.excluirUsuarios(selecionados, this.state.keycloakToken);
+        var result = await KeycloakService.excluirUsuarios(selecionados);
         console.log(result)
         if (!result.sucesso) {
-            console.log("Erro ao excluir usuarios")
-            console.log(result.mensagem)
+            Notificacao.erro("Erro", "Erro ao excluir usuarios")
         }
         else {
-            console.log("Usuários excluídos com sucesso")
-            this.buscarUsuarios(null);
+            Notificacao.sucesso("Sucesso", "Usuários excluídos com sucesso")            
         }
+
+        this.buscarUsuarios(null);
     }
 
     editarUsuarios() {
@@ -119,8 +117,9 @@ class IndexUsuario extends Component {
         });
 
         console.log(usuarioEditar)
-        this.setState({ usuarioEditar: usuarioEditar, isEdit: true });
-        this.toggleModal.current.toggleModal();
+        this.setState({ usuarioEditar: usuarioEditar, isEdit: true }, () => {
+            this.toggleModal.current.toggleModal();
+        });        
     }
 
     checkAllUsuarios() {
@@ -148,7 +147,7 @@ class IndexUsuario extends Component {
                                         <input type="text" placeholder="Buscar usuários" disabled={true} />
                                         <button
                                             className="btn-editar"
-                                            disabled={this.state.keycloak.hasRealmRole("Visualizador")}
+                                            disabled={this.state.keycloak.hasRealmRole("Visualizacao")}
                                             onClick={this.novoUsuario.bind(this)}
                                         >
                                             <font>Criar usuário</font>
@@ -166,14 +165,14 @@ class IndexUsuario extends Component {
                                     <button
                                         className="btn-editar"
                                         onClick={this.editarUsuarios.bind(this)}
-                                        disabled={this.state.keycloak.hasRealmRole("Visualizador")}
+                                        disabled={this.state.keycloak.hasRealmRole("Visualizacao")}
                                     >
                                         Editar
                                     </button>
                                     <button
                                         className="btn-excluir"
                                         onClick={this.excluirUsuarios.bind(this)}
-                                        disabled={this.state.keycloak.hasRealmRole("Visualizador")}
+                                        disabled={this.state.keycloak.hasRealmRole("Visualizacao")}
                                     >
                                         Excluir
                                     </button>

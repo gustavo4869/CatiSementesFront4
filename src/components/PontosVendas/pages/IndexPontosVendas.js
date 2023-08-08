@@ -54,7 +54,8 @@ class IndexPontosVendas extends Component {
             comboPdv: [],
             comboReg: [],
             comboStatus: [],
-            comboCentro: []
+            comboCentro: [],
+            usuario: ""
         };
 
         this.novoPontoVenda = this.novoPontoVenda.bind(this);
@@ -72,11 +73,20 @@ class IndexPontosVendas extends Component {
 
     componentDidMount() {
         keycloak.init({ onLoad: 'login-required' }).then(authenticated => {
-            this.setState({
-                keycloak: keycloak,
-                authenticated: authenticated,
-                keycloakToken: keycloak.token
+            console.log("Mount")
+            console.log(keycloak)
+            let usuario = "";
+            keycloak.loadUserInfo().then(result => {
+                console.log("resultMopunt")
+                console.log(result)
+                this.setState({
+                    keycloak: keycloak,
+                    authenticated: authenticated,
+                    keycloakToken: keycloak.token,
+                    usuario: result.preferred_username
+                });
             });
+            
         });
         this.carregarDados();
     }
@@ -84,6 +94,7 @@ class IndexPontosVendas extends Component {
     async carregarDados() {
         this.setState({ processando: true });
 
+        await ExternalService.keycloak();
         const municipios = await ExternalService.buscarMunicipios();
         const tipoPdv = await PontoVendaService.getAllTipoPdv();
         const status = await PontoVendaService.getAllStatus();
@@ -176,7 +187,7 @@ class IndexPontosVendas extends Component {
                 idTpPdv: 0,
                 idReg: 0,
                 idNs: 0,
-                usuCriacao: "gustavo",
+                usuCriacao: "",
                 pdvCas: [],
                 pdvCidades: [],
             }
@@ -189,7 +200,7 @@ class IndexPontosVendas extends Component {
         var selecionados = Array.from(document.getElementsByClassName("radio-btn-pdv")).filter(f => f.checked);
 
         if (selecionados.length === 0) {
-            Notificacao.alerta("Ops..", "Selecione um ponto de venda para excluir");
+            Notificacao.alerta("Ops..", "Selecione um ponto venda para excluir");
             return;
         }
 
@@ -222,11 +233,11 @@ class IndexPontosVendas extends Component {
         var checkbox = Array.from(document.getElementsByClassName("radio-btn-pdv"));
         var chkSelecionados = checkbox.filter(f => f.checked);
         if (chkSelecionados.length === 0) {
-            Notificacao.alerta("Ops...", "Selecione pelo menos 1 ponto de venda");
+            Notificacao.alerta("Ops...", "Selecione pelo menos 1 ponto venda");
             return;
         }
         if (chkSelecionados.length > 1) {
-            Notificacao.alerta("Ops...", "Selecione apenas 1 ponto de venda");
+            Notificacao.alerta("Ops...", "Selecione apenas 1 ponto venda");
             return;
         }
 
@@ -374,7 +385,7 @@ class IndexPontosVendas extends Component {
                                     </div>
                                     <div className="col-10 container-input">
                                         <input type="text" placeholder="Buscar pontos de venda" onChange={this.onChangeBuscaPontoVenda} />
-                                        <button className="btn-editar" disabled={this.state.processando || this.state.keycloak.hasRealmRole("Visualizador")} onClick={this.novoPontoVenda}><font>Criar Ponto Venda</font></button>
+                                        <button className="btn-editar" disabled={this.state.processando || this.state.keycloak.hasRealmRole("Visualizacao")} onClick={this.novoPontoVenda}><font>Criar Ponto Venda</font></button>
                                         <ModalPontoVenda
                                             ref={this.toggleModalPontoVenda}
                                             tipoPdv={this.state.comboPdv}
@@ -386,12 +397,13 @@ class IndexPontosVendas extends Component {
                                             municipios={this.state.municipios}
                                             nomeUsuario={this.state.nomeUsuario}
                                             carregarDados={this.carregarDados}
+                                            usuario={this.state.usuario}
                                         />
                                     </div>
                                 </div>
                                 <div className="row container-acoes">
-                                    <button className="btn-editar" disabled={this.state.processando || this.state.keycloak.hasRealmRole("Visualizador")} onClick={this.editarPontoVenda}>Editar</button>
-                                    <button className="btn-excluir" disabled={this.state.processando || this.state.keycloak.hasRealmRole("Visualizador")} onClick={this.excluirPontoVenda}>Excluir</button>
+                                    <button className="btn-editar" disabled={this.state.processando || this.state.keycloak.hasRealmRole("Visualizacao")} onClick={this.editarPontoVenda}>Editar</button>
+                                    <button className="btn-excluir" disabled={this.state.processando || this.state.keycloak.hasRealmRole("Visualizacao")} onClick={this.excluirPontoVenda}>Excluir</button>
                                 </div>
                                 {this.state.processando ?
                                     <Carregando />

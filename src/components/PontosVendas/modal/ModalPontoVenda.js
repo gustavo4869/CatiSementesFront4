@@ -66,13 +66,13 @@ class ModalPontoVenda extends Component {
 
         if (tipoPontoVenda === 0) {
             document.getElementById("tipoPontoVenda").focus();
-            Util.exibirMensagemErro("Selecione o tipo de ponto de venda");
+            Util.exibirMensagemErro("Selecione o tipo de ponto venda");
             return false;
         }
 
         if (nomeUnidadePontoVenda === "") {
             document.getElementById("nomeUnidadePontoVenda").focus();
-            Util.exibirMensagemErro("Digite o nome da unidade do ponto de venda");
+            Util.exibirMensagemErro("Digite o nome da unidade do ponto venda");
             return false;
         }
 
@@ -84,7 +84,7 @@ class ModalPontoVenda extends Component {
 
         if (cidadePontoVenda === 0) {
             document.getElementById("cidadePontoVenda").focus();
-            Util.exibirMensagemErro("Selecione ao menos 1 cidade do ponto de venda");
+            Util.exibirMensagemErro("Selecione ao menos 1 cidade do ponto venda");
             return false;
         }
 
@@ -112,13 +112,13 @@ class ModalPontoVenda extends Component {
         if (state.idPdv !== 0) {
             console.log("Editar Ponto Venda IOnternal")
             console.log(state);
-            state.usuAlteracao = "gustavo";
+            state.usuAlteracao = this.props.usuario;
             resultado = await PontoVendaService.updatePdv(state);
         }
         else {
             console.log("Criar Ponto Venda IOnternal")
             console.log(state);
-            state.usuCriacao = "gustavo";
+            state.usuCriacao = this.props.usuario;
             resultado = await PontoVendaService.addPdv(state);
         }
 
@@ -301,7 +301,7 @@ class ModalPontoVenda extends Component {
                     portalClassName="container-modal-atributo"
                 >
                     <div className="modal-atributo-header">
-                        <font className="titulo-header">{this.state.pontoVenda.idPdv !== 0 ? "EDITAR" : "CRIAR"} PONTO DE VENDA</font>
+                        <font className="titulo-header">{this.state.pontoVenda.idPdv !== 0 ? "EDITAR" : "CRIAR"} PONTO VENDA</font>
                         <button onClick={this.toggleModalPontoVenda}>X</button>
                     </div>
                     <div className="modal-atributo-body">

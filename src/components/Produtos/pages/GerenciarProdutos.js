@@ -182,7 +182,7 @@ class GerenciarProdutos extends Component {
                                     </div>
                                     <div className="col-10 container-input">
                                         <input type="text" placeholder="Buscar produtos" disabled={true} />
-                                        <button className="btn-editar" disabled={this.state.processando || this.state.keycloak.hasRealmRole("Visualizador")} onClick={this.novoProduto}><font>Criar produto</font></button>
+                                        <button className="btn-editar" disabled={this.state.processando || this.state.keycloak.hasRealmRole("Visualizacao")} onClick={this.novoProduto}><font>Criar produto</font></button>
                                         <ModalProdutos
                                             ref={this.toggleModal}
                                             classificacoes={this.state.classificacoes}
@@ -192,8 +192,8 @@ class GerenciarProdutos extends Component {
                                     </div>
                                 </div>
                                 <div className="row container-acoes">
-                                    <button className="btn-editar" disabled={this.state.processando || this.state.keycloak.hasRealmRole("Visualizador")} onClick={this.editarProdutos}>Editar</button>
-                                    <button className="btn-excluir" disabled={this.state.processando || this.state.keycloak.hasRealmRole("Visualizador")} onClick={this.excluirProdutos}>Excluir</button>
+                                    <button className="btn-editar" disabled={this.state.processando || this.state.keycloak.hasRealmRole("Visualizacao")} onClick={this.editarProdutos}>Editar</button>
+                                    <button className="btn-excluir" disabled={this.state.processando || this.state.keycloak.hasRealmRole("Visualizacao")} onClick={this.excluirProdutos}>Excluir</button>
                                 </div>
                                 {this.state.processando ?
                                     <Carregando />

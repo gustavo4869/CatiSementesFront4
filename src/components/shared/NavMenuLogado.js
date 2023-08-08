@@ -37,7 +37,8 @@ class NavMenuLogado extends Component {
 
     async loadUsername() {
         var usuario = "Usuário";
-        
+        console.log("loadUsername")
+        console.log(this.props.keycloak)
         if (!this.props.keycloak) {
             return usuario;
         }
@@ -46,6 +47,8 @@ class NavMenuLogado extends Component {
             await this.props.keycloak.loadUserInfo()
                 .then(function (userInfo) {
                     usuario = userInfo.preferred_username;
+                    console.log("usuario")
+                    console.log(usuario)
                 });
 
             this.setState({ nomeUsuario: usuario });
