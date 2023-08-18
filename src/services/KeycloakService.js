@@ -2,9 +2,9 @@
 import configData from "../configuration/config.json";
 
 /* Services -> Keycloak */
-const urlBaseKeycloak = configData.urlBaseApiKeycloak;
-const urlBaseKeycloakUsers = configData.urlBaseApiKeycloakUsers;
-const urlBaseKeycloakNode = configData.urlBaseApiNodeKeycloak;
+const ambienteProd = configData.ambienteProd;
+const urlBaseKeycloak = ambienteProd ? configData.urlBaseApiKeycloakProd : configData.urlBaseApiKeycloakDev;
+const urlBaseKeycloakNode = ambienteProd ? configData.urlBaseApiNodeKeycloakProd : configData.urlBaseApiNodeKeycloakDev;
 var bearerToken = "";
 /* Services -> Keycloak */
 
