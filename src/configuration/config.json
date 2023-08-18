@@ -1,5 +1,5 @@
 {
-  "ambienteProd": false,
+  "ambienteProd": true,
   "urlBaseApiPontoVenda": "http://191.233.142.249/apipdv/",
   "urlBaseApiNodeKeycloakProd": "http://localhost:3030/adminApi/",
   "urlBaseApiKeycloakProd": "http://10.153.18.52:8080/admin/realms/CatiSementesV3/",
