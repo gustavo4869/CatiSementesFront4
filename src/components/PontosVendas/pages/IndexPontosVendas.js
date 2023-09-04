@@ -94,7 +94,6 @@ class IndexPontosVendas extends Component {
     async carregarDados() {
         this.setState({ processando: true });
 
-        await ExternalService.keycloak();
         const municipios = await ExternalService.buscarMunicipios();
         const tipoPdv = await PontoVendaService.getAllTipoPdv();
         const status = await PontoVendaService.getAllStatus();

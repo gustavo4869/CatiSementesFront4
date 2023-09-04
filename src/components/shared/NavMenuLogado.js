@@ -32,7 +32,6 @@ class NavMenuLogado extends Component {
 
     logout() {
         this.props.keycloak.logout();
-        window.location.replace("/");
     }
 
     async loadUsername() {

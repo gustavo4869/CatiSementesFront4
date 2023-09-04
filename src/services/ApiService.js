@@ -1,7 +1,9 @@
 ﻿import axios from 'axios';
+import configData from "../configuration/config.json";
 
 /* Services -> Keycloak */
 const urlBaseApi = "http://191.233.142.249/APICAT";
+//const urlBaseApi = "http://10.153.18.53:8080/ApiProdutos"
 var bearerToken = "";
 /* Services -> Keycloak */
 
@@ -198,12 +200,13 @@ class ApiService {
 
     static async ClassificacaoGetAll() {
         console.log("ClassificacaoGetAll")
-        var url = urlBaseApi + '/GetAllClassif';
-
+        var url = urlBaseApi + '/GetAllClassif?skip=0&take=1000';
+        console.log(url)
         var result = [];
 
         await axios.get(url)
             .then(response => {
+                console.log(response)
                 result = {
                     sucesso: true,
                     data: response.data.data.filter(valor => valor.flgAtivo)
@@ -2973,30 +2976,6 @@ class ApiService {
         produto.Idprod = produto.Idprod ? produto.Idprod : "";
         produto.Idclass = produto.Idclass ? produto.Idclass : "";
         produto.Idesp = produto.Idesp ? produto.Idesp : "";
-        produto.Idclv = produto.Idclv ? produto.Idclv : "";
-        produto.Idcat = produto.Idcat ? produto.Idcat : "";
-        produto.Idtrat = produto.Idtrat ? produto.Idtrat : "";
-        produto.Idpen = produto.Idpen ? produto.Idpen : "";
-        produto.Idtipo = produto.Idtipo ? produto.Idtipo : "";
-        produto.Idgrupo = produto.Idgrupo ? produto.Idgrupo : "";
-        produto.Idlote = produto.Idlote ? produto.Idlote : "";
-        produto.Idsafra = produto.Idsafra ? produto.Idsafra : "";
-        produto.Idviv = produto.Idviv ? produto.Idviv : "";
-        produto.Idund = produto.Idund ? produto.Idund : "";
-        produto.Idmat = produto.Idmat ? produto.Idmat : "";
-        produto.Idsprod = produto.Idsprod ? produto.Idsprod : "";
-        produto.Id = produto.Id ? produto.Id : "";
-        produto.Idsp = produto.Idsp ? produto.Idsp : "";
-        produto.Idemb = produto.Idemb ? produto.Idemb : "";
-        produto.Idpeso = produto.Idpeso ? produto.Idpeso : "";
-        produto.DtValAnalise = produto.DtValAnalise ? produto.DtValAnalise : "";
-        produto.DtValPriAnalise = produto.DtValPriAnalise ? produto.DtValPriAnalise : "";
-        produto.DtValSegAnalise = produto.DtValSegAnalise ? produto.DtValSegAnalise : "";
-        produto.DtValTerAnalise = produto.DtValTerAnalise ? produto.DtValTerAnalise : "";
-        produto.Analise = produto.Analise ? produto.Analise : "";
-        produto.PriReanalise = produto.PriReanalise ? produto.PriReanalise : "";
-        produto.SegReanalise = produto.SegReanalise ? produto.SegReanalise : "";
-        produto.TerReanalise = produto.TerReanalise ? produto.TerReanalise : "";
 
         var url = urlBaseApi + '/GetProduto?Idprod=' + produto.Idprod + '&Idclass=' + produto.Idclass +
             '&Idesp=' + produto.Idesp + '&Idclv=' + produto.Idclv + '&Idcat=' + produto.Idcat +
