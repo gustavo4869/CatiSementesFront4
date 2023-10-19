@@ -97,7 +97,15 @@ class ModalCultivar extends Component {
     async onChangeClassificacaoCultivar() {
         const idClassificacao = document.getElementById("classificacaoCultivar").value;
         var result = await ApiService.EspecieGetByClassificacaoId(idClassificacao);
-        this.setState({ especies: result });
+        console.log("especie cultivar")
+        console.log(result)
+        let especies = [];
+        if (result.sucesso) {
+            if(result.data !== null && result.data.length > 0) {
+                especies = result.data.filter(f => f.desEsp !== "Não se aplica");
+            }
+        }
+        this.setState({ especies: especies });
     }
 
     render() {
