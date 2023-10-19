@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import ReactModal from 'react-modal';
 
+import Util from '../../Util/Util';
 import ApiService from '../../../services/ApiService';
 import './css/ModalAtributos.css';
 import 'react-responsive-modal/styles.css';
@@ -65,10 +66,10 @@ class ModalCategoria extends Component {
             const idClassificacao = document.getElementById("classificacaoCategoria").value;
             const nomeCategoria = document.getElementById("nomeCategoria").value;
             const siglaCategoria = document.getElementById("siglaCategoria").value;
-            const result = await ApiService.AdicionarCategoria(idClassificacao, nomeCategoria, siglaCategoria);
+            const result = await ApiService.AdicionarCategoria(idClassificacao, nomeCategoria, siglaCategoria, this.props.usuario);
 
             if (result) {
-                console.log("Categoria CRIADA")
+                Util.exibirMensagemSucesso("Categoria criada");
                 this.limparFormularioCategoria();
                 this.props.buscarDadosAtributos();
                 this.toggleModalCategoria();

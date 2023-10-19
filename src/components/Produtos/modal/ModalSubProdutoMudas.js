@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import ReactModal from 'react-modal';
 
+import Util from '../../Util/Util';
 import ApiService from '../../../services/ApiService';
 import './css/ModalAtributos.css';
 import 'react-responsive-modal/styles.css';
@@ -57,8 +58,9 @@ class ModalSubProdutoMudas extends Component {
             this.setState({ processando: true });
             const idClassificacao = document.getElementById("classificacaoSubProdutoMudas").value;
             const nomeSubProdutoMudas = document.getElementById("nomeSubProdutoMudas").value;
-            const result = await ApiService.AdicionarSubProduto(idClassificacao, nomeSubProdutoMudas);
+            const result = await ApiService.AdicionarSubProduto(idClassificacao, nomeSubProdutoMudas, this.props.usuario);
             if (result) {
+                Util.exibirMensagemSucesso("Sub-Produto criado");
                 this.limparFormularioSubProdutoMudas();
                 this.props.buscarDadosAtributos();
                 this.toggleModalSubProdutoMudas();

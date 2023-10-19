@@ -2,8 +2,6 @@
 import ReactModal from 'react-modal';
 import Select from 'react-select';
 
-import RegionalService from '../../../services/pontoVenda/RegionalService';
-import CasaAgriculturaService from '../../../services/pontoVenda/CasaAgriculturaService';
 import PontoVendaService from '../../../services/pontoVenda/PontoVendaService';
 import Util from '../../Util/Util';
 import './css/ModalAtributos.css';

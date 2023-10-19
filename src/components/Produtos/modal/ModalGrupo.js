@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import ReactModal from 'react-modal';
 
+import Util from '../../Util/Util';
 import ApiService from '../../../services/ApiService';
 import './css/ModalAtributos.css';
 import 'react-responsive-modal/styles.css';
@@ -58,8 +59,9 @@ class ModalGrupo extends Component {
             this.setState({ processando: true });
             const idClassificacao = document.getElementById("classificacaoGrupo").value;
             const nomeGrupo = document.getElementById("nomeGrupo").value;
-            const result = await ApiService.AdicionarGrupo(idClassificacao, nomeGrupo);
+            const result = await ApiService.AdicionarGrupo(idClassificacao, nomeGrupo, this.props.usuario);
             if (result) {
+                Util.exibirMensagemSucesso("Grupo criado");
                 this.limparFormularioGrupo();
                 this.props.buscarDadosAtributos();
                 this.toggleModalGrupo();

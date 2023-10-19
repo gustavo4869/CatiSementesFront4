@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import ReactModal from 'react-modal';
 
+import Util from '../../Util/Util';
 import ApiService from '../../../services/ApiService';
 import './css/ModalAtributos.css';
 import 'react-responsive-modal/styles.css';
@@ -59,9 +60,9 @@ class ModalPeneira extends Component {
 
             const idClassificacao = document.getElementById("classificacaoPeneira").value;
             const nomePeneira = document.getElementById("nomePeneira").value;
-            const result = await ApiService.AdicionarPeneira(idClassificacao, nomePeneira);
+            const result = await ApiService.AdicionarPeneira(idClassificacao, nomePeneira, this.props.usuario);
             if (result) {
-                console.log("peneira criada com sucesso")
+                Util.exibirMensagemSucesso("Peneira criada");
                 this.limparFormularioPeneira();
                 this.props.buscarDadosAtributos();
                 this.toggleModalPeneira();

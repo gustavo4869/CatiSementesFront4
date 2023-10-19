@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import ReactModal from 'react-modal';
 
+import Util from '../../Util/Util';
 import ApiService from '../../../services/ApiService';
 import './css/ModalAtributos.css';
 import 'react-responsive-modal/styles.css';
@@ -58,8 +59,9 @@ class ModalIdade extends Component {
             this.setState({ processando: true });
             const idClassificacao = document.getElementById("classificacaoIdade").value;
             const nomeIdade = document.getElementById("nomeIdade").value;
-            const result = await ApiService.AdicionarIdade(idClassificacao, nomeIdade);
+            const result = await ApiService.AdicionarIdade(idClassificacao, nomeIdade, this.props.usuario);
             if (result) {
+                Util.exibirMensagemSucesso("Idade criada");
                 this.limparFormularioIdade();
                 this.props.buscarDadosAtributos();
                 this.toggleModalIdade();

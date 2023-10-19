@@ -70,7 +70,7 @@ class ModalNomeCientifico extends Component {
             const idEspecie = document.getElementById("especieNomeCientifico").value;
             const nomeCientifico = document.getElementById("nomeCientifico").value;
 
-            const result = await ApiService.AdicionarNomeCientifico(idClassificacao, idEspecie, nomeCientifico);
+            const result = await ApiService.AdicionarNomeCientifico(idClassificacao, idEspecie, nomeCientifico, this.props.usuario);
             if (result) {
                 Util.exibirMensagemSucesso("Nome científico criado");
                 this.props.buscarDadosAtributos();

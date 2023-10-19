@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import ReactModal from 'react-modal';
 
+import Util from '../../Util/Util';
 import ApiService from '../../../services/ApiService';
 import './css/ModalAtributos.css';
 import 'react-responsive-modal/styles.css';
@@ -59,8 +60,9 @@ class ModalTipo extends Component {
 
             const idClassificacao = document.getElementById("classificacaoTipo").value;
             const nomeTipo = document.getElementById("nomeTipo").value;
-            const result = await ApiService.AdicionarTipo(idClassificacao, nomeTipo);
+            const result = await ApiService.AdicionarTipo(idClassificacao, nomeTipo, this.props.usuario);
             if (result) {
+                Util.exibirMensagemSucesso("Tipo criado");
                 this.limparFormularioTipo();
                 this.props.buscarDadosAtributos();
                 this.toggleModalTipo();

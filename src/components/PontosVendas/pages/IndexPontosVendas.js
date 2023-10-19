@@ -15,6 +15,7 @@ import Carregando from '../../shared/Carregando';
 import MenuLateralAdministracao from '../../Administracao/MenuLateralAdministracao';
 import ModalPontoVenda from '../modal/ModalPontoVenda';
 
+import ExportacaoUtil from '../../Util/ExportacaoUtil';
 import Notificacao from '../../Util/Notificacao';
 import logoProdutos from '../../images/adicionar-produto 1.png';
 import setaBaixo from '../../images/Polygon 2.png';
@@ -108,6 +109,10 @@ class IndexPontosVendas extends Component {
 
         console.log("comboRegional")
         console.log(dadosRegional)
+
+        console.log("Dados Municipios")
+        console.log(municipios)
+        //ExportacaoUtil.Export(municipios);
 
         this.setState({
             processando: false,

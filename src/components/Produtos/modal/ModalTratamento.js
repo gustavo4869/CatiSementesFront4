@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import ReactModal from 'react-modal';
 
+import Util from '../../Util/Util';
 import ApiService from '../../../services/ApiService';
 import './css/ModalAtributos.css';
 import 'react-responsive-modal/styles.css';
@@ -58,9 +59,9 @@ class ModalTratamento extends Component {
             this.setState({ processando: true });
             const idClassificacao = document.getElementById("classificacaoTratamento").value;
             const nomeTratamento = document.getElementById("nomeTratamento").value;
-            var result = await ApiService.AdicionarTratamento(idClassificacao, nomeTratamento);
+            var result = await ApiService.AdicionarTratamento(idClassificacao, nomeTratamento, this.props.usuario);
             if (result) {
-                console.log("tratamento criado")
+                Util.exibirMensagemSucesso("Tratamento criado");
                 this.limparFormularioTratamento();
                 this.props.buscarDadosAtributos();
                 this.toggleModalTratamento();

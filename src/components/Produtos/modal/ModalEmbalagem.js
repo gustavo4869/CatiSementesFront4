@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import ReactModal from 'react-modal';
 
+import Util from '../../Util/Util';
 import ApiService from '../../../services/ApiService';
 import './css/ModalAtributos.css';
 import 'react-responsive-modal/styles.css';
@@ -58,9 +59,9 @@ class ModalEmbalagem extends Component {
             this.setState({ processando: true });
             const idClassificacao = document.getElementById("classificacaoEmbalagem").value;
             const nomeEmbalagem = document.getElementById("nomeEmbalagem").value;
-            var result = await ApiService.AdicionarEmbalagem(idClassificacao, nomeEmbalagem);
+            var result = await ApiService.AdicionarEmbalagem(idClassificacao, nomeEmbalagem, this.props.usuario);
             if (result) {
-                console.log("Embalagem criada")
+                Util.exibirMensagemSucesso("Embalagem criada");
                 this.limparFormularioEmbalagem();
                 this.props.buscarDadosAtributos();
                 this.toggleModalEmbalagem();

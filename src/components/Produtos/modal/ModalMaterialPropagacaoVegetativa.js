@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import ReactModal from 'react-modal';
 
+import Util from '../../Util/Util';
 import ApiService from '../../../services/ApiService';
 import './css/ModalAtributos.css';
 import 'react-responsive-modal/styles.css';
@@ -58,8 +59,9 @@ class ModalMaterialPropagacaoVegetativa extends Component {
             this.setState({ processando: true });
             const idClassificacao = document.getElementById("classificacaoMaterialPropagacaoVegetativa").value;
             const nomeMaterialPropagacaoVegetativa = document.getElementById("nomeMaterialPropagacaoVegetativa").value;
-            const result = await ApiService.AdicionarMaterial(idClassificacao, nomeMaterialPropagacaoVegetativa);
+            const result = await ApiService.AdicionarMaterial(idClassificacao, nomeMaterialPropagacaoVegetativa, this.props.usuario);
             if (result) {
+                Util.exibirMensagemSucesso("Material propagação vegetativa criado");
                 this.limparFormularioMaterialPropagacaoVegetativa();
                 this.props.buscarDadosAtributos();
                 this.toggleModalMaterialPropagacaoVegetativa();

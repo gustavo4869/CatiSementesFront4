@@ -59,7 +59,7 @@ class ModalPesoEmbalagem extends Component {
             this.setState({ processando: true });
             const idClassificacao = document.getElementById("classificacaoPesoEmbalagem").value;
             const nomePesoEmbalagem = document.getElementById("nomePesoEmbalagem").value;
-            var result = await ApiService.AdicionarPesoEmbalagem(idClassificacao, nomePesoEmbalagem);
+            var result = await ApiService.AdicionarPesoEmbalagem(idClassificacao, nomePesoEmbalagem, this.props.usuario);
             if (result) {
                 Util.exibirMensagemSucesso("Peso de embalagem criada");
                 this.props.buscarDadosAtributos();

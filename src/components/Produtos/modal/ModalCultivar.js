@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import ReactModal from 'react-modal';
 
+import Util from '../../Util/Util';
 import ApiService from '../../../services/ApiService';
 import './css/ModalAtributos.css';
 import 'react-responsive-modal/styles.css';
@@ -52,18 +53,18 @@ class ModalCultivar extends Component {
         const idEspecie = document.getElementById("especieCultivar").value;
         const nomeCultivar = document.getElementById("nomeCultivar").value;
 
-        if (idClassificacao == 0) {
-            console.log("Selecione classificação");
+        if (idClassificacao === 0) {
+            Util.exibirMensagemErro("Selecione uma classificação");
             return false;
         }
 
-        if (idEspecie == 0) {
-            console.log("Selecione Espécie")
+        if (idEspecie === 0) {
+            Util.exibirMensagemErro("Selecione uma espécie");
             return false;
         }
 
-        if (nomeCultivar == "") {
-            console.log("digite nome cultivar");
+        if (nomeCultivar === "") {
+            Util.exibirMensagemErro("Digite um nome");
             return false;
         }
 
@@ -77,9 +78,9 @@ class ModalCultivar extends Component {
             const idEspecie = document.getElementById("especieCultivar").value;
             const nomeCultivar = document.getElementById("nomeCultivar").value;
 
-            var result = await ApiService.AdicionarCultivar(idClassificacao, idEspecie, nomeCultivar);
+            var result = await ApiService.AdicionarCultivar(idClassificacao, idEspecie, nomeCultivar, this.props.usuario);
             if (result) {
-                console.log("sucesso");
+                Util.exibirMensagemSucesso("Cultivo criado");
                 this.limparFormularioCultivar();
                 this.props.buscarDadosAtributos();
                 this.toggleModalCultivar();

@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import ReactModal from 'react-modal';
 
+import Util from '../../Util/Util';
 import ApiService from '../../../services/ApiService';
 import './css/ModalAtributos.css';
 import 'react-responsive-modal/styles.css';
@@ -60,11 +61,10 @@ class ModalEspecie extends Component {
             const idClassificacao = document.getElementById("classificacaoEspecie").value;
             const nomeEspecie = document.getElementById("nomeEspecie").value;
 
-            debugger;
-            var result = await ApiService.AdicionarEspecie(idClassificacao, nomeEspecie);
+            var result = await ApiService.AdicionarEspecie(idClassificacao, nomeEspecie, this.props.usuario);
             console.log(result)
             if (result) {
-                console.log("Espécie Salva")
+                Util.exibirMensagemSucesso("Espécie criada");
                 this.limparFormularioEspecie();
                 this.props.buscarDadosAtributos();
                 this.toggleModalEspecie();

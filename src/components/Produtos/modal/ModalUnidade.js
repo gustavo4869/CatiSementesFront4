@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import ReactModal from 'react-modal';
 
+import Util from '../../Util/Util';
 import ApiService from '../../../services/ApiService';
 import './css/ModalAtributos.css';
 import 'react-responsive-modal/styles.css';
@@ -58,8 +59,9 @@ class ModalUnidade extends Component {
             this.setState({ processando: true });
             const idClassificacao = document.getElementById("classificacaoUnidade").value;
             const nomeUnidade = document.getElementById("nomeUnidade").value;
-            const result = await ApiService.AdicionarUnidade(idClassificacao, nomeUnidade);
+            const result = await ApiService.AdicionarUnidade(idClassificacao, nomeUnidade, this.props.usuario);
             if (result) {
+                Util.exibirMensagemSucesso("Unidade criada");
                 this.limparFormularioUnidade();
                 this.props.buscarDadosAtributos();
                 this.toggleModalUnidade();

@@ -2,7 +2,7 @@
 import configData from "../configuration/config.json";
 
 /* Services -> Keycloak */
-const urlBaseApi = "http://191.233.142.249/APICAT";
+const urlBaseApi = "https://api-dev.agricultura.sp.gov.br/apiCat";
 //const urlBaseApi = "http://10.153.18.53:8080/ApiProdutos"
 var bearerToken = "";
 /* Services -> Keycloak */
@@ -12,7 +12,7 @@ class ApiService {
     static async CategoriaGetAll() {
         console.log("Categoria Get All")
 
-        var url = urlBaseApi + '/GetAllCategoria';
+        var url = urlBaseApi + '/GetAllCategoria?skip=0&take=1000';
 
         if (bearerToken === "") {
             //bearerToken = await KeycloakService.GetBearerToken();
@@ -50,7 +50,7 @@ class ApiService {
     static async CategoriaGetById(id) {
         console.log("Categoria By Id")
 
-        var url = urlBaseApi + '/GetByIdCategoria?codigo=' + id;
+        var url = urlBaseApi + '/GetByIdCategoria?skip=0&take=1000&codigo=' + id;
 
         const config = {
             headers: {
@@ -90,7 +90,7 @@ class ApiService {
         siglaCategoria = siglaCategoria ? siglaCategoria : "";
         ativo = ativo ? ativo : "";
 
-        var url = urlBaseApi + '/GetCategoria?Idcat=' + idCategoria + '&Idclass=' + idClassificacao + '&DesCat=' + nomeCategoria + '&Sigla=' + siglaCategoria + '&FlgAtivo=' + ativo;
+        var url = urlBaseApi + '/GetCategoria?skip=0&take=1000&Idcat=' + idCategoria + '&Idclass=' + idClassificacao + '&DesCat=' + nomeCategoria + '&Sigla=' + siglaCategoria + '&FlgAtivo=' + ativo;
 
         const config = {
             headers: {
@@ -120,7 +120,7 @@ class ApiService {
         return result;
     }
 
-    static async AdicionarCategoria(idClassificacao, nomeCategoria, siglaCategoria) {
+    static async AdicionarCategoria(idClassificacao, nomeCategoria, siglaCategoria, usuCriacao="Desconhecido") {
         console.log("Add Categoria")
 
         var url = urlBaseApi + '/AddCategoria';
@@ -134,7 +134,8 @@ class ApiService {
         var categoria = {
             "idclass": idClassificacao,
             "desCat": nomeCategoria,
-            "sigla": siglaCategoria
+            "sigla": siglaCategoria,
+            "usuCriacao": usuCriacao
         };
 
         var result = false;
@@ -227,7 +228,7 @@ class ApiService {
 
     static async ClassificacaoGetById(id) {
         console.log("ClassificacaoGetById")
-        var url = urlBaseApi + '/GetByIdClassif?codigo='+id;
+        var url = urlBaseApi + '/GetByIdClassif?skip=0&take=1000&codigo='+id;
 
         const config = {
             headers: {
@@ -258,7 +259,7 @@ class ApiService {
         return result;
     }
 
-    static async AdicionarClassificacao(descricaoClassificacao) {
+    static async AdicionarClassificacao(descricaoClassificacao, usuCriacao = "Desconhecido") {
         console.log("Add Classificacação")
         
         var url = urlBaseApi + '/AddClassif';
@@ -270,7 +271,8 @@ class ApiService {
         };
 
         var classificacao = {
-            "desClass": descricaoClassificacao
+            "desClass": descricaoClassificacao,
+            "usuCriacao": usuCriacao
         };
 
         var result = false;
@@ -335,7 +337,7 @@ class ApiService {
     static async CultivarGetAll() {
         console.log("CultivarGetAll")
         
-        var url = urlBaseApi + '/GetAllCultivar';
+        var url = urlBaseApi + '/GetAllCultivar?skip=0&take=1000';
 
         const config = {
             headers: {
@@ -358,7 +360,7 @@ class ApiService {
                 console.log(error)
                 result = {
                     sucesso: false,
-                    erros: error.response.data.errors
+                    erros: error.message
                 };
             });
 
@@ -368,7 +370,7 @@ class ApiService {
     static async CultivarGetById(id) {
         console.log("CultivarGetById")
 
-        var url = urlBaseApi + '/GetByIdCultivar?codigo='+id;
+        var url = urlBaseApi + '/GetByIdCultivar?skip=0&take=1000&codigo='+id;
 
         const config = {
             headers: {
@@ -409,7 +411,7 @@ class ApiService {
         nomeCultivar = nomeCultivar ? nomeCultivar : "";
         ativo = ativo ? ativo : "";
 
-        var url = urlBaseApi + '/GetCultivar?Idclv='+ idCultivar +'&Idesp=' + idEspecie + '&Idclass=' + idClassificacao + '&DesClv=' + nomeCultivar + '&FlgAtivo=' + ativo;
+        var url = urlBaseApi + '/GetCultivar?skip=0&take=1000&Idclv='+ idCultivar +'&Idesp=' + idEspecie + '&Idclass=' + idClassificacao + '&DesClv=' + nomeCultivar + '&FlgAtivo=' + ativo;
 
         console.log(url)
 
@@ -441,7 +443,7 @@ class ApiService {
         return result;
     }
 
-    static async AdicionarCultivar(idClassificacao, idEspecie, descricao) {
+    static async AdicionarCultivar(idClassificacao, idEspecie, descricao, usuCriacao = "Desconhecido") {
         console.log("Add Cultivar")
 
         var url = urlBaseApi + '/AddCultivar';
@@ -455,7 +457,8 @@ class ApiService {
         var cultivar = {
             "idclass": idClassificacao,
             "idesp": idEspecie,
-            "desClv": descricao
+            "desClv": descricao,
+            "usuCriacao": usuCriacao
         };
 
         var result = false;
@@ -522,7 +525,7 @@ class ApiService {
     static async EspecieGetAll() {
         console.log("EspecieGetAll")
 
-        var url = urlBaseApi + '/GetAllEspecie';
+        var url = urlBaseApi + '/GetAllEspecie?skip=0&take=1000';
 
         const config = {
             headers: {
@@ -596,7 +599,7 @@ class ApiService {
         nomeEspecie = nomeEspecie ? nomeEspecie : "";
         ativo = ativo ? ativo : "";
 
-        var url = urlBaseApi + '/GetEspecie?Idesp=' + idEspecie + '&Idclass=' + idClassificacao + '&DesEsp=' + nomeEspecie + '&FlgAtivo=' + ativo;
+        var url = urlBaseApi + '/GetEspecie?skip=0&take=1000&Idesp=' + idEspecie + '&Idclass=' + idClassificacao + '&DesEsp=' + nomeEspecie + '&FlgAtivo=' + ativo;
 
         const config = {
             headers: {
@@ -626,7 +629,7 @@ class ApiService {
         return result;
     }
 
-    static async AdicionarEspecie(idClassificacao, descricao) {
+    static async AdicionarEspecie(idClassificacao, descricao, usuCriacao = "Desconhecido") {
         console.log("Add Espécie")
 
         var url = urlBaseApi + '/AddEspecie';
@@ -639,7 +642,8 @@ class ApiService {
 
         var especie = {
             "idclass": idClassificacao,
-            "desEsp": descricao
+            "desEsp": descricao,
+            "usuCriacao": usuCriacao
         };
 
         var result = false;
@@ -705,7 +709,7 @@ class ApiService {
     static async EspecieGetByClassificacaoId(idClassificacao) {
         console.log("EspecieGetByClassificacaoId")
 
-        var url = urlBaseApi + '/GetEspecie?Idclass=' + idClassificacao;
+        var url = urlBaseApi + '/GetEspecie?skip=0&take=1000&Idclass=' + idClassificacao;
 
         const config = {
             headers: {
@@ -738,7 +742,7 @@ class ApiService {
     static async SistemaProducaoGetAll() {
         console.log("Sistema Producao Get All")
 
-        var url = urlBaseApi + '/GetAllSP';
+        var url = urlBaseApi + '/GetAllSP?skip=0&take=1000';
 
         const config = {
             headers: {
@@ -811,7 +815,7 @@ class ApiService {
         nomeSistemaProducao = nomeSistemaProducao ? nomeSistemaProducao : "";
         ativo = ativo ? ativo : "";
 
-        var url = urlBaseApi + '/GetSP?Idsp=' + idSistemaProducao + '&Idclass=' + idClassificacao + '&DesSp=' + nomeSistemaProducao + '&FlgAtivo=' + ativo;
+        var url = urlBaseApi + '/GetSP?skip=0&take=1000&Idsp=' + idSistemaProducao + '&Idclass=' + idClassificacao + '&DesSp=' + nomeSistemaProducao + '&FlgAtivo=' + ativo;
 
         const config = {
             headers: {
@@ -841,7 +845,7 @@ class ApiService {
         return result;
     }
 
-    static async AdicionarSistemaProducao(idClassificacao, nomeSistemaProducao) {
+    static async AdicionarSistemaProducao(idClassificacao, nomeSistemaProducao, usuCriacao = "Desconhecido") {
         console.log("Add Sistema Producao")
 
         var url = urlBaseApi + '/AddSP';
@@ -854,7 +858,8 @@ class ApiService {
 
         var sistemaProducao = {
             "idclass": idClassificacao,
-            "desSp": nomeSistemaProducao
+            "desSp": nomeSistemaProducao,
+            "usuCriacao": usuCriacao
         };
 
         var result = false;
@@ -920,7 +925,7 @@ class ApiService {
     static async TratamentoGetAll() {
         console.log("Tratamento Get All")
 
-        var url = urlBaseApi + '/GetAllTratamento';
+        var url = urlBaseApi + '/GetAllTratamento?skip=0&take=1000';
 
         const config = {
             headers: {
@@ -992,7 +997,7 @@ class ApiService {
         nomeTratamento = nomeTratamento ? nomeTratamento : "";
         ativo = ativo ? ativo : "";
 
-        var url = urlBaseApi + '/GetTratamento?Idtrat=' + idTratamento + '&Idclass=' + idClassificacao + '&DesTrat=' + nomeTratamento + '&FlgAtivo=' + ativo;
+        var url = urlBaseApi + '/GetTratamento?skip=0&take=1000&Idtrat=' + idTratamento + '&Idclass=' + idClassificacao + '&DesTrat=' + nomeTratamento + '&FlgAtivo=' + ativo;
 
         const config = {
             headers: {
@@ -1022,7 +1027,7 @@ class ApiService {
         return result;
     }
 
-    static async AdicionarTratamento(idClassificacao, nomeTratamento) {
+    static async AdicionarTratamento(idClassificacao, nomeTratamento, usuCriacao = "Desconhecido") {
         console.log("Add Tratamento")
 
         var url = urlBaseApi + '/AddTratamento';
@@ -1035,7 +1040,8 @@ class ApiService {
 
         var tratamento = {
             "idclass": idClassificacao,
-            "desTrat": nomeTratamento
+            "desTrat": nomeTratamento,
+            "usuCriacao": usuCriacao
         };
 
         var result = false;
@@ -1101,7 +1107,7 @@ class ApiService {
     static async PeneiraGetAll() {
         console.log("Peneira Get All")
 
-        var url = urlBaseApi + '/GetAllPeneira';
+        var url = urlBaseApi + '/GetAllPeneira?skip=0&take=1000';
 
         const config = {
             headers: {
@@ -1173,7 +1179,7 @@ class ApiService {
         nomePeneira = nomePeneira ? nomePeneira : "";
         ativo = ativo ? ativo : "";
 
-        var url = urlBaseApi + '/GetPeneira?Idpen=' + idPeneira + '&Idclass=' + idClassificacao + '&DesPen=' + nomePeneira + '&FlgAtivo=' + ativo;
+        var url = urlBaseApi + '/GetPeneira?skip=0&take=1000&Idpen=' + idPeneira + '&Idclass=' + idClassificacao + '&DesPen=' + nomePeneira + '&FlgAtivo=' + ativo;
 
         const config = {
             headers: {
@@ -1203,7 +1209,7 @@ class ApiService {
         return result;
     }
 
-    static async AdicionarPeneira(idClassificacao, nomePeneira) {
+    static async AdicionarPeneira(idClassificacao, nomePeneira, usuCriacao = "Desconhecido") {
         console.log("Add Peneira")
 
         var url = urlBaseApi + '/AddPeneira';
@@ -1216,7 +1222,8 @@ class ApiService {
 
         var peneira = {
             "idclass": idClassificacao,
-            "desPen": nomePeneira
+            "desPen": nomePeneira,
+            "usuCriacao": usuCriacao
         };
 
         var result = false;
@@ -1282,7 +1289,7 @@ class ApiService {
     static async LoteGetAll() {
         console.log("Lote Get All")
 
-        var url = urlBaseApi + '/GetAllLote';
+        var url = urlBaseApi + '/GetAllLote?skip=0&take=1000';
 
         const config = {
             headers: {
@@ -1354,7 +1361,7 @@ class ApiService {
         nomeLote = nomeLote ? nomeLote : "";
         ativo = ativo ? ativo : "";
 
-        var url = urlBaseApi + '/GetLote?Idlote=' + idLote + '&Idclass=' + idClassificacao + '&DesLote=' + nomeLote + '&FlgAtivo=' + ativo;
+        var url = urlBaseApi + '/GetLote?skip=0&take=1000&Idlote=' + idLote + '&Idclass=' + idClassificacao + '&DesLote=' + nomeLote + '&FlgAtivo=' + ativo;
 
         const config = {
             headers: {
@@ -1384,7 +1391,7 @@ class ApiService {
         return result;
     }
 
-    static async AdicionarLote(idClassificacao, nomeLote) {
+    static async AdicionarLote(idClassificacao, nomeLote, usuCriacao = "Desconhecido") {
         console.log("Add Lote")
 
         var url = urlBaseApi + '/AddLote';
@@ -1397,7 +1404,8 @@ class ApiService {
 
         var lote = {
             "idclass": idClassificacao,
-            "desLote": nomeLote
+            "desLote": nomeLote,
+            "usuCriacao": usuCriacao
         };
 
         var result = false;
@@ -1463,7 +1471,7 @@ class ApiService {
     static async SafraGetAll() {
         console.log("Safra Get All")
 
-        var url = urlBaseApi + '/GetAllSafra';
+        var url = urlBaseApi + '/GetAllSafra?skip=0&take=1000';
 
         const config = {
             headers: {
@@ -1535,7 +1543,7 @@ class ApiService {
         nomeSafra = nomeSafra ? nomeSafra : "";
         ativo = ativo ? ativo : "";
 
-        var url = urlBaseApi + '/GetSafra?Idsafra=' + idSafra + '&Idclass=' + idClassificacao + '&DesSafra=' + nomeSafra + '&FlgAtivo=' + ativo;
+        var url = urlBaseApi + '/GetSafra?skip=0&take=1000&Idsafra=' + idSafra + '&Idclass=' + idClassificacao + '&DesSafra=' + nomeSafra + '&FlgAtivo=' + ativo;
 
         const config = {
             headers: {
@@ -1565,7 +1573,7 @@ class ApiService {
         return result;
     }
 
-    static async AdicionarSafra(idClassificacao, nomeSafra) {
+    static async AdicionarSafra(idClassificacao, nomeSafra, usuCriacao = "Desconhecido") {
         console.log("Add Safra")
 
         var url = urlBaseApi + '/AddSafra';
@@ -1578,7 +1586,8 @@ class ApiService {
 
         var safra = {
             "idclass": idClassificacao,
-            "desSafra": nomeSafra
+            "desSafra": nomeSafra,
+            "usuCriacao": usuCriacao
         };
 
         var result = false;
@@ -1638,7 +1647,7 @@ class ApiService {
     static async TipoGetAll() {
         console.log("Tipo Get All")
 
-        var url = urlBaseApi + '/GetAllTipo';
+        var url = urlBaseApi + '/GetAllTipo?skip=0&take=1000';
 
         const config = {
             headers: {
@@ -1710,7 +1719,7 @@ class ApiService {
         nomeTipo = nomeTipo ? nomeTipo : "";
         ativo = ativo ? ativo : "";
 
-        var url = urlBaseApi + '/GetTipo?Idtipo=' + idTipo + '&Idclass=' + idClassificacao + '&DesTipo=' + nomeTipo + '&FlgAtivo=' + ativo;
+        var url = urlBaseApi + '/GetTipo?skip=0&take=1000&Idtipo=' + idTipo + '&Idclass=' + idClassificacao + '&DesTipo=' + nomeTipo + '&FlgAtivo=' + ativo;
 
         const config = {
             headers: {
@@ -1740,7 +1749,7 @@ class ApiService {
         return result;
     }
 
-    static async AdicionarTipo(idClassificacao, nomeTipo) {
+    static async AdicionarTipo(idClassificacao, nomeTipo, usuCriacao = "Desconhecido") {
         console.log("Add Tipo")
 
         var url = urlBaseApi + '/AddTipo';
@@ -1753,7 +1762,8 @@ class ApiService {
 
         var tipo = {
             "idclass": idClassificacao,
-            "desTipo": nomeTipo 
+            "desTipo": nomeTipo,
+            "usuCriacao": usuCriacao
         };
 
         var result = false;
@@ -1819,7 +1829,7 @@ class ApiService {
     static async ViveiroGetAll() {
         console.log("Viveiro Get All")
 
-        var url = urlBaseApi + '/GetAllViveiro';
+        var url = urlBaseApi + '/GetAllViveiro?skip=0&take=1000';
 
         const config = {
             headers: {
@@ -1891,7 +1901,7 @@ class ApiService {
         nomeViveiro = nomeViveiro ? nomeViveiro : "";
         ativo = ativo ? ativo : "";
 
-        var url = urlBaseApi + '/GetViveiro?Idviv=' + idViveiro + '&Idclass=' + idClassificacao + '&DesViv=' + nomeViveiro + '&FlgAtivo=' + ativo;
+        var url = urlBaseApi + '/GetViveiro?skip=0&take=1000&Idviv=' + idViveiro + '&Idclass=' + idClassificacao + '&DesViv=' + nomeViveiro + '&FlgAtivo=' + ativo;
 
         const config = {
             headers: {
@@ -1921,7 +1931,7 @@ class ApiService {
         return result;
     }
 
-    static async AdicionarViveiro(idClassificacao, nomeViveiro) {
+    static async AdicionarViveiro(idClassificacao, nomeViveiro, usuCriacao = "Desconhecido") {
         console.log("Add Viveiro")
 
         var url = urlBaseApi + '/AddViveiro';
@@ -1934,7 +1944,8 @@ class ApiService {
 
         var viveiro = {
             "idclass": idClassificacao,
-            "desViv": nomeViveiro
+            "desViv": nomeViveiro,
+            "usuCriacao": usuCriacao
         };
 
         var result = false;
@@ -2000,7 +2011,7 @@ class ApiService {
     static async GrupoGetAll() {
         console.log("Grupo Get All")
 
-        var url = urlBaseApi + '/GetAllGrupo';
+        var url = urlBaseApi + '/GetAllGrupo?skip=0&take=1000';
 
         const config = {
             headers: {
@@ -2072,7 +2083,7 @@ class ApiService {
         nomeGrupo = nomeGrupo ? nomeGrupo : "";
         ativo = ativo ? ativo : "";
 
-        var url = urlBaseApi + '/GetGrupo?Idgrupo=' + idGrupo + '&Idclass=' + idClassificacao + '&DesGrupo=' + nomeGrupo + '&FlgAtivo=' + ativo;
+        var url = urlBaseApi + '/GetGrupo?skip=0&take=1000&Idgrupo=' + idGrupo + '&Idclass=' + idClassificacao + '&DesGrupo=' + nomeGrupo + '&FlgAtivo=' + ativo;
 
         const config = {
             headers: {
@@ -2102,7 +2113,7 @@ class ApiService {
         return result;
     }
 
-    static async AdicionarGrupo(idClassificacao, nomeGrupo) {
+    static async AdicionarGrupo(idClassificacao, nomeGrupo, usuCriacao = "Desconhecido") {
         console.log("Add Grupo")
 
         var url = urlBaseApi + '/AddGrupo';
@@ -2115,7 +2126,8 @@ class ApiService {
 
         var grupo = {
             "idclass": idClassificacao,
-            "desGrupo": nomeGrupo
+            "desGrupo": nomeGrupo,
+            "usuCriacao": usuCriacao
         };
 
         var result = false;
@@ -2181,7 +2193,7 @@ class ApiService {
     static async IdadeGetAll() {
         console.log("Idade Get All")
 
-        var url = urlBaseApi + '/GetAllIdade';
+        var url = urlBaseApi + '/GetAllIdade?skip=0&take=1000';
 
         const config = {
             headers: {
@@ -2253,7 +2265,7 @@ class ApiService {
         nomeIdade = nomeIdade ? nomeIdade : "";
         ativo = ativo ? ativo : "";
 
-        var url = urlBaseApi + '/GetIdade?Id=' + idIdade + '&Idclass=' + idClassificacao + '&DesIdade=' + nomeIdade + '&FlgAtivo=' + ativo;
+        var url = urlBaseApi + '/GetIdade?skip=0&take=1000&Id=' + idIdade + '&Idclass=' + idClassificacao + '&DesIdade=' + nomeIdade + '&FlgAtivo=' + ativo;
 
         const config = {
             headers: {
@@ -2283,7 +2295,7 @@ class ApiService {
         return result;
     }
 
-    static async AdicionarIdade(idClassificacao, nomeIdade) {
+    static async AdicionarIdade(idClassificacao, nomeIdade, usuCriacao = "Desconhecido") {
         console.log("Add Idade")
 
         var url = urlBaseApi + '/AddIdade';
@@ -2296,7 +2308,8 @@ class ApiService {
 
         var idade = {
             "idclass": idClassificacao,
-            "desIdade": nomeIdade
+            "desIdade": nomeIdade,
+            "usuCriacao": usuCriacao
         };
 
         var result = false;
@@ -2362,7 +2375,7 @@ class ApiService {
     static async MaterialGetAll() {
         console.log("Material Get All")
 
-        var url = urlBaseApi + '/GetAllMaterial';
+        var url = urlBaseApi + '/GetAllMaterial?skip=0&take=1000';
 
         const config = {
             headers: {
@@ -2434,7 +2447,7 @@ class ApiService {
         nomeMaterial = nomeMaterial ? nomeMaterial : "";
         ativo = ativo ? ativo : "";
 
-        var url = urlBaseApi + '/GetMaterial?Idmat=' + idMaterial + '&Idclass=' + idClassificacao + '&DesMat=' + nomeMaterial + '&FlgAtivo=' + ativo;
+        var url = urlBaseApi + '/GetMaterial?skip=0&take=1000&Idmat=' + idMaterial + '&Idclass=' + idClassificacao + '&DesMat=' + nomeMaterial + '&FlgAtivo=' + ativo;
 
         const config = {
             headers: {
@@ -2464,7 +2477,7 @@ class ApiService {
         return result;
     }
 
-    static async AdicionarMaterial(idClassificacao, nomeMaterial) {
+    static async AdicionarMaterial(idClassificacao, nomeMaterial, usuCriacao = "Desconhecido") {
         console.log("Add Material")
 
         var url = urlBaseApi + '/AddMaterial';
@@ -2477,7 +2490,8 @@ class ApiService {
 
         var material = {
             "idclass": idClassificacao,
-            "desMat": nomeMaterial
+            "desMat": nomeMaterial,
+            "usuCriacao": usuCriacao
         };
 
         var result = false;
@@ -2544,7 +2558,7 @@ class ApiService {
     static async SubProdutoGetAll() {
         console.log("SubProduto Get All")
 
-        var url = urlBaseApi + '/GetAllSubProduto';
+        var url = urlBaseApi + '/GetAllSubProduto?skip=0&take=1000';
 
         const config = {
             headers: {
@@ -2617,7 +2631,7 @@ class ApiService {
         nomeSubProduto = nomeSubProduto ? nomeSubProduto : "";
         ativo = ativo ? ativo : "";
 
-        var url = urlBaseApi + '/GetSubProduto?Idsprod=' + idSubProduto + '&Idclass=' + idClassificacao + '&DesSprod=' + nomeSubProduto + '&FlgAtivo=' + ativo;
+        var url = urlBaseApi + '/GetSubProduto?skip=0&take=1000&Idsprod=' + idSubProduto + '&Idclass=' + idClassificacao + '&DesSprod=' + nomeSubProduto + '&FlgAtivo=' + ativo;
 
         const config = {
             headers: {
@@ -2647,7 +2661,7 @@ class ApiService {
         return result;
     }
 
-    static async AdicionarSubProduto(idClassificacao, nomeSubProduto) {
+    static async AdicionarSubProduto(idClassificacao, nomeSubProduto, usuCriacao = "Desconhecido") {
         console.log("Add SubProduto")
 
         var url = urlBaseApi + '/AddSubProduto';
@@ -2660,7 +2674,8 @@ class ApiService {
 
         var subProduto = {
             "idclass": idClassificacao,
-            "desSprod": nomeSubProduto
+            "desSprod": nomeSubProduto,
+            "usuCriacao": usuCriacao
         };
 
         var result = false;
@@ -2726,7 +2741,7 @@ class ApiService {
     static async UnidadeGetAll() {
         console.log("Unidade Get All")
 
-        var url = urlBaseApi + '/GetAllUnidade';
+        var url = urlBaseApi + '/GetAllUnidade?skip=0&take=1000';
 
         const config = {
             headers: {
@@ -2798,7 +2813,7 @@ class ApiService {
         nomeUnidade = nomeUnidade ? nomeUnidade : "";
         ativo = ativo ? ativo : "";
 
-        var url = urlBaseApi + '/GetUnidade?Idund=' + idUnidade + '&Idclass=' + idClassificacao + '&DesUnd=' + nomeUnidade + '&FlgAtivo=' + ativo;
+        var url = urlBaseApi + '/GetUnidade?skip=0&take=1000&Idund=' + idUnidade + '&Idclass=' + idClassificacao + '&DesUnd=' + nomeUnidade + '&FlgAtivo=' + ativo;
 
         const config = {
             headers: {
@@ -2828,7 +2843,7 @@ class ApiService {
         return result;
     }
 
-    static async AdicionarUnidade(idClassificacao, nomeUnidade) {
+    static async AdicionarUnidade(idClassificacao, nomeUnidade, usuCriacao = "Desconhecido") {
         console.log("Add Unidade")
 
         var url = urlBaseApi + '/AddUnidade';
@@ -2841,7 +2856,8 @@ class ApiService {
 
         var unidade = {
             "idclass": idClassificacao,
-            "desUnd": nomeUnidade
+            "desUnd": nomeUnidade,
+            "usuCriacao": usuCriacao
         };
 
         var result = false;
@@ -2907,7 +2923,7 @@ class ApiService {
     static async ProdutoGetAll() {
         console.log("Produto Get All")
 
-        var url = urlBaseApi + '/GetAllProduto';
+        var url = urlBaseApi + '/GetAllProduto?skip=0&take=1000';
 
         const config = {
             headers: {
@@ -2977,7 +2993,7 @@ class ApiService {
         produto.Idclass = produto.Idclass ? produto.Idclass : "";
         produto.Idesp = produto.Idesp ? produto.Idesp : "";
 
-        var url = urlBaseApi + '/GetProduto?Idprod=' + produto.Idprod + '&Idclass=' + produto.Idclass +
+        var url = urlBaseApi + '/GetProduto?skip=0&take=1000&Idprod=' + produto.Idprod + '&Idclass=' + produto.Idclass +
             '&Idesp=' + produto.Idesp + '&Idclv=' + produto.Idclv + '&Idcat=' + produto.Idcat +
             '&Idtrat=' + produto.Idtrat + '&Idpen=' + produto.Idpen + '&Idtipo=' + produto.Idtipo +
             '&Idgrupo=' + produto.Idgrupo + '&Idlote=' + produto.Idgrupo + '&Idlote=' + produto.Idlote +
@@ -3085,7 +3101,7 @@ class ApiService {
     static async EmbalagemGetAll() {
         console.log("Embalagem Get All")
 
-        var url = urlBaseApi + '/GetAllEmbalagem';
+        var url = urlBaseApi + '/GetAllEmbalagem?skip=0&take=1000';
 
         const config = {
             headers: {
@@ -3158,7 +3174,7 @@ class ApiService {
         nomeEmbalagem = nomeEmbalagem ? nomeEmbalagem : "";
         ativo = ativo ? ativo : "";
 
-        var url = urlBaseApi + '/GetEmbalagem?Idemb=' + idEmbalagem + '&Idclass=' + idClassificacao + '&DesEmb=' + nomeEmbalagem + '&FlgAtivo=' + ativo;
+        var url = urlBaseApi + '/GetEmbalagem?skip=0&take=1000&Idemb=' + idEmbalagem + '&Idclass=' + idClassificacao + '&DesEmb=' + nomeEmbalagem + '&FlgAtivo=' + ativo;
 
         const config = {
             headers: {
@@ -3188,7 +3204,7 @@ class ApiService {
         return result;
     }
 
-    static async AdicionarEmbalagem(idClassificacao, nomeEmbalagem) {
+    static async AdicionarEmbalagem(idClassificacao, nomeEmbalagem, usuCriacao = "Desconhecido") {
         console.log("Add Embalagem")
 
         var url = urlBaseApi + '/AddEmbalagem';
@@ -3201,7 +3217,8 @@ class ApiService {
 
         var embalagem = {
             "idclass": idClassificacao,
-            "desEmb": nomeEmbalagem
+            "desEmb": nomeEmbalagem,
+            "usuCriacao": usuCriacao
         };
 
         var result = false;
@@ -3267,7 +3284,7 @@ class ApiService {
     static async PesoEmbalagemGetAll() {
         console.log("Peso Embalagem Get All")
 
-        var url = urlBaseApi + '/GetAllPesoEmbalagem';
+        var url = urlBaseApi + '/GetAllPesoEmbalagem?skip=0&take=1000';
 
         const config = {
             headers: {
@@ -3339,7 +3356,7 @@ class ApiService {
         nomePesoEmbalagem = nomePesoEmbalagem ? nomePesoEmbalagem : "";
         ativo = ativo ? ativo : "";
 
-        var url = urlBaseApi + '/GetPesoEmbalagem?Idpeso=' + idPesoEmbalagem + '&Idclass=' + idClassificacao + '&DesPeso=' + nomePesoEmbalagem + '&FlgAtivo=' + ativo;
+        var url = urlBaseApi + '/GetPesoEmbalagem?skip=0&take=1000&Idpeso=' + idPesoEmbalagem + '&Idclass=' + idClassificacao + '&DesPeso=' + nomePesoEmbalagem + '&FlgAtivo=' + ativo;
 
         const config = {
             headers: {
@@ -3371,7 +3388,7 @@ class ApiService {
         return result;
     }
 
-    static async AdicionarPesoEmbalagem(idClassificacao, nomePesoEmbalagem) {
+    static async AdicionarPesoEmbalagem(idClassificacao, nomePesoEmbalagem, usuCriacao = "Desconhecido") {
         console.log("Add Peso Embalagem")
 
         var url = urlBaseApi + '/AddPesoEmbalagem';
@@ -3384,7 +3401,8 @@ class ApiService {
 
         var pesoEmbalagem = {
             "idclass": idClassificacao,
-            "desPeso": nomePesoEmbalagem
+            "desPeso": nomePesoEmbalagem,
+            "usuCriacao": usuCriacao
         };
 
         var result = false;
@@ -3450,7 +3468,7 @@ class ApiService {
     static async NomeCientificoGetAll() {
         console.log("NomeCientifico Get All")
 
-        var url = urlBaseApi + '/GetAllNomeCientifico';
+        var url = urlBaseApi + '/GetAllNomeCientifico?skip=0&take=1000';
 
         const config = {
             headers: {
@@ -3523,7 +3541,7 @@ class ApiService {
         nomeNomeCientifico = nomeNomeCientifico ? nomeNomeCientifico : "";
         ativo = ativo ? ativo : "";
 
-        var url = urlBaseApi + '/GetNomeCientifico?Idnm=' + idNomeCientifico + '&Idclass=' + idClassificacao + '&Idesp=' + idEspecie + '&DesNm=' + nomeNomeCientifico + '&FlgAtivo=' + ativo;
+        var url = urlBaseApi + '/GetNomeCientifico?skip=0&take=1000&Idnm=' + idNomeCientifico + '&Idclass=' + idClassificacao + '&Idesp=' + idEspecie + '&DesNm=' + nomeNomeCientifico + '&FlgAtivo=' + ativo;
 
         const config = {
             headers: {
@@ -3553,7 +3571,7 @@ class ApiService {
         return result;
     }
 
-    static async AdicionarNomeCientifico(idClassificacao, idEspecie, nomeNomeCientifico) {
+    static async AdicionarNomeCientifico(idClassificacao, idEspecie, nomeNomeCientifico, usuCriacao = "Desconhecido") {
         console.log("Add Nome Cientifico")
 
         var url = urlBaseApi + '/AddNomeCientifico';
@@ -3567,7 +3585,8 @@ class ApiService {
         var nomeCientifico = {
             "idclass": idClassificacao,
             "idesp": idEspecie,
-            "desNm": nomeNomeCientifico
+            "desNm": nomeNomeCientifico,
+            "usuCriacao": usuCriacao
         };
 
         var result = false;
@@ -3634,7 +3653,7 @@ class ApiService {
     static async CampoProducaoGetAll() {
         console.log("CampoProducap Get All")
 
-        var url = urlBaseApi + '/GetAllCampoProducao';
+        var url = urlBaseApi + '/GetAllCampoProducao?skip=0&take=1000';
 
         const config = {
             headers: {
@@ -3706,7 +3725,7 @@ class ApiService {
         nomeCampoProducao = nomeCampoProducao ? nomeCampoProducao : "";
         ativo = ativo ? ativo : "";
 
-        var url = urlBaseApi + '/GetCampoProducao?Idcamp=' + idCampoProducao + '&Idclass=' + idClassificacao + '&DesCamp=' + nomeCampoProducao + '&FlgAtivo=' + ativo;
+        var url = urlBaseApi + '/GetCampoProducao?skip=0&take=1000&Idcamp=' + idCampoProducao + '&Idclass=' + idClassificacao + '&DesCamp=' + nomeCampoProducao + '&FlgAtivo=' + ativo;
 
         const config = {
             headers: {
@@ -3736,7 +3755,7 @@ class ApiService {
         return result;
     }
 
-    static async AdicionarCampoProducao(idClassificacao, nomeCampoProducao) {
+    static async AdicionarCampoProducao(idClassificacao, nomeCampoProducao, usuCriacao = "Desconhecido") {
         console.log("Add CampoProducao")
 
         var url = urlBaseApi + '/AddCampoProducao';
@@ -3749,7 +3768,8 @@ class ApiService {
 
         var campoProducao = {
             "idclass": idClassificacao,
-            "desCamp": nomeCampoProducao
+            "desCamp": nomeCampoProducao,
+            "usuCriacao": usuCriacao
         };
 
         var result = null;

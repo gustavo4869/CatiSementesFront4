@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import ReactModal from 'react-modal';
 
+import Util from '../../Util/Util';
 import ApiService from '../../../services/ApiService';
 import './css/ModalAtributos.css';
 import 'react-responsive-modal/styles.css';
@@ -51,9 +52,10 @@ class ModalClassificacao extends Component {
         if (this.validarFormularioClassificacao()) {
             this.setState({ processando: true });
             const classificacao = document.getElementById("nomeClassificacao").value;
-            var result = await ApiService.AdicionarClassificacao(classificacao);
+            var result = await ApiService.AdicionarClassificacao(classificacao, this.props.usuario);
 
             if (result) {
+                Util.exibirMensagemSucesso("Classificação criada");
                 this.limparFormularioClassificacao();
                 this.props.buscarDadosAtributos();
                 this.toggleModalClassificacao();

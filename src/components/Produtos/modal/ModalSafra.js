@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import ReactModal from 'react-modal';
 
+import Util from '../../Util/Util';
 import ApiService from '../../../services/ApiService';
 import './css/ModalAtributos.css';
 import 'react-responsive-modal/styles.css';
@@ -58,9 +59,9 @@ class ModalSafra extends Component {
             this.setState({ processando: true });
             const idClassificacao = document.getElementById("classificacaoSafra").value;
             const nomeSafra = document.getElementById("nomeSafra").value;
-            var result = await ApiService.AdicionarSafra(idClassificacao, nomeSafra);
+            var result = await ApiService.AdicionarSafra(idClassificacao, nomeSafra, this.props.usuario);
             if (result) {
-                console.log("Safra criada")
+                Util.exibirMensagemSucesso("Safra criada");
                 this.limparFormularioSafra();
                 this.props.buscarDadosAtributos();
                 this.toggleModalSafra();

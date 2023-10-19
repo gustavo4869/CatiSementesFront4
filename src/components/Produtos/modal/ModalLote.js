@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import ReactModal from 'react-modal';
 
+import Util from '../../Util/Util';
 import ApiService from '../../../services/ApiService';
 import './css/ModalAtributos.css';
 import 'react-responsive-modal/styles.css';
@@ -59,9 +60,9 @@ class ModalLote extends Component {
 
             const idClassificacao = document.getElementById("classificacaoLote").value;
             const nomeLote = document.getElementById("nomeLote").value;
-            const result = await ApiService.AdicionarLote(idClassificacao, nomeLote);
+            const result = await ApiService.AdicionarLote(idClassificacao, nomeLote, this.props.usuario);
             if (result) {
-                console.log("Lote Adicionado")
+                Util.exibirMensagemSucesso("Lote criado");
                 this.limparFormularioLote();
                 this.props.buscarDadosAtributos();
                 this.toggleModalLote();

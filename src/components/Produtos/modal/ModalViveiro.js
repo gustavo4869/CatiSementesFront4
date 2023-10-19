@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import ReactModal from 'react-modal';
 
+import Util from '../../Util/Util';
 import ApiService from '../../../services/ApiService';
 import './css/ModalAtributos.css';
 import 'react-responsive-modal/styles.css';
@@ -58,8 +59,9 @@ class ModalViveiro extends Component {
             this.setState({ processando: true });
             const idClassificacao = document.getElementById("classificacaoViveiro").value;
             const nomeViveiro = document.getElementById("nomeViveiro").value;
-            const result = await ApiService.AdicionarViveiro(idClassificacao, nomeViveiro);
+            const result = await ApiService.AdicionarViveiro(idClassificacao, nomeViveiro, this.props.usuario);
             if (result) {
+                Util.exibirMensagemSucesso("Viveiro criado");
                 this.limparFormularioViveiro();
                 this.props.buscarDadosAtributos();
                 this.toggleModalViveiro();

@@ -1,6 +1,7 @@
 ﻿import React, { Component } from 'react';
 import ReactModal from 'react-modal';
 
+import Util from '../../Util/Util';
 import ApiService from '../../../services/ApiService';
 import './css/ModalAtributos.css';
 import 'react-responsive-modal/styles.css';
@@ -58,9 +59,9 @@ class ModalSistemaProducao extends Component {
             this.setState({ processando: true });
             const idClassificacao = document.getElementById("classificacaoSistemaProducao").value;
             const sistemaProducao = document.getElementById("nomeSistemaProducao").value;
-            const result = await ApiService.AdicionarSistemaProducao(idClassificacao, sistemaProducao);
+            const result = await ApiService.AdicionarSistemaProducao(idClassificacao, sistemaProducao, this.props.usuario);
             if (result) {
-                console.log("sistema de producao criado")
+                Util.exibirMensagemSucesso("Sistema de Produção criado");
                 this.limparFormularioSistemaProducao();
                 this.props.buscarDadosAtributos();
                 this.toggleModalSistemaProducao();

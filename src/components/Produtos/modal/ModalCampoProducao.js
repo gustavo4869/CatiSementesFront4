@@ -13,7 +13,7 @@ class ModalCampoProducao extends Component {
         this.state = {
             showModalCampoProducao: false,
             classificacoes: props.classificacoes,
-            processando: false
+            processando: false            
         };
 
         this.toggleModalCampoProducao = this.toggleModalCampoProducao.bind(this);
@@ -60,7 +60,7 @@ class ModalCampoProducao extends Component {
 
             const idClassificacao = document.getElementById("classificacaoCampoProducao").value;
             const nomeCampoProducao = document.getElementById("nomeCampoProducao").value;
-            const result = await ApiService.AdicionarCampoProducao(idClassificacao, nomeCampoProducao);
+            const result = await ApiService.AdicionarCampoProducao(idClassificacao, nomeCampoProducao, this.props.usuario);
             console.log("result")
             console.log(result)
             if (result.sucesso) {
