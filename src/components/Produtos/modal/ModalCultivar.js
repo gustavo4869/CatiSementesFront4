@@ -131,9 +131,9 @@ class ModalCultivar extends Component {
                                         <label htmlFor="especieCultivar" className="label-form-modal">Espécie</label>
                                         <select id="especieCultivar" className="form-control input-form-modal">
                                             <option key="0" value="0">Selecione</option>
-                                            {this.state.especies.map((especie) =>
+                                            {this.state.especies.length > 0 ? this.state.especies.map((especie) =>
                                                 <option key={especie.idesp} value={especie.idesp}>{especie.desEsp}</option>
-                                            )};
+                                            ) :  ""};
                                         </select>
                                     </div>
                                 </div>
