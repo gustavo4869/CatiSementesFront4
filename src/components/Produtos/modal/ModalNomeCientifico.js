@@ -39,18 +39,18 @@ class ModalNomeCientifico extends Component {
         const idEspecie = document.getElementById("especieNomeCientifico").value;
         const nomeCientifico = document.getElementById("nomeCientifico").value;
 
-        if (idClassificacao == 0) {
+        if (idClassificacao === 0) {
             Util.exibirMensagemErro("Selecione classificação");
             return false;
         }
 
-        if (idEspecie == 0) {
+        if (idEspecie === 0) {
             Util.exibirMensagemErro("Selecione Espécie")
             return false;
         }
 
-        if (nomeCientifico == "") {
-            Util.exibirMensagemErro("digite nome cientifico");
+        if (nomeCientifico === "") {
+            Util.exibirMensagemErro("Digite nome cientifico");
             return false;
         }
 
@@ -85,11 +85,15 @@ class ModalNomeCientifico extends Component {
     }
 
     async onChangeClassificacao() {
-        console.log("Change Classif")
         const idClassificacao = document.getElementById("classificacaoNomeCientifico").value;
         const especies = await ApiService.EspecieGetByClassificacaoId(idClassificacao);
-        console.log(especies)
-        this.setState({ especies: especies.filter(f => !f.desEsp.includes("Não se aplica")) });
+        let especiesFilter = [];
+        if (especies.sucesso) {
+            if (especies.data !== null && especies.data.length > 0) {
+                especiesFilter = especies.data.filter(f => !f.desEsp.includes("Não se aplica"));
+            }
+        }
+        this.setState({ especies: especiesFilter });
     }
 
     render() {
@@ -123,9 +127,9 @@ class ModalNomeCientifico extends Component {
                                         <label htmlFor="especieNomeCientifico" className="label-form-modal">Espécie</label>
                                         <select id="especieNomeCientifico" className="form-control input-form-modal">
                                             <option key="0" value="0">Selecione</option>
-                                            {this.state.especies.map((especie) =>
+                                            {this.state.especies.length > 0 ? this.state.especies.map((especie) =>
                                                 <option key={especie.idesp} value={especie.idesp}>{especie.desEsp}</option>
-                                            )};
+                                            ) : ""};
                                         </select>
                                     </div>
                                 </div>

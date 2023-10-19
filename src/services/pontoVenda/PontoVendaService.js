@@ -21,8 +21,6 @@ class PontoVendaService {
         try {
             await axios.get(url, config)
                 .then(response => {
-                    console.log("|response")
-                    console.log(response)
                     if (response.data.success) {
                         retorno.sucesso = true;
                         retorno.pdv = response.data.data;
@@ -35,9 +33,6 @@ class PontoVendaService {
                     return retorno;
                 })
                 .catch(error => {
-                    console.log("Erro")
-                    console.log(error)
-
                     retorno.sucesso = false;
                     retorno.mensagem = error.response.data.errors[0];
                     return retorno;
@@ -46,7 +41,6 @@ class PontoVendaService {
             return retorno;
         }
         catch (error) {
-            console.log(error.response.data.message);
             retorno.sucesso = false;
             retorno.mensagem = error.response.data.message;
             return retorno;
@@ -72,8 +66,6 @@ class PontoVendaService {
         try {
             await axios.get(url, config)
                 .then(response => {
-                    console.log("|response")
-                    console.log(response)
                     if (response.data.success) {
                         retorno.sucesso = true;
                         retorno.status = response.data.data;
@@ -86,9 +78,6 @@ class PontoVendaService {
                     return retorno;
                 })
                 .catch(error => {
-                    console.log("Erro")
-                    console.log(error)
-
                     retorno.sucesso = false;
                     retorno.mensagem = error.response.data.errors[0];
                     return retorno;
@@ -97,7 +86,6 @@ class PontoVendaService {
             return retorno;
         }
         catch (error) {
-            console.log(error.response.data.message);
             retorno.sucesso = false;
             retorno.mensagem = error.response.data.message;
             return retorno;
@@ -122,8 +110,6 @@ class PontoVendaService {
         try {
             await axios.get(url, config)
                 .then(response => {
-                    console.log("|response")
-                    console.log(response)
                     if (response.data.success) {
                         retorno.sucesso = true;
                         retorno.pdv = response.data.data;
@@ -135,9 +121,6 @@ class PontoVendaService {
                     return retorno;
                 })
                 .catch(error => {
-                    console.log("Erro")
-                    console.log(error)
-
                     retorno.sucesso = false;
                     retorno.mensagem = error.response.data.errors[0];
                     return retorno;
@@ -146,7 +129,6 @@ class PontoVendaService {
             return retorno;
         }
         catch (error) {
-            console.log(error.response.data.message);
             retorno.sucesso = false;
             retorno.mensagem = error.response.data.message;
             return retorno;
@@ -171,8 +153,6 @@ class PontoVendaService {
         try {
             await axios.get(url, config)
                 .then(response => {
-                    console.log("|response")
-                    console.log(response)
                     if (response.data.success) {
                         retorno.sucesso = true;
                         retorno.pdv = response.data.data;
@@ -184,9 +164,6 @@ class PontoVendaService {
                     return retorno;
                 })
                 .catch(error => {
-                    console.log("Erro")
-                    console.log(error)
-
                     retorno.sucesso = false;
                     retorno.mensagem = error.response.data.errors[0];
                     return retorno;
@@ -195,7 +172,6 @@ class PontoVendaService {
             return retorno;
         }
         catch (error) {
-            console.log(error.response.data.message);
             retorno.sucesso = false;
             retorno.mensagem = error.response.data.message;
             return retorno;
@@ -220,8 +196,6 @@ class PontoVendaService {
         try {
             await axios.get(url, config)
                 .then(response => {
-                    console.log("|response")
-                    console.log(response)
                     if (response.data.success) {
                         retorno.sucesso = true;
                         retorno.comboPdv = response.data.data.map(function (x) { return { label: x.desUnidade, value: x.idpdv }; })
@@ -233,9 +207,6 @@ class PontoVendaService {
                     return retorno;
                 })
                 .catch(error => {
-                    console.log("Erro")
-                    console.log(error)
-
                     retorno.sucesso = false;
                     retorno.mensagem = error.response.data.errors[0];
                     return retorno;
@@ -244,7 +215,6 @@ class PontoVendaService {
             return retorno;
         }
         catch (error) {
-            console.log(error.response.data.message);
             retorno.sucesso = false;
             retorno.mensagem = error.response.data.message;
             return retorno;
@@ -269,8 +239,6 @@ class PontoVendaService {
         try {
             await axios.get(url, config)
                 .then(response => {
-                    console.log("|response")
-                    console.log(response)
                     if (response.data.success) {
                         retorno.sucesso = true;
                         retorno.regional = response.data.data;
@@ -282,9 +250,6 @@ class PontoVendaService {
                     return retorno;
                 })
                 .catch(error => {
-                    console.log("Erro")
-                    console.log(error)
-
                     retorno.sucesso = false;
                     retorno.mensagem = error.response.data.errors[0];
                     return retorno;
@@ -293,7 +258,6 @@ class PontoVendaService {
             return retorno;
         }
         catch (error) {
-            console.log(error.response.data.message);
             retorno.sucesso = false;
             retorno.mensagem = error.response.data.message;
             return retorno;
@@ -317,8 +281,6 @@ class PontoVendaService {
         try {
             await axios.post(url, pdv, config)
                 .then(response => {
-                    console.log("|response")
-                    console.log(response)
                     if (response.data.success) {
                         retorno.sucesso = true;
                         retorno.mensagem = "Ponto Venda criado com sucesso";
@@ -330,9 +292,6 @@ class PontoVendaService {
                     return retorno;
                 })
                 .catch(error => {
-                    console.log("Erro")
-                    console.log(error)
-
                     retorno.sucesso = false;
                     retorno.mensagem = error.response.data.errors[0];
                     return retorno;
@@ -366,8 +325,6 @@ class PontoVendaService {
         try {
             await axios.put(url, pdv, config)
                 .then(response => {
-                    console.log("|response")
-                    console.log(response)
                     if (response.data.success) {
                         retorno.sucesso = true;
                         retorno.mensagem = "Ponto Venda alterada com sucesso";
@@ -379,9 +336,6 @@ class PontoVendaService {
                     return retorno;
                 })
                 .catch(error => {
-                    console.log("Erro Ponto Venda")
-                    console.log(error)
-
                     retorno.sucesso = false;
                     retorno.mensagem = "Erro ponto venda";
                     return retorno;
@@ -390,7 +344,6 @@ class PontoVendaService {
             return retorno;
         }
         catch (error) {
-            console.log(error);
             retorno.sucesso = false;
             retorno.mensagem = error.response.data.errors;
             return retorno;
@@ -420,8 +373,6 @@ class PontoVendaService {
         try {
             await axios.put(url, pdv, config)
                 .then(response => {
-                    console.log("|response")
-                    console.log(response)
                     if (response.data.success) {
                         retorno.sucesso = true;
                         retorno.mensagem = "Ponto de Venda excluido com sucesso";
@@ -433,9 +384,6 @@ class PontoVendaService {
                     return retorno;
                 })
                 .catch(error => {
-                    console.log("Erro Ponto Venda")
-                    console.log(error)
-
                     retorno.sucesso = false;
                     retorno.mensagem = error.message;
                     return retorno;
@@ -451,8 +399,6 @@ class PontoVendaService {
     }
 
     static tratarDadosPdv(pdv) {
-        console.log("Tratar Dados Pdv")
-        console.log(pdv)
         if (pdv.pdvCas.length > 0) {
             pdv.pdvCas = pdv.pdvCas.map(m => ({
                 "idPdvCa": 0,
@@ -460,7 +406,7 @@ class PontoVendaService {
                 "idCa": m.idCa
             }));
         }
-        console.log(pdv.pdvCas)
+
         if (pdv.pdvCidades.length > 0) {
             pdv.pdvCidades = pdv.pdvCidades.map(m => ({
                 "idPdvMun": 0,
@@ -468,7 +414,7 @@ class PontoVendaService {
                 "codIbge": m.codIbge
             }));
         }
-        console.log(pdv.pdvCidades)
+
         return pdv;
     }
 }

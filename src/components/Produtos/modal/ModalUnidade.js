@@ -36,13 +36,13 @@ class ModalUnidade extends Component {
         const idClassificacao = document.getElementById("classificacaoUnidade").value;
         const nomeUnidade = document.getElementById("nomeUnidade").value;
 
-        if (idClassificacao == 0) {
-            console.log("Selecione classificação");
+        if (idClassificacao === 0) {
+            Util.exibirMensagemErro("Selecione classificação");
             return false;
         }
 
-        if (nomeUnidade == "") {
-            console.log("digite nome Unidade");
+        if (nomeUnidade === "") {
+            Util.exibirMensagemErro("Digite nome Unidade");
             return false;
         }
 
@@ -67,7 +67,7 @@ class ModalUnidade extends Component {
                 this.toggleModalUnidade();
             }
             else {
-                console.log("Erro ao adicionar Unidade");
+                Util.exibirMensagemErro("Erro ao adicionar Unidade");
             }
             this.setState({ processando: false });
         }

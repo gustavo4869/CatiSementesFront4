@@ -36,13 +36,13 @@ class ModalGrupo extends Component {
         const idClassificacao = document.getElementById("classificacaoGrupo").value;
         const nomeGrupo = document.getElementById("nomeGrupo").value;
 
-        if (idClassificacao == 0) {
-            console.log("Selecione classificação");
+        if (idClassificacao === 0) {
+            Util.exibirMensagemErro("Selecione classificação");
             return false;
         }
 
-        if (nomeGrupo == "") {
-            console.log("digite nome Grupo");
+        if (nomeGrupo === "") {
+            Util.exibirMensagemErro("digite nome Grupo");
             return false;
         }
 
@@ -60,14 +60,19 @@ class ModalGrupo extends Component {
             const idClassificacao = document.getElementById("classificacaoGrupo").value;
             const nomeGrupo = document.getElementById("nomeGrupo").value;
             const result = await ApiService.AdicionarGrupo(idClassificacao, nomeGrupo, this.props.usuario);
-            if (result) {
+            if (result.sucesso) {
                 Util.exibirMensagemSucesso("Grupo criado");
                 this.limparFormularioGrupo();
                 this.props.buscarDadosAtributos();
                 this.toggleModalGrupo();
             }
             else {
-                console.log("Erro ao adicionar grupo")
+                if (result.erros !== null && result.erros.length > 0) {
+                    Util.exibirMensagemErro(result.erros[0]);
+                }
+                else {
+                    Util.exibirMensagemErro("Erro ao adicionar grupo");
+                }                
             }
             this.setState({ processando: false });
         }

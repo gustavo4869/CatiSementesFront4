@@ -121,12 +121,12 @@ class ModalProdutos extends Component {
         const especies = await ApiService.BuscarEspecie(null, idClassificacao, null, true);
         const categorias = await ApiService.BuscarCategoria(null, idClassificacao, null, true);
         const sistemasProducao = await ApiService.BuscarSistemaProducao(null, idClassificacao, null, true);
-        const tratamentos = await ApiService.BuscarTratamento(null, idClassificacao, null, true);
+        let tratamentos = await ApiService.TratamentoGetAll();
         const peneiras = await ApiService.BuscarPeneira(null, idClassificacao, null, true);
         const lotes = await ApiService.BuscarLote(null, idClassificacao, null, true);
         const safras = await ApiService.BuscarSafra(null, idClassificacao, null, true);
         const tipos = await ApiService.BuscarTipo(null, idClassificacao, null, true);
-        const viveiros = await ApiService.BuscarViveiro(null, idClassificacao, null, true);
+        let viveiros = await ApiService.ViveiroGetAll();
         const grupos = await ApiService.BuscarGrupo(null, idClassificacao, null, true);
         const idades = await ApiService.BuscarIdade(null, idClassificacao, null, true);
         const materiais = await ApiService.BuscarMaterial(null, idClassificacao, null, true);
@@ -136,9 +136,23 @@ class ModalProdutos extends Component {
         const pesoEmbalagens = await ApiService.BuscarPesoEmbalagem(null, idClassificacao, null, true);
         const embalagens = await ApiService.BuscarEmbalagem(null, idClassificacao, null, true);
 
-        console.log("CarregarDadosCOmbos")
+        console.log("Viveiro")
         console.log(idClassificacao)
-        console.log(especies)
+        console.log(viveiros.data) 
+        if (viveiros.sucesso) {
+            if (viveiros.data !== null && viveiros.data.length > 0) {
+                console.log(viveiros.data.filter(f => f.idclass.toString() === idClassificacao.toString()))
+                viveiros.data = viveiros.data.filter(f => f.idclass.toString() === idClassificacao.toString());
+            }
+        }
+
+        if (tratamentos.sucesso) {
+            if (tratamentos.data !== null && tratamentos.data.length > 0) {
+                console.log(tratamentos.data.filter(f => f.idclass.toString() === idClassificacao.toString()))
+                tratamentos.data = tratamentos.data.filter(f => f.idclass.toString() === idClassificacao.toString());
+            }
+        }
+        console.log(viveiros.data)
 
         this.setState({
             dadosCombosCarregados: true,
@@ -503,16 +517,12 @@ class ModalProdutos extends Component {
     }
 
     async onChangeEspecie() {
-        console.log("onChangeEspecie")
         const idClassificacao = document.getElementById("classificacaoProduto").value;
         const idEspecie = document.getElementById("especieProduto").value;
         const cultivos = await ApiService.BuscarCultivar(null, idClassificacao, idEspecie, null, true);
         const nomeCientifico = await ApiService.BuscarNomeCientifico(null, idClassificacao, idEspecie, null, true);
         const nomeCientificoFilter = nomeCientifico.data.filter(f => !f.desNm.includes("Não se aplica"));
         const nomeCientificoTratado = nomeCientificoFilter.length > 0 ? nomeCientificoFilter[0] : { idnm: 0, desNm: "" };
-
-        console.log(cultivos)
-        console.log(nomeCientifico)
 
         this.setState({
             cultivos: cultivos.data,
@@ -521,23 +531,27 @@ class ModalProdutos extends Component {
     }
 
     async salvarProduto() {
-        const optPadraoEspecie = this.state.especies.filter(f => f.desEsp == "Não se aplica")[0].idesp;
-        const optPadraoCultivar = this.state.cultivos.filter(f => f.desClv == "Não se aplica")[0].idclv;
-        const optPadraoCategoria = this.state.categorias.filter(f => f.desCat == "Não se aplica")[0].idcat;
-        const optPadraoTratamento = this.state.tratamentos.filter(f => f.desTrat == "Não se aplica")[0].idtrat;
-        const optPadraoPeneira = this.state.peneiras.filter(f => f.desPen == "Não se aplica")[0].idPen;
-        const optPadraoTipo = this.state.tipos.filter(f => f.desTipo == "Não se aplica")[0].idtipo;
-        const optPadraoGrupo = this.state.grupos.filter(f => f.desGrupo == "Não se aplica")[0].idgrupo;
-        const optPadraoLote = this.state.lotes.filter(f => f.desLote == "Não se aplica")[0].idlote;
-        const optPadraoSafra = this.state.safras.filter(f => f.desSafra == "Não se aplica")[0].idsafra;
-        const optPadraoViveiro = this.state.viveiros.filter(f => f.desViv == "Não se aplica")[0].idviv;
-        const optPadraoUnidade = this.state.unidades.filter(f => f.desUnd == "Não se aplica")[0].idund;
-        const optPadraoMaterial = this.state.materiais.filter(f => f.desMat == "Não se aplica")[0].idmat;
-        const optPadraoSistemaProducao = this.state.sistemasProducao.filter(f => f.desSp == "Não se aplica")[0].idsp;
-        const optPadraoEmbalagem = this.state.embalagens.filter(f => f.desEmb == "Não se aplica")[0].idemb;
-        const optPadraoPeso = this.state.pesoEmbalagens.filter(f => f.desPeso == "Não se aplica")[0].idpeso;
-        const optPadraoSubProduto = this.state.subProdutos.filter(f => f.desSprod == "Não se aplica")[0].idsprod;
-        const optPadraoIdade = this.state.idades.filter(f => f.desIdade == "Não se aplica")[0].id;
+        console.log("Salvar produto")
+        console.log(this.state.cultivos)
+        console.log(this.state.tratamentos)
+
+        const optPadraoEspecie = this.state.especies.filter(f => f.desEsp === "Não se aplica")[0].idesp;
+        const optPadraoCultivar = this.state.cultivos.filter(f => f.desClv === "Não se aplica")[0].idclv;
+        const optPadraoCategoria = this.state.categorias.filter(f => f.desCat === "Não se aplica")[0].idcat;
+        const optPadraoTratamento = this.state.tratamentos.filter(f => f.desTrat === "Não se aplica")[0].idtrat;
+        const optPadraoPeneira = this.state.peneiras.filter(f => f.desPen === "Não se aplica")[0].idPen;
+        const optPadraoTipo = this.state.tipos.filter(f => f.desTipo === "Não se aplica")[0].idtipo;
+        const optPadraoGrupo = this.state.grupos.filter(f => f.desGrupo === "Não se aplica")[0].idgrupo;
+        const optPadraoLote = this.state.lotes.filter(f => f.desLote === "Não se aplica")[0].idlote;
+        const optPadraoSafra = this.state.safras.filter(f => f.desSafra === "Não se aplica")[0].idsafra;
+        const optPadraoViveiro = this.state.viveiros.filter(f => f.desViv === "Não se aplica")[0].idviv;
+        const optPadraoUnidade = this.state.unidades.filter(f => f.desUnd === "Não se aplica")[0].idund;
+        const optPadraoMaterial = this.state.materiais.filter(f => f.desMat === "Não se aplica")[0].idmat;
+        const optPadraoSistemaProducao = this.state.sistemasProducao.filter(f => f.desSp === "Não se aplica")[0].idsp;
+        const optPadraoEmbalagem = this.state.embalagens.filter(f => f.desEmb === "Não se aplica")[0].idemb;
+        const optPadraoPeso = this.state.pesoEmbalagens.filter(f => f.desPeso === "Não se aplica")[0].idpeso;
+        const optPadraoSubProduto = this.state.subProdutos.filter(f => f.desSprod === "Não se aplica")[0].idsprod;
+        const optPadraoIdade = this.state.idades.filter(f => f.desIdade === "Não se aplica")[0].id;
 
         const classificacaoProduto = document.getElementById("classificacaoProduto");
         const especieProduto = document.getElementById("especieProduto");
@@ -591,10 +605,10 @@ class ModalProdutos extends Component {
         const desProd = nomeProduto.value;
         const id = this.state.camposAtivos.idade && idadeProduto && !isNaN(idadeProduto.value) ? parseInt(idadeProduto.value) : optPadraoIdade;
 
-        var valAnaliseProduto = "";
-        var valAnalise1Produto = "";
-        var valAnalise2Produto = "";
-        var valAnalise3Produto = "";
+        var valAnaliseProduto = "1900-01-01T00:00:00.000Z";
+        var valAnalise1Produto = "1900-01-01T00:00:00.000Z";
+        var valAnalise2Produto = "1900-01-01T00:00:00.000Z";
+        var valAnalise3Produto = "1900-01-01T00:00:00.000Z";
 
         if (this.state.camposAtivos.validadeAnalise) {
             valAnaliseProduto = Util.formatarDataBrParaBancoDados(validadeAnaliseProduto.value);
@@ -638,7 +652,9 @@ class ModalProdutos extends Component {
             "segReanalise": porGerminacao2Produto,
             "terReanalise": porGerminacao3Produto,
             "desProd": desProd,
-            "flgAtivo": true
+            "flgAtivo": true,
+            "usuCriacao": this.props.usuario,
+            "DesTestGerm": ""
         };
 
         console.log(produto)

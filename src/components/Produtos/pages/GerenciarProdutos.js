@@ -45,12 +45,23 @@ class GerenciarProdutos extends Component {
 
     componentDidMount() {
         keycloak.init({ onLoad: 'login-required' }).then(authenticated => {
-            keycloak.loadUserInfo();
-            this.setState({
-                keycloak: keycloak,
-                authenticated: authenticated,
-                keycloakToken: keycloak.token
-            })
+            const getUsuario = async () => {
+                let usuario = "";
+                const response = await keycloak.loadUserInfo()
+                    .then(function (userInfo) {
+                        usuario = userInfo.preferred_username;
+                    });
+                console.log("MOUNT")
+                console.log(usuario)
+                this.setState({
+                    keycloak: keycloak,
+                    authenticated: authenticated,
+                    keycloakToken: keycloak.token,
+                    nomeUsuario: usuario
+                });
+            };
+
+            getUsuario();
 
             this.carregarClassificacoes();
         });
@@ -188,6 +199,7 @@ class GerenciarProdutos extends Component {
                                             classificacoes={this.state.classificacoes}
                                             buscarProdutos={this.carregarClassificacoes}
                                             produtoEditar={this.state.produtoEditar}
+                                            usuario={this.state.nomeUsuario}
                                         />
                                     </div>
                                 </div>

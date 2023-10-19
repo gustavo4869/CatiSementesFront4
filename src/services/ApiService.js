@@ -2,8 +2,7 @@
 import configData from "../configuration/config.json";
 
 /* Services -> Keycloak */
-const urlBaseApi = "https://api-dev.agricultura.sp.gov.br/apiCat";
-//const urlBaseApi = "http://10.153.18.53:8080/ApiProdutos"
+const urlBaseApi = configData.urlBaseApiProduto;
 var bearerToken = "";
 /* Services -> Keycloak */
 
@@ -2114,8 +2113,6 @@ class ApiService {
     }
 
     static async AdicionarGrupo(idClassificacao, nomeGrupo, usuCriacao = "Desconhecido") {
-        console.log("Add Grupo")
-
         var url = urlBaseApi + '/AddGrupo';
 
         const config = {
@@ -2130,18 +2127,16 @@ class ApiService {
             "usuCriacao": usuCriacao
         };
 
+        console.log(grupo)
+
         var result = false;
         await axios.post(url, grupo, config)
             .then(response => {
-                console.log("sucesso")
-                console.log(response)
                 result = {
                     sucesso: true
                 };
             })
             .catch(error => {
-                console.log("Error")
-                console.log(error)
                 result = {
                     sucesso: false,
                     erros: error.response.data.errors

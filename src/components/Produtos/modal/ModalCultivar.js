@@ -26,7 +26,6 @@ class ModalCultivar extends Component {
     }
 
     toggleModalCultivar() {
-        console.log("toggle modal especie")
         this.setState(state => ({
             showModalCultivar: !state.showModalCultivar
         }));
@@ -86,7 +85,7 @@ class ModalCultivar extends Component {
                 this.toggleModalCultivar();
             }
             else {
-                console.log("Erro ao salvar cultivar");
+                Util.exibirMensagemErro("Erro ao salvar cultivar");
             }
 
             this.setState({ processando: false });
@@ -97,8 +96,6 @@ class ModalCultivar extends Component {
     async onChangeClassificacaoCultivar() {
         const idClassificacao = document.getElementById("classificacaoCultivar").value;
         var result = await ApiService.EspecieGetByClassificacaoId(idClassificacao);
-        console.log("especie cultivar")
-        console.log(result)
         let especies = [];
         if (result.sucesso) {
             if(result.data !== null && result.data.length > 0) {

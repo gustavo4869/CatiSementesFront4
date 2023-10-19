@@ -97,21 +97,26 @@ class GerenciarAtributos extends Component {
 
     componentDidMount() {
         keycloak.init({ onLoad: 'login-required' }).then(authenticated => {
-            let usuario = "";
-            keycloak.loadUserInfo()
-                .then(function (userInfo) {
-                    usuario = userInfo.preferred_username;
-                });;    
 
-            this.setState({
-                keycloak: keycloak,
-                authenticated: authenticated,
-                keycloakToken: keycloak.token,
-                nomeUsuario: usuario
-            });
+            const getUsuario = async () => {
+                let usuario = "";
+                const response = await keycloak.loadUserInfo()
+                    .then(function (userInfo) {
+                        usuario = userInfo.preferred_username;                        
+                    });
+                console.log("MOUNT")
+                console.log(usuario)
+                this.setState({
+                    keycloak: keycloak,
+                    authenticated: authenticated,
+                    keycloakToken: keycloak.token,
+                    nomeUsuario: usuario
+                });
+            };            
+
+            getUsuario();            
         });
-
-        
+               
 
         this.buscarDadosAtributos();
     }
@@ -139,11 +144,6 @@ class GerenciarAtributos extends Component {
         const nomesCientificos = await ApiService.NomeCientificoGetAll();
         const camposProducao = await ApiService.CampoProducaoGetAll();
 
-        console.log("Campos")
-        console.log(camposProducao)
-
-        console.log("atributos")
-        console.log(camposProducao)
         this.setState({
             processando: false,
             dadosAtributos: {

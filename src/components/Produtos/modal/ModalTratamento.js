@@ -36,13 +36,13 @@ class ModalTratamento extends Component {
         const idClassificacao = document.getElementById("classificacaoTratamento").value;
         const nomeTratamento = document.getElementById("nomeTratamento").value;
 
-        if (idClassificacao == 0) {
-            console.log("Selecione classificação");
+        if (idClassificacao === 0) {
+            Util.exibirMensagemErro("Selecione classificação");
             return false;
         }
 
-        if (nomeTratamento == "") {
-            console.log("digite nome tratamento");
+        if (nomeTratamento === "") {
+            Util.exibirMensagemErro("digite nome tratamento");
             return false;
         }
 
@@ -67,7 +67,7 @@ class ModalTratamento extends Component {
                 this.toggleModalTratamento();
             }
             else {
-                console.log("erro ao criar tratamento")
+                Util.exibirMensagemErro("Erro ao criar tratamento")
             }
             this.setState({ processando: false });
         }
