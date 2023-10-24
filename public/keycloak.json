@@ -1,8 +1,8 @@
 ﻿{
   "realm": "CatiSementes",
-  "auth-server-url": "http://10.153.18.52:8080",
+  "auth-server-url": "https://https://aut-dev.agricultura.sp.gov.br:8443",
   "ssl-required": "external",
-  "resource": "CatiSementesFront",
+  "resource": "CatiSementesFrontV3",
   "public-client": true,
   "confidential-port": 0
 }
