@@ -1,7 +1,15 @@
 ﻿import React, { Component } from 'react';
 import keycloak from '../../keycloak';
 import axios from 'axios';
+import { utils, writeFile } from 'xlsx';
+import moment from 'moment';
+import JsPDF from 'jspdf';
+import 'jspdf-autotable';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileExcel, faFilePdf } from '@fortawesome/free-solid-svg-icons'
+
+import Util from '../../Util/Util';
 import ApiService from '../../../services/ApiService';
 
 import KeycloakStart from '../../shared/KeycloakStart';
@@ -41,6 +49,8 @@ class GerenciarProdutos extends Component {
         this.toggleModal = React.createRef();
         this.carregarTodosProdutosAtivos = this.carregarTodosProdutosAtivos.bind(this);
         this.checkAllProduto = this.checkAllProduto.bind(this);
+        this.exportarExcel = this.exportarExcel.bind(this);
+        this.exportarPdf = this.exportarPdf.bind(this);
     }
 
     componentDidMount() {
@@ -51,8 +61,6 @@ class GerenciarProdutos extends Component {
                     .then(function (userInfo) {
                         usuario = userInfo.preferred_username;
                     });
-                console.log("MOUNT")
-                console.log(usuario)
                 this.setState({
                     keycloak: keycloak,
                     authenticated: authenticated,
@@ -65,7 +73,6 @@ class GerenciarProdutos extends Component {
 
             this.carregarClassificacoes();
         });
-
     }
 
     novoProduto() {
@@ -115,10 +122,7 @@ class GerenciarProdutos extends Component {
             var produtoId = selecionado.getAttribute("produtoid");
             var produtoExcluir = this.state.produtos.filter(f => f.idprod == produtoId)[0];
             produtoExcluir.flgAtivo = false;
-            console.log("Produto Id")
-            console.log(produtoExcluir)
             var resultExclusao = await ApiService.AtualizarProduto(produtoExcluir);
-            console.log(resultExclusao)
             if (!resultExclusao) {
                 sucessoExclusao = false;
                 contadorErros++;
@@ -177,6 +181,78 @@ class GerenciarProdutos extends Component {
         }
     }
 
+    exportarExcel() {
+        const wb = utils.book_new();
+        const classificacoes = this.state.classificacoes;
+        const produtos = this.state.produtos;
+        classificacoes.forEach(function (item) {
+            let produtosFiltrados = produtos.filter(f => f.idclass === item.idclass);
+            if (produtosFiltrados.length > 0) {
+                produtosFiltrados = Util.tratarProdutosExportacao(item.desClass, produtosFiltrados);
+                const ws = utils.json_to_sheet(produtosFiltrados);
+                utils.book_append_sheet(wb, ws, item.desClass.substr(0, 22));
+            }            
+        });
+
+        const nomeArquivo = "ExportacaoProdutos_" + moment().format("DDMMYYYYHHmmss") + ".xlsx";
+        writeFile(wb, nomeArquivo);
+    }
+
+    exportarPdf() {
+        const nomeArquivo = "ExportacaoProdutos_" + moment().format("DDMMYYYYHHmmss") + ".pdf";
+        const report = new JsPDF('landscape', 'px', 'a4');
+
+        const classificacoes = this.state.classificacoes;
+        const produtos = this.state.produtos;
+        classificacoes.forEach(function (item) {
+            let produtosFiltrados = produtos.filter(f => f.idclass === item.idclass);
+            if (produtosFiltrados.length > 0) {
+                produtosFiltrados = Util.tratarProdutosExportacao(item.desClass, produtosFiltrados);
+                const produtoModelo = produtosFiltrados[0];
+                let cols = [];
+                Object.keys(produtoModelo).forEach(function (k) {
+                    const col = {
+                        title: k, dataKey: k
+                    };
+                    cols.push(col);
+                });
+
+                let rows = produtosFiltrados;
+                report.autoTable(cols, rows);
+            }
+        });
+
+        report.save(nomeArquivo);
+        /*let titulosFechados = [];
+        let titulos = Array.from(document.querySelectorAll(".row-tabela-produtos"));
+        titulos.forEach(function (item) {   
+            let children = Array.from(item.children);
+            let label = children.filter(f => f.classList.contains("label-tabela-produtos"))[0];
+            let table = children.filter(f => f.classList.contains("tabela-produtos"))[0];
+            if (table.classList.contains("hidden")) {
+                titulosFechados.push(label);
+                label.click();
+            }
+        });
+
+        const report = new JsPDF('landscape', 'px', 'a4');
+        report.html(document.querySelector('#tabelas-produtos'), {
+            html2canvas: {
+                scale: 0.45,
+                scrollX: -window.scrollX,
+                scrollY: -window.scrollY
+            },
+            margin: [50, 50, 50, 50],
+            view: 'fit'
+        }).then(() => {
+            const nomeArquivo = "ExportacaoProdutos_" + moment().format("DDMMYYYYHHmmss") + ".pdf";
+            report.save(nomeArquivo);
+            titulosFechados.forEach(function (item) {
+                item.click();
+            });
+        });*/
+    }
+
     render() {
         if (this.state.keycloak) {
             if (this.state.authenticated) {
@@ -184,7 +260,7 @@ class GerenciarProdutos extends Component {
                     return (
                         <div className={"container-produto"}>
                             <NavMenuLogado keycloak={this.state.keycloak} />
-                            <MenuLateralAdministracao menuAtivo="PRODUTOS" />
+                            <MenuLateralAdministracao menuAtivo="PRODUTOS" texto="PRODUTOS" />
                             <div className="container-produto-conteudo">
                                 <div className="row container-busca">
                                     <div className="col-2 container-titulo">
@@ -204,17 +280,19 @@ class GerenciarProdutos extends Component {
                                     </div>
                                 </div>
                                 <div className="row container-acoes">
+                                    <button className="btn-exportacao btn-pdf" onClick={this.exportarPdf}><FontAwesomeIcon size="6x" icon={faFilePdf} className="btn fa-regular" /></button>
+                                    <button className="btn-exportacao btn-excel" onClick={this.exportarExcel}><FontAwesomeIcon icon={faFileExcel} className="btn fa-regular" /></button>
                                     <button className="btn-editar" disabled={this.state.processando || this.state.keycloak.hasRealmRole("Visualizacao")} onClick={this.editarProdutos}>Editar</button>
                                     <button className="btn-excluir" disabled={this.state.processando || this.state.keycloak.hasRealmRole("Visualizacao")} onClick={this.excluirProdutos}>Excluir</button>
                                 </div>
                                 {this.state.processando ?
                                     <Carregando />
                                     :
-                                    <div className="row container-tabela-produtos">
+                                    <div id="tabelas-produtos" className="row container-tabela-produtos">
                                         {this.state.produtos.filter(f => f.classificacao === "Grãos").length > 0 ? this.state.classificacoes.filter(f => f.desClass === "Grãos").map((classificacao) => (
                                             <div key={classificacao.idclass} className="row row-tabela-produtos">
                                                 <label className="label-tabela-produtos" onClick={() => this.toggleTabela(classificacao.idclass)}><img src={setaBaixo}></img>{classificacao.desClass}</label>
-                                                <table id={"tabela-" + classificacao.idclass} className="hidden">
+                                                <table id={"tabela-" + classificacao.idclass} className="hidden tabela-produtos">
                                                     <thead>
                                                         <tr>
                                                             <th>Selecionar todos <br /> <input type="checkbox" onClick={() => this.checkAllProduto(classificacao.desClass)} /></th>
@@ -249,7 +327,7 @@ class GerenciarProdutos extends Component {
                                         {this.state.produtos.filter(f => f.classificacao === "Sementes").length > 0 ? this.state.classificacoes.filter(f => f.desClass === "Sementes").map((classificacao) => (
                                             <div key={classificacao.idclass} className="row row-tabela-produtos">
                                                 <label className="label-tabela-produtos" onClick={() => this.toggleTabela(classificacao.idclass)}><img src={setaBaixo}></img>{classificacao.desClass}</label>
-                                                <table id={"tabela-" + classificacao.idclass} className="hidden">
+                                                <table id={"tabela-" + classificacao.idclass} className="hidden tabela-produtos">
                                                     <thead>
                                                         <tr>
                                                             <th>Selecionar todos <br /> <input type="checkbox" onClick={() => this.checkAllProduto(classificacao.desClass)} /></th>
@@ -312,7 +390,7 @@ class GerenciarProdutos extends Component {
                                         {this.state.produtos.filter(f => f.classificacao === "Mudas").length > 0 ? this.state.classificacoes.filter(f => f.desClass === "Mudas").map((classificacao) => (
                                             <div key={classificacao.idclass} className="row row-tabela-produtos">
                                                 <label className="label-tabela-produtos" onClick={() => this.toggleTabela(classificacao.idclass)}><img src={setaBaixo}></img>{classificacao.desClass}</label>
-                                                <table id={"tabela-" + classificacao.idclass} className="hidden">
+                                                <table id={"tabela-" + classificacao.idclass} className="hidden tabela-produtos">
                                                     <thead>
                                                         <tr>
                                                             <th>Selecionar todos <br /> <input type="checkbox" onClick={() => this.checkAllProduto(classificacao.desClass)} /></th>
@@ -364,7 +442,7 @@ class GerenciarProdutos extends Component {
                                             this.state.classificacoes.filter(f => f.desClass === "Material de propagação vegetativa").map((classificacao) => (
                                                 <div key={classificacao.idclass} className="row row-tabela-produtos">
                                                     <label className="label-tabela-produtos" onClick={() => this.toggleTabela(classificacao.idclass)}><img src={setaBaixo}></img>{classificacao.desClass}</label>
-                                                    <table id={"tabela-" + classificacao.idclass} className="hidden">
+                                                    <table id={"tabela-" + classificacao.idclass} className="hidden tabela-produtos">
                                                         <thead>
                                                             <tr>
                                                                 <th>Selecionar todos <br /> <input type="checkbox" onClick={() => this.checkAllProduto(classificacao.desClass)} /></th>
@@ -392,7 +470,7 @@ class GerenciarProdutos extends Component {
                                             this.state.classificacoes.filter(f => f.desClass === "Sub-produto mudas").map((classificacao) => (
                                                 <div key={classificacao.idclass} className="row row-tabela-produtos">
                                                     <label className="label-tabela-produtos" onClick={() => this.toggleTabela(classificacao.idclass)}><img src={setaBaixo}></img>{classificacao.desClass}</label>
-                                                    <table id={"tabela-" + classificacao.idclass} className="hidden">
+                                                    <table id={"tabela-" + classificacao.idclass} className="hidden tabela-produtos">
                                                         <thead>
                                                             <tr>
                                                                 <th>Selecionar todos <br /> <input type="checkbox" onClick={() => this.checkAllProduto(classificacao.desClass)} /></th>
@@ -420,7 +498,7 @@ class GerenciarProdutos extends Component {
                                             this.state.classificacoes.filter(f => f.desClass === "Serviços").map((classificacao) => (
                                                 <div key={classificacao.idclass} className="row row-tabela-produtos">
                                                     <label className="label-tabela-produtos" onClick={() => this.toggleTabela(classificacao.idclass)}><img src={setaBaixo}></img>{classificacao.desClass}</label>
-                                                    <table id={"tabela-" + classificacao.idclass} className="hidden">
+                                                    <table id={"tabela-" + classificacao.idclass} className="hidden tabela-produtos">
                                                         <thead>
                                                             <tr>
                                                                 <th>Selecionar todos <br /> <input type="checkbox" onClick={() => this.checkAllProduto(classificacao.desClass)} /></th>
@@ -450,7 +528,7 @@ class GerenciarProdutos extends Component {
                                             this.state.classificacoes.filter(f => f.desClass === "Outros").map((classificacao) => (
                                                 <div key={classificacao.idclass} className="row row-tabela-produtos">
                                                     <label className="label-tabela-produtos" onClick={() => this.toggleTabela(classificacao.idclass)}><img src={setaBaixo}></img>{classificacao.desClass}</label>
-                                                    <table id={"tabela-" + classificacao.idclass} className="hidden">
+                                                    <table id={"tabela-" + classificacao.idclass} className="hidden tabela-produtos">
                                                         <thead>
                                                             <tr>
                                                                 <th>Selecionar todos <br /> <input type="checkbox" onClick={() => this.checkAllProduto(classificacao.desClass)} /></th>

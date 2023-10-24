@@ -1,6 +1,13 @@
 ﻿import React, { Component } from 'react';
 import keycloak from '../../keycloak';
 import axios from 'axios';
+import { utils, writeFile } from 'xlsx';
+import moment from 'moment';
+
+import Util from '../../Util/Util';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileExcel, faFilePdf } from '@fortawesome/free-solid-svg-icons'
 
 import ApiService from '../../../services/ApiService';
 import PontoVendaService from '../../../services/pontoVenda/PontoVendaService';
@@ -70,6 +77,7 @@ class IndexPontosVendas extends Component {
         this.getTipoPdv = this.getTipoPdv.bind(this);
         this.carregarDados = this.carregarDados.bind(this);
         this.onChangeBuscaPontoVenda = this.onChangeBuscaPontoVenda.bind(this);
+        this.exportarExcel = this.exportarExcel.bind(this);
     }
 
     componentDidMount() {
@@ -95,24 +103,26 @@ class IndexPontosVendas extends Component {
     async carregarDados() {
         this.setState({ processando: true });
 
+        /*
+            ID      Tipo PDV
+            1       Casa de Agricultura
+            2       Centro
+            3       Cat Regional
+            4       Centro de Sementes
+            5       Centro de Mudas
+        */
+
         const municipios = await ExternalService.buscarMunicipios();
         const tipoPdv = await PontoVendaService.getAllTipoPdv();
         const status = await PontoVendaService.getAllStatus();
-        const dadosRegional = await PontoVendaService.getListaByTipoPDV(1);
-        const dadosSementes = await PontoVendaService.getListaByTipoPDV(2);
-        const dadosCa = await PontoVendaService.getListaByTipoPDV(4);
-        const dadosCentro = await PontoVendaService.getListaByTipoPDV(5);
+        const dadosRegional = await PontoVendaService.getListaByTipoPDV(3);
+        const dadosSementes = await PontoVendaService.getListaByTipoPDV(4);
+        const dadosCa = await PontoVendaService.getListaByTipoPDV(1);
+        const dadosCentro = await PontoVendaService.getListaByTipoPDV(2);
         
         const pdvs = await PontoVendaService.getAllPdv(0, 100);
         const pdvsAtivos = pdvs.pdv.filter(f => f.flgAtivo !== false);
         const pdvTratado = this.tratarListaPdvs(pdvsAtivos, municipios.dados, dadosCa.comboPdv);
-
-        console.log("comboRegional")
-        console.log(dadosRegional)
-
-        console.log("Dados Municipios")
-        console.log(municipios)
-        //ExportacaoUtil.Export(municipios);
 
         this.setState({
             processando: false,
@@ -125,7 +135,7 @@ class IndexPontosVendas extends Component {
             comboCa: dadosCa.sucesso ? dadosCa.comboPdv : [],
             comboReg: dadosRegional.sucesso ? dadosRegional.comboPdv : [],
             comboCentro: dadosCentro.sucesso ? dadosCentro : []
-        }, () => { console.log("Carregardados State");  console.log(this.state) });
+        });
     }
 
     tratarListaPdvs(pdvs, municipios, cas) {
@@ -373,6 +383,25 @@ class IndexPontosVendas extends Component {
         }
     }
 
+    exportarExcel() {
+        const wb = utils.book_new();
+        const tiposPdv = this.state.tiposPdv;
+        const pdvs = this.state.pdvs;
+        tiposPdv.forEach(function (item) {
+            let pdvsFiltrados = pdvs.filter(f => f.idTpPdv === item.idTpPdv);
+            console.log(pdvsFiltrados)
+            if (pdvsFiltrados !== undefined && pdvsFiltrados.length > 0) {
+                console.log("tratar pdvs")
+                pdvsFiltrados = Util.tratarPontosVendaExportacao(item.desTpPdv, pdvsFiltrados);
+                const ws = utils.json_to_sheet(pdvsFiltrados);
+                utils.book_append_sheet(wb, ws, item.desTpPdv.substr(0, 22));
+            }
+        });
+
+        const nomeArquivo = "ExportacaoPontosVenda_" + moment().format("DDMMYYYYHHmmss") + ".xlsx";
+        writeFile(wb, nomeArquivo);
+    }
+
     render() {
         if (this.state.keycloak) {
             if (this.state.authenticated) {
@@ -380,7 +409,7 @@ class IndexPontosVendas extends Component {
                     return (
                         <div className={"container-ponto-venda"}>
                             <NavMenuLogado keycloak={this.state.keycloak} />
-                            <MenuLateralAdministracao menuAtivo="PONTOSVENDAS" />
+                            <MenuLateralAdministracao menuAtivo="PONTOSVENDAS" texto="PONTOS VENDAS" />
                             <div className="container-ponto-venda-conteudo">
                                 <div className="row container-busca">
                                     <div className="col-2 container-titulo">
@@ -406,6 +435,8 @@ class IndexPontosVendas extends Component {
                                     </div>
                                 </div>
                                 <div className="row container-acoes">
+                                    <button className="btn-exportacao btn-pdf" onClick={this.exportarPdf}><FontAwesomeIcon size="6x" icon={faFilePdf} className="btn fa-regular" /></button>
+                                    <button className="btn-exportacao btn-excel" onClick={this.exportarExcel}><FontAwesomeIcon icon={faFileExcel} className="btn fa-regular" /></button>
                                     <button className="btn-editar" disabled={this.state.processando || this.state.keycloak.hasRealmRole("Visualizacao")} onClick={this.editarPontoVenda}>Editar</button>
                                     <button className="btn-excluir" disabled={this.state.processando || this.state.keycloak.hasRealmRole("Visualizacao")} onClick={this.excluirPontoVenda}>Excluir</button>
                                 </div>
@@ -425,7 +456,8 @@ class IndexPontosVendas extends Component {
                                                             <th>Nome Unidade</th>
                                                             <th>Status</th>
                                                             <th>Cidade</th>
-                                                            <th>Lista Municípios</th>                                                            
+                                                            <th>Núcleo de Sementes</th>                                                            
+                                                            <th>Cati Regional</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -436,7 +468,8 @@ class IndexPontosVendas extends Component {
                                                                 <td>{pdv.desUnidade}</td>
                                                                 <td>{pdv.desStatus}</td>
                                                                 <td>{pdv.desMunicipio}</td>
-                                                                <td>{this.tratarTextoCidades(pdv.pdvCidades)}</td>                                                                
+                                                                <td>{pdv.desNucleoSemente}</td>
+                                                                <td>{pdv.desRegional}</td>
                                                             </tr>
                                                         )) : ""}
                                                     </tbody>
@@ -457,8 +490,6 @@ class IndexPontosVendas extends Component {
                                                             <th>Status</th>
                                                             <th>Cidade</th>
                                                             <th>Lista Municípios</th>
-                                                            <th>Qt Casas</th>
-                                                            <th>Casas de Agricultura</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -470,8 +501,6 @@ class IndexPontosVendas extends Component {
                                                                 <td>{pdv.desStatus}</td>
                                                                 <td>{pdv.desMunicipio}</td>
                                                                 <td>{this.tratarTextoCidades(pdv.pdvCidades)}</td>
-                                                                <td>{pdv.pdvCas.length ?? 0}</td>
-                                                                <td>{this.tratarTextoCasaAgricultura(pdv.pdvCas)}</td>
                                                             </tr>
                                                         )) : ""}
                                                     </tbody>
@@ -491,6 +520,9 @@ class IndexPontosVendas extends Component {
                                                             <th>Nome Unidade</th>
                                                             <th>Status</th>
                                                             <th>Cidade</th>
+                                                            <th>Lista Municípios</th>
+                                                            <th>Qt Casas</th>
+                                                            <th>Casas de Agricultura</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -501,6 +533,9 @@ class IndexPontosVendas extends Component {
                                                                 <td>{pdv.desUnidade}</td>
                                                                 <td>{pdv.desStatus}</td>
                                                                 <td>{pdv.desMunicipio}</td>
+                                                                <td>{this.tratarTextoCidades(pdv.pdvCidades)}</td>
+                                                                <td>{pdv.pdvCas.length ?? 0}</td>
+                                                                <td>{this.tratarTextoCasaAgricultura(pdv.pdvCas)}</td>
                                                             </tr>
                                                         )) : ""}
                                                     </tbody>
@@ -520,8 +555,9 @@ class IndexPontosVendas extends Component {
                                                             <th>Nome Unidade</th>
                                                             <th>Status</th>
                                                             <th>Cidade</th>
-                                                            <th>Núcleo de Sementes</th>
-                                                            <th>CATI Regional</th>
+                                                            <th>Lista de Municípios</th>
+                                                            <th>Qt Casas</th>
+                                                            <th>Casas de Agricultura</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -532,8 +568,9 @@ class IndexPontosVendas extends Component {
                                                                 <td>{pdv.desUnidade}</td>
                                                                 <td>{pdv.desStatus}</td>
                                                                 <td>{pdv.desMunicipio}</td>
-                                                                <td>{pdv.desNucleoSemente}</td>
-                                                                <td>{pdv.desRegional}</td>
+                                                                <td>{this.tratarTextoCidades(pdv.pdvCidades)}</td>
+                                                                <td>{pdv.pdvCas.length ?? 0}</td>
+                                                                <td>{this.tratarTextoCasaAgricultura(pdv.pdvCas)}</td>
                                                             </tr>
                                                         )) : ""}
                                                     </tbody>
@@ -553,7 +590,6 @@ class IndexPontosVendas extends Component {
                                                             <th>Nome Unidade</th>
                                                             <th>Status</th>
                                                             <th>Cidade</th>
-                                                            <th>Lista de municípios</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -564,7 +600,6 @@ class IndexPontosVendas extends Component {
                                                                 <td>{pdv.desUnidade}</td>
                                                                 <td>{pdv.desStatus}</td>
                                                                 <td>{pdv.desMunicipio}</td>
-                                                                <td>{this.tratarTextoCidades(pdv.pdvCidades)}</td>
                                                             </tr>
                                                         )) : ""}
                                                     </tbody>

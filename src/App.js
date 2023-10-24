@@ -5,6 +5,7 @@ import { NotificationContainer } from 'react-notifications';
 import AppRoutes from './AppRoutes';
 import { Layout } from './components/Layout';
 import './custom.css';
+import './components/css/main.css'
 
 const App = () => {
 

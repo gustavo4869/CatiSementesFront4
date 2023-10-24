@@ -136,7 +136,7 @@ class IndexUsuario extends Component {
                     return (
                         <div className="container-usuario">
                             <NavMenuLogado keycloak={this.state.keycloak} />
-                            <MenuLateralAdministracao menuAtivo="USUARIOS" />
+                            <MenuLateralAdministracao menuAtivo="USUARIOS" texto="USUÁRIOS" />
                             <div className="container-usuario-conteudo">
                                 <div className="row container-busca">
                                     <div className="col-2 container-titulo">

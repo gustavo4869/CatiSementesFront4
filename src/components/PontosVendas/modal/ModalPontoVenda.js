@@ -52,6 +52,8 @@ class ModalPontoVenda extends Component {
             this.limparFormularioPontoVenda();
         }
         else {
+            console.log("Props")
+            console.log(this.props)
             this.visibilidadeCamposPontoVenda(this.props.pdv.idTpPdv);
         }
     }
@@ -120,6 +122,9 @@ class ModalPontoVenda extends Component {
             resultado = await PontoVendaService.addPdv(state);
         }
 
+        console.log("Resultado")
+        console.log(resultado)
+
         if (!resultado.sucesso) {
             this.erroAoSalvar(resultado.mensagem);
             this.setState({ processando: false });
@@ -139,8 +144,6 @@ class ModalPontoVenda extends Component {
     }
 
     visibilidadeCamposPontoVenda(codigo) {
-        console.log('visibilidadeCamposPontoVenda')
-        console.log(codigo)
         var camposVisiveis = {
             cidade: false,
             casaAgricultura: false,
@@ -194,16 +197,12 @@ class ModalPontoVenda extends Component {
                 break;
         }
 
-        this.setState({ camposVisiveis: camposVisiveis }, () => { console.log(this.state) });
+        this.setState({ camposVisiveis: camposVisiveis });
     }
 
     async onChangePontoVenda(options, action) {
-        console.log("Change Ponto Venda")
-        console.log(options)
-        console.log(this.props.nomeUsuario)
         this.visibilidadeCamposPontoVenda(options.value);
         var pdv = this.state.pontoVenda;
-        console.log(this.state)
         pdv.idTpPdv = options.value;
         this.setState({ pontoVenda: pdv });       
     }

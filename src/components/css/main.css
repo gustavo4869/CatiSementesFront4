@@ -1,0 +1,21 @@
+.btn-exportacao {
+    width: 80px;
+    background: transparent;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    border: unset;
+}
+
+    .btn-exportacao svg {
+        height: 40px;
+    }
+
+    .btn-exportacao.btn-excel svg {
+        color: #00733B;
+    }
+
+    .btn-exportacao.btn-pdf svg {
+        color: #E5252A;
+    }

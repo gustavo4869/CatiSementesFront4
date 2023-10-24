@@ -265,7 +265,7 @@ class GerenciarAtributos extends Component {
                     return (
                         <div className="container-produto">
                             <NavMenuLogado keycloak={this.state.keycloak} />
-                            <MenuLateralAdministracao menuAtivo="PRODUTOS" />
+                            <MenuLateralAdministracao menuAtivo="PRODUTOS" texto="PRODUTOS" />
                             <div className="container-produto-conteudo">
                                 <div className="row container-busca-atributo">
                                     <div className="col-2 container-titulo">

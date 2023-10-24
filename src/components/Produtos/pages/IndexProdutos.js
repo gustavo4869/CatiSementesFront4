@@ -31,7 +31,7 @@ class Administracao extends Component {
                     return (
                         <div className="container-administracao">
                             <NavMenuLogado keycloak={this.state.keycloak} />
-                            <MenuLateralAdministracao menuAtivo="PRODUTOS" />
+                            <MenuLateralAdministracao menuAtivo="PRODUTOS" texto="PRODUTOS" />
                             <div className="row container-menu">
                                 <CardMenuPrincipal texto="GERENCIAR ATRIBUTOS DE PRODUTOS" imagem={logoCategorizacao} url="/produtos/atributos" />
                                 <CardMenuPrincipal texto="GERENCIAR PRODUTOS" imagem={logoProdutos} url="/produtos/gerenciar" />

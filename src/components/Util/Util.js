@@ -118,6 +118,305 @@ class Util {
         });
         return perfil;
     }
+
+    static tratarProdutosExportacao(desClass, listaProdutos) {
+        let produtos = [];
+
+        if (listaProdutos.length === 0) {
+            return;
+        }
+
+        if (desClass === "Grãos") {
+            listaProdutos.forEach(function (item) {
+                const produto = {
+                    id: item.id,
+                    descricao_produto: item.desProd,
+                    classificacao: item.classificacao,
+                    especie: item.especie,
+                    sistema_de_producao: item.sistemaProducao,
+                    tratamento: item.tratamento,
+                    tipo: item.tipo,
+                    peso_embalagem: item.pesoEmbalagem
+                };
+
+                produtos.push(produto);
+            });
+
+            return produtos;
+        }
+
+        if (desClass === "Sementes") {
+            listaProdutos.forEach(function (item) {
+                const produto = {
+                    id: item.id,
+                    descricao_produto: item.desProd,
+                    classificacao: item.classificacao,
+                    especie: item.especie,
+                    nome_cientifico: item.nomeCientifico,
+                    cultivar: item.cultivar,
+                    categoria: item.categoria,
+                    sistema_de_producao: item.sistemaProducao,
+                    tratamento: item.tratamento,
+                    peneira: item.peneira,
+                    peso_embalagem: item.pesoEmbalagem,
+                    lote: item.lote,
+                    safra: item.safra,
+                    validade_analise: item.dtValAnalise,
+                    porcentagem_germinacao: item.priReanalise,
+                    validade_analise1: item.dtValPriAnalise,
+                    porcentagem_germinacao1: item.segReanalise,
+                    validade_analise2: item.dtValSegAnalise,
+                    porcentagem_germinacao2: item.terReanalise,
+                    validade_analise3: item.dtValTerAnalise
+                };
+
+                produtos.push(produto);
+            });
+
+            return produtos;
+        }
+
+        if (desClass === "Mudas") {
+            listaProdutos.forEach(function (item) {
+                const produto = {
+                    id: item.id,
+                    descricao_produto: item.desProd,
+                    classificacao: item.classificacao,
+                    especie: item.especie,
+                    nome_cientifico: item.nomeCientifico,
+                    cultivar: item.cultivar,
+                    categoria: item.categoria,
+                    grupo: item.grupo,
+                    sistema_de_producao: item.sistemaProducao,
+                    tipo: item.tipo,
+                    embalagem: item.embalagem,
+                    idade: item.idade,
+                    unidade: item.unidade,
+                    safra: item.safra,
+                    lote: item.lote,
+                    viveiro: item.viveiro
+                };
+
+                produtos.push(produto);
+            });
+
+            return produtos;
+        }
+
+        if (desClass === "Material de propagação vegetativa") {
+            listaProdutos.forEach(function (item) {
+                const produto = {
+                    id: item.id,
+                    descricao_produto: item.desProd,
+                    classificacao: item.classificacao,
+                    material_propagacao_vegetativa: item.material
+                };
+
+                produtos.push(produto);
+            });
+
+            return produtos;
+        }
+
+        if (desClass === "Sub-produto mudas") {
+            listaProdutos.forEach(function (item) {
+                const produto = {
+                    id: item.id,
+                    descricao_produto: item.desProd,
+                    classificacao: item.classificacao,
+                    sub_produto: item.subProduto
+                };
+
+                produtos.push(produto);
+            });
+
+            return produtos;
+        }
+
+        if (desClass === "Serviços") {
+            listaProdutos.forEach(function (item) {
+                const produto = {
+                    id: item.id,
+                    descricao_produto: item.desProd,
+                    classificacao: item.classificacao,
+                    classificacao1: item.classificacao1,
+                    servico: item.servico
+                };
+
+                produtos.push(produto);
+            });
+
+            return produtos;
+        }
+
+        if (desClass === "Outros") {
+            listaProdutos.forEach(function (item) {
+                const produto = {
+                    id: item.id,
+                    descricao_produto: item.desProd,
+                    classificacao: item.classificacao,
+                    classificacao1: item.classificacao1
+                };
+
+                produtos.push(produto);
+            });
+
+            return produtos;
+        }
+    }
+
+    static tratarPontosVendaExportacao(desTpPdv, listaPdv) {
+        let pdvs = [];
+
+        if (listaPdv.length === 0) {
+            return;
+        }
+
+        if (desTpPdv === "Casa de Agricultura") {
+            listaPdv.forEach(function (item) {
+                const pdvCidades = item.pdvCidades;
+                let listaMunicipios = '';
+                if (pdvCidades.length > 0) {
+                    pdvCidades.forEach(function (itemCidade, i) {
+                        if (pdvCidades.length === 1 || i === (pdvCidades.length - 1)) {
+                            listaMunicipios += itemCidade.desCidade;
+                        }
+                        else if (pdvCidades.length > 1) {
+                            listaMunicipios += itemCidade.desCidade + ", ";
+                        }
+                    });
+                }
+
+                const pdv = {
+                    id: item.idpdv,
+                    nome_unidade: item.desUnidade,
+                    status: item.desStatus,
+                    cidade: item.desMunicipio,
+                    lista_municipios: listaMunicipios
+                };
+
+                pdvs.push(pdv);
+            });
+
+            return pdvs;
+        }
+
+        if (desTpPdv === "Centro") {
+            listaPdv.forEach(function (item) {
+                const pdvCidades = item.pdvCidades;
+                let listaMunicipios = '';
+                if (pdvCidades.length > 0) {
+                    pdvCidades.forEach(function (itemCidade, i) {
+                        if (pdvCidades.length === 1 || i === (pdvCidades.length - 1)) {
+                            listaMunicipios += itemCidade.desCidade;
+                        }
+                        else if (pdvCidades.length > 1) {
+                            listaMunicipios += itemCidade.desCidade + ", ";
+                        }
+                    });
+                }
+
+                const pdv = {
+                    id: item.idpdv,
+                    nome_unidade: item.desUnidade,
+                    status: item.desStatus,
+                    cidade: item.desMunicipio,
+                    lista_municipios: listaMunicipios
+                };
+
+                pdvs.push(pdv);
+            });
+
+            return pdvs;
+        }
+
+        if (desTpPdv === "Cat Regional") {
+            listaPdv.forEach(function (item) {
+                const pdvCidades = item.pdvCidades;
+                let listaMunicipios = '';
+                if (pdvCidades.length > 0) {
+                    pdvCidades.forEach(function (itemCidade, i) {
+                        if (pdvCidades.length === 1 || i === (pdvCidades.length - 1)) {
+                            listaMunicipios += itemCidade.desCidade;
+                        }
+                        else if (pdvCidades.length > 1) {
+                            listaMunicipios += itemCidade.desCidade + ", ";
+                        }
+                    });
+                }
+
+                const pdv = {
+                    id: item.idpdv,
+                    nome_unidade: item.desUnidade,
+                    status: item.desStatus,
+                    cidade: item.desMunicipio,
+                    lista_municipios: listaMunicipios
+                };
+
+                pdvs.push(pdv);
+            });
+
+            return pdvs;
+        }
+
+        if (desTpPdv === "Centro de Sementes") {
+            listaPdv.forEach(function (item) {
+                const pdvCidades = item.pdvCidades;
+                let listaMunicipios = '';
+                if (pdvCidades.length > 0) {
+                    pdvCidades.forEach(function (itemCidade, i) {
+                        if (pdvCidades.length === 1 || i === (pdvCidades.length - 1)) {
+                            listaMunicipios += itemCidade.desCidade;
+                        }
+                        else if (pdvCidades.length > 1) {
+                            listaMunicipios += itemCidade.desCidade + ", ";
+                        }
+                    });
+                }
+
+                const pdv = {
+                    id: item.idpdv,
+                    nome_unidade: item.desUnidade,
+                    status: item.desStatus,
+                    cidade: item.desMunicipio,
+                    lista_municipios: listaMunicipios
+                };
+
+                pdvs.push(pdv);
+            });
+
+            return pdvs;
+        }
+
+        if (desTpPdv === "Centro de Mudas") {
+            listaPdv.forEach(function (item) {
+                const pdvCidades = item.pdvCidades;
+                let listaMunicipios = '';
+                if (pdvCidades.length > 0) {
+                    pdvCidades.forEach(function (itemCidade, i) {
+                        if (pdvCidades.length === 1 || i === (pdvCidades.length - 1)) {
+                            listaMunicipios += itemCidade.desCidade;
+                        }
+                        else if (pdvCidades.length > 1) {
+                            listaMunicipios += itemCidade.desCidade + ", ";
+                        }
+                    });
+                }
+
+                const pdv = {
+                    id: item.idpdv,
+                    nome_unidade: item.desUnidade,
+                    status: item.desStatus,
+                    cidade: item.desMunicipio,
+                    lista_municipios: listaMunicipios
+                };
+
+                pdvs.push(pdv);
+            });
+
+            return pdvs;
+        }
+    }
 }
 
 export default Util;

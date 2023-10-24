@@ -136,23 +136,18 @@ class ModalProdutos extends Component {
         const pesoEmbalagens = await ApiService.BuscarPesoEmbalagem(null, idClassificacao, null, true);
         const embalagens = await ApiService.BuscarEmbalagem(null, idClassificacao, null, true);
 
-        console.log("Viveiro")
-        console.log(idClassificacao)
-        console.log(viveiros.data) 
         if (viveiros.sucesso) {
             if (viveiros.data !== null && viveiros.data.length > 0) {
-                console.log(viveiros.data.filter(f => f.idclass.toString() === idClassificacao.toString()))
+                console.log(viveiros.data)
                 viveiros.data = viveiros.data.filter(f => f.idclass.toString() === idClassificacao.toString());
             }
         }
 
         if (tratamentos.sucesso) {
             if (tratamentos.data !== null && tratamentos.data.length > 0) {
-                console.log(tratamentos.data.filter(f => f.idclass.toString() === idClassificacao.toString()))
                 tratamentos.data = tratamentos.data.filter(f => f.idclass.toString() === idClassificacao.toString());
             }
         }
-        console.log(viveiros.data)
 
         this.setState({
             dadosCombosCarregados: true,
@@ -522,7 +517,7 @@ class ModalProdutos extends Component {
         const cultivos = await ApiService.BuscarCultivar(null, idClassificacao, idEspecie, null, true);
         const nomeCientifico = await ApiService.BuscarNomeCientifico(null, idClassificacao, idEspecie, null, true);
         const nomeCientificoFilter = nomeCientifico.data.filter(f => !f.desNm.includes("Não se aplica"));
-        const nomeCientificoTratado = nomeCientificoFilter.length > 0 ? nomeCientificoFilter[0] : { idnm: 0, desNm: "" };
+        const nomeCientificoTratado = nomeCientificoFilter.length > 0 ? { idnm: nomeCientificoFilter[0].idnm, desNm: nomeCientificoFilter[0].desNm } : { idnm: 0, desNm: "" };
 
         this.setState({
             cultivos: cultivos.data,
@@ -531,10 +526,6 @@ class ModalProdutos extends Component {
     }
 
     async salvarProduto() {
-        console.log("Salvar produto")
-        console.log(this.state.cultivos)
-        console.log(this.state.tratamentos)
-
         const optPadraoEspecie = this.state.especies.filter(f => f.desEsp === "Não se aplica")[0].idesp;
         const optPadraoCultivar = this.state.cultivos.filter(f => f.desClv === "Não se aplica")[0].idclv;
         const optPadraoCategoria = this.state.categorias.filter(f => f.desCat === "Não se aplica")[0].idcat;
@@ -656,7 +647,7 @@ class ModalProdutos extends Component {
             "usuCriacao": this.props.usuario,
             "DesTestGerm": ""
         };
-
+        console.log("Salvar produto")
         console.log(produto)
         if (this.validarFormularioProduto(produto)) {
             this.setState({ processando: true });
@@ -976,7 +967,7 @@ class ModalProdutos extends Component {
                                 <div className={"col-6 " + (this.state.camposAtivos.nomeCientifico ? "" : "hidden-form")}>
                                     <div className="form-group">
                                         <label htmlFor="nomeCientificoProduto" className="label-form-modal">Nome científico</label>
-                                        <input id="nomeCientificoProduto" className="form-control input-form-modal" type="text" readOnly={true} defaultValue={this.props.produtoEditar? this.props.produtoEditar.nomeCientifico : this.state.nomeCientificoSelecionado.desNm} />
+                                        <input id="nomeCientificoProduto" className="form-control input-form-modal" type="text" defaultValue={this.props.produtoEditar? this.props.produtoEditar.nomeCientifico : this.state.nomeCientificoSelecionado.desNm} />
                                         <input type="hidden" id="nomeCientificoIdProduto" defaultValue={this.state.camposAtivos.nomeCientifico && this.props.produtoEditar ? this.props.produtoEditar.idnm : this.state.nomeCientificoSelecionado.idnm} />
                                     </div>
                                 </div>

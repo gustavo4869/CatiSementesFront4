@@ -75,7 +75,7 @@
     display: inline-grid;
     text-align: center;
     align-items: center;
-    cursor: pointer;
+    cursor: default !important;
 }
 
     .produtos-menu font {

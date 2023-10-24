@@ -32,7 +32,7 @@ class Administracao extends Component {
                     return (
                         <div className="container-administracao">
                             <NavMenuLogado keycloak={this.state.keycloak} />
-                            <MenuLateralAdministracao menuAtivo="ADMINISTRADOR" />
+                            <MenuLateralAdministracao menuAtivo="ADMINISTRADOR" texto="ADMINISTRADOR" />
                             <div className="row container-menu">
                                 <CardMenuPrincipal texto="GERENCIAR USUÁRIOS" imagem={logoUsuarios} url="/usuarios/index" />
                                 <CardMenuPrincipal texto="PONTOS DE VENDAS" imagem={logoUnidades} url="/pontovenda/index"/>
