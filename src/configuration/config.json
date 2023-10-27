@@ -1,7 +1,7 @@
 {
   "ambienteProd": true,
-  "urlBaseApiProduto": "https://api-hml.agricultura.sp.gov.br/apiCat",
-  "urlBaseApiPontoVenda": "https://api-hml.agricultura.sp.gov.br/Apipdv/",
+  "urlBaseApiProduto": "https://api-dev.agricultura.sp.gov.br/apiCat",
+  "urlBaseApiPontoVenda": "https://api-dev.agricultura.sp.gov.br/Apipdv/",
   "urlBaseApiNodeKeycloakProd": "http://localhost:3030/adminApi/",
   "urlBaseApiKeycloakProd": "https://aut-hml.agricultura.sp.gov.br:8443/admin/realms/CatiSementesV3/",
   "urlBaseApiKeycloakUsersProd": "https://aut-hml.agricultura.sp.gov.br:8443/admin/realms/CatiSementesV3/users",
