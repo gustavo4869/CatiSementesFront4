@@ -3,6 +3,8 @@ import keycloak from '../../keycloak';
 import axios from 'axios';
 import { utils, writeFile } from 'xlsx';
 import moment from 'moment';
+import JsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 import Util from '../../Util/Util';
 
@@ -78,6 +80,7 @@ class IndexPontosVendas extends Component {
         this.carregarDados = this.carregarDados.bind(this);
         this.onChangeBuscaPontoVenda = this.onChangeBuscaPontoVenda.bind(this);
         this.exportarExcel = this.exportarExcel.bind(this);
+        this.exportarPdf = this.exportarPdf.bind(this);
     }
 
     componentDidMount() {
@@ -400,6 +403,38 @@ class IndexPontosVendas extends Component {
 
         const nomeArquivo = "ExportacaoPontosVenda_" + moment().format("DDMMYYYYHHmmss") + ".xlsx";
         writeFile(wb, nomeArquivo);
+    }
+
+    exportarPdf() {
+        const nomeArquivo = "ExportacaoPontosVenda_" + moment().format("DDMMYYYYHHmmss") + ".pdf";
+        const report = new JsPDF('landscape', 'px', 'a4');
+
+        const tiposPdv = this.state.tiposPdv;
+        const pdvs = this.state.pdvs;
+        tiposPdv.forEach(function (item) {
+            let pdvFiltrados = pdvs.filter(f => f.idTpPdv === item.idTpPdv);
+            if (pdvFiltrados.length > 0) {
+                pdvFiltrados = Util.tratarPontosVendaExportacao(item.desTpPdv, pdvFiltrados);
+                const produtoModelo = pdvFiltrados[0];
+                let cols = [];
+                Object.keys(produtoModelo).forEach(function (k) {
+                    const col = {
+                        title: k, dataKey: k
+                    };
+                    cols.push(col);
+                });
+
+                let rows = pdvFiltrados;
+                report.autoTable({
+                    columns: cols,
+                    body: rows,
+                    styles: { overflow: 'linebreak', cellWidth: 'wrap', cellPadding: 1, fontSize: 12 },
+                    columnStyles: { text: { cellWidth: 'auto' } }
+                });
+            }
+        });
+
+        report.save(nomeArquivo);
     }
 
     render() {

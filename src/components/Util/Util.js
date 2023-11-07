@@ -130,13 +130,13 @@ class Util {
             listaProdutos.forEach(function (item) {
                 const produto = {
                     id: item.id,
-                    descricao_produto: item.desProd,
-                    classificacao: item.classificacao,
-                    especie: item.especie,
-                    sistema_de_producao: item.sistemaProducao,
-                    tratamento: item.tratamento,
-                    tipo: item.tipo,
-                    peso_embalagem: item.pesoEmbalagem
+                    "Produto": item.desProd,
+                    "Classificação": item.classificacao,
+                    "Especie": item.especie,
+                    "Sist. de Produção": item.sistemaProducao,
+                    "Tratamento": item.tratamento,
+                    "Tipo": item.tipo,
+                    "Peso Emb.": item.pesoEmbalagem
                 };
 
                 produtos.push(produto);
@@ -149,25 +149,25 @@ class Util {
             listaProdutos.forEach(function (item) {
                 const produto = {
                     id: item.id,
-                    descricao_produto: item.desProd,
-                    classificacao: item.classificacao,
-                    especie: item.especie,
-                    nome_cientifico: item.nomeCientifico,
-                    cultivar: item.cultivar,
-                    categoria: item.categoria,
-                    sistema_de_producao: item.sistemaProducao,
-                    tratamento: item.tratamento,
-                    peneira: item.peneira,
-                    peso_embalagem: item.pesoEmbalagem,
-                    lote: item.lote,
-                    safra: item.safra,
-                    validade_analise: item.dtValAnalise,
-                    porcentagem_germinacao: item.priReanalise,
-                    validade_analise1: item.dtValPriAnalise,
-                    porcentagem_germinacao1: item.segReanalise,
-                    validade_analise2: item.dtValSegAnalise,
-                    porcentagem_germinacao2: item.terReanalise,
-                    validade_analise3: item.dtValTerAnalise
+                    "Produto": item.desProd,
+                    "Class.": item.classificacao,
+                    "Esp.": item.especie,
+                    "Nome cient.": item.nomeCientifico,
+                    "Cultivar": item.cultivar,
+                    "Cat.": item.categoria,
+                    "Sist. Produção": item.sistemaProducao,
+                    "Trat.": item.tratamento,
+                    "Peneira": item.peneira,
+                    "Peso emb.": item.pesoEmbalagem,
+                    "Lote": item.lote,
+                    "Safra": item.safra,
+                    "Val. Análise": item.dtValAnalise,
+                    "% Germinação": item.priReanalise,
+                    "Val. Análise 1": item.dtValPriAnalise,
+                    "% Germinação 1": item.segReanalise,
+                    "Val. Análise 2": item.dtValSegAnalise,
+                    "% Germinação 2": item.terReanalise,
+                    "Val. Análise 3": item.dtValTerAnalise
                 };
 
                 produtos.push(produto);
@@ -180,21 +180,21 @@ class Util {
             listaProdutos.forEach(function (item) {
                 const produto = {
                     id: item.id,
-                    descricao_produto: item.desProd,
-                    classificacao: item.classificacao,
-                    especie: item.especie,
-                    nome_cientifico: item.nomeCientifico,
-                    cultivar: item.cultivar,
-                    categoria: item.categoria,
-                    grupo: item.grupo,
-                    sistema_de_producao: item.sistemaProducao,
-                    tipo: item.tipo,
-                    embalagem: item.embalagem,
-                    idade: item.idade,
-                    unidade: item.unidade,
-                    safra: item.safra,
-                    lote: item.lote,
-                    viveiro: item.viveiro
+                    "Produto": item.desProd,
+                    "Class.": item.classificacao,
+                    "Esp.": item.especie,
+                    "Nome cient.": item.nomeCientifico,
+                    "Cultivar": item.cultivar,
+                    "Categoria": item.categoria,
+                    "Grupo": item.grupo,
+                    "Sist. Produção": item.sistemaProducao,
+                    "Tipo": item.tipo,
+                    "Emb.": item.embalagem,
+                    "Idade": item.idade,
+                    "Unidade": item.unidade,
+                    "Safra": item.safra,
+                    "Lote": item.lote,
+                    "Viv.": item.viveiro
                 };
 
                 produtos.push(produto);
@@ -207,9 +207,9 @@ class Util {
             listaProdutos.forEach(function (item) {
                 const produto = {
                     id: item.id,
-                    descricao_produto: item.desProd,
-                    classificacao: item.classificacao,
-                    material_propagacao_vegetativa: item.material
+                    "Produto": item.desProd,
+                    "Classificação": item.classificacao,
+                    "Material de Prop. Vegetativa": item.material
                 };
 
                 produtos.push(produto);
@@ -222,9 +222,9 @@ class Util {
             listaProdutos.forEach(function (item) {
                 const produto = {
                     id: item.id,
-                    descricao_produto: item.desProd,
-                    classificacao: item.classificacao,
-                    sub_produto: item.subProduto
+                    "Produto": item.desProd,
+                    "Classificação": item.classificacao,
+                    "Sub Produto": item.subProduto
                 };
 
                 produtos.push(produto);
@@ -237,10 +237,10 @@ class Util {
             listaProdutos.forEach(function (item) {
                 const produto = {
                     id: item.id,
-                    descricao_produto: item.desProd,
-                    classificacao: item.classificacao,
-                    classificacao1: item.classificacao1,
-                    servico: item.servico
+                    "Produto": item.desProd,
+                    "Classificação": item.classificacao,
+                    "Classificação 1": item.classificacao1,
+                    "Serviço": item.servico
                 };
 
                 produtos.push(produto);
@@ -253,9 +253,9 @@ class Util {
             listaProdutos.forEach(function (item) {
                 const produto = {
                     id: item.id,
-                    descricao_produto: item.desProd,
-                    classificacao: item.classificacao,
-                    classificacao1: item.classificacao1
+                    "Produto": item.desProd,
+                    "Classificação": item.classificacao,
+                    "Classificação 1": item.classificacao1
                 };
 
                 produtos.push(produto);
@@ -289,10 +289,10 @@ class Util {
 
                 const pdv = {
                     id: item.idpdv,
-                    nome_unidade: item.desUnidade,
-                    status: item.desStatus,
-                    cidade: item.desMunicipio,
-                    lista_municipios: listaMunicipios
+                    "Nome": item.desUnidade,
+                    "Status": item.desStatus,
+                    "Cidade": item.desMunicipio,
+                    "Lista Municípios": listaMunicipios
                 };
 
                 pdvs.push(pdv);
@@ -318,10 +318,10 @@ class Util {
 
                 const pdv = {
                     id: item.idpdv,
-                    nome_unidade: item.desUnidade,
-                    status: item.desStatus,
-                    cidade: item.desMunicipio,
-                    lista_municipios: listaMunicipios
+                    "Nome": item.desUnidade,
+                    "Status": item.desStatus,
+                    "Cidade": item.desMunicipio,
+                    "Lista Municípios": listaMunicipios
                 };
 
                 pdvs.push(pdv);
@@ -347,10 +347,10 @@ class Util {
 
                 const pdv = {
                     id: item.idpdv,
-                    nome_unidade: item.desUnidade,
-                    status: item.desStatus,
-                    cidade: item.desMunicipio,
-                    lista_municipios: listaMunicipios
+                    "Nome": item.desUnidade,
+                    "Status": item.desStatus,
+                    "Cidade": item.desMunicipio,
+                    "Lista Municípios": listaMunicipios
                 };
 
                 pdvs.push(pdv);
@@ -376,10 +376,10 @@ class Util {
 
                 const pdv = {
                     id: item.idpdv,
-                    nome_unidade: item.desUnidade,
-                    status: item.desStatus,
-                    cidade: item.desMunicipio,
-                    lista_municipios: listaMunicipios
+                    "Nome": item.desUnidade,
+                    "Status": item.desStatus,
+                    "Cidade": item.desMunicipio,
+                    "Lista Municípios": listaMunicipios
                 };
 
                 pdvs.push(pdv);
@@ -405,10 +405,10 @@ class Util {
 
                 const pdv = {
                     id: item.idpdv,
-                    nome_unidade: item.desUnidade,
-                    status: item.desStatus,
-                    cidade: item.desMunicipio,
-                    lista_municipios: listaMunicipios
+                    "Nome": item.desUnidade,
+                    "Status": item.desStatus,
+                    "Cidade": item.desMunicipio,
+                    "Lista Municípios": listaMunicipios
                 };
 
                 pdvs.push(pdv);

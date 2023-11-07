@@ -218,7 +218,12 @@ class GerenciarProdutos extends Component {
                 });
 
                 let rows = produtosFiltrados;
-                report.autoTable(cols, rows);
+                report.autoTable({
+                    columns: cols,
+                    body: rows,
+                    styles: { overflow: 'linebreak', cellWidth: 'wrap', cellPadding: 1, fontSize: 6 },
+                    columnStyles: { text: { cellWidth: 'auto' } }
+                });
             }
         });
 
