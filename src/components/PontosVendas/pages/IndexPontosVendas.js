@@ -11,10 +11,7 @@ import Util from '../../Util/Util';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileExcel, faFilePdf } from '@fortawesome/free-solid-svg-icons'
 
-import ApiService from '../../../services/ApiService';
 import PontoVendaService from '../../../services/pontoVenda/PontoVendaService';
-import CasaAgriculturaService from '../../../services/pontoVenda/CasaAgriculturaService';
-import RegionalService from '../../../services/pontoVenda/RegionalService';
 import ExternalService from '../../../services/ExternalService';
 
 import KeycloakStart from '../../shared/KeycloakStart';

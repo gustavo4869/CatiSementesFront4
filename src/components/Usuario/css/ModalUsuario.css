@@ -4,7 +4,7 @@
 
 .container-modal-usuario .ReactModal__Content--after-open {
     width: 600px;
-    height: 500px;
+    height: 560px;
     overflow: hidden;
     inset: 20% 30% !important;
 }
@@ -76,4 +76,11 @@
 
 .erro {
     border: 2px solid red;
+}
+
+#municipioUsuario .select__control, 
+#unidadeAdministrativaUsuario .select__control, 
+#cargoUsuario .select__control 
+{
+    background-color: #F6F6F6;
 }

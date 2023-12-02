@@ -32,9 +32,10 @@ class Util {
         return true;
     }
 
-    static validarFormularioUsuario(unidadeAdministrativa, cargo, cpf, nomeCompleto, login, senha, confirmarSenha, isEdit) {
+    static validarFormularioUsuario(unidadeAdministrativa, cargo, cpf, nomeCompleto, login, senha, confirmarSenha, isEdit, email, municipio) {
         var mensagensErro = [];
-
+        var regexEmail = /\S+@\S+\.\S+/;
+        
         if (unidadeAdministrativa === 0 || unidadeAdministrativa === "") {
             mensagensErro.push("Preencha uma unidade administrativa válida");
         }
@@ -47,8 +48,19 @@ class Util {
             mensagensErro.push("Preencha um CPF válido");
         }
 
+        console.log("Municipio")
+        console.log(municipio)
+
+        if (municipio === "0" || municipio === "") {
+            mensagensErro.push("Selecione um município válido");
+        }
+
         if (nomeCompleto === "") {
             mensagensErro.push("Preencha o nome completo");
+        }
+
+        if (email === "" || !regexEmail.test(email)) {
+            mensagensErro.push("Preencha um e-mail válido");
         }
 
         if (login === "") {
@@ -64,7 +76,7 @@ class Util {
         }
 
         return {
-            sucesso: mensagensErro.length == 0 ? true : false,
+            sucesso: mensagensErro.length === 0 ? true : false,
             erros: mensagensErro
         };
     }

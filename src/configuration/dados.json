@@ -1,0 +1,14 @@
+{
+  "unidadesAdministrativas": [
+    {
+      "value": "Unidade Padrão",
+      "label": "Unidade Padrão"
+    }
+  ],
+  "cargos": [
+    {
+      "value": "Cargo Padrão",
+      "label": "Cargo Padrão"
+    }
+  ]
+}

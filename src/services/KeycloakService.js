@@ -34,6 +34,7 @@ class KeycloakService {
                                 var nomeCompleto = "";
                                 var telefone = "";
                                 var observacoes = "";
+                                var municipio = "";
 
                                 if (usuario.attributes) {
                                     unidadeAdministrativa = usuario.attributes.UnidadeAdministrativa ? usuario.attributes.UnidadeAdministrativa[0] : "";
@@ -42,6 +43,7 @@ class KeycloakService {
                                     nomeCompleto = usuario.attributes.NomeCompleto ? usuario.attributes.NomeCompleto[0] : "";
                                     telefone = usuario.attributes.Telefone ? usuario.attributes.Telefone[0] : "";
                                     observacoes = usuario.attributes.Observacoes ? usuario.attributes.Observacoes[0] : "";
+                                    municipio = usuario.attributes.Municipio ? usuario.attributes.Municipio[0] : "";
                                 }
 
                                 var user = {
@@ -53,7 +55,8 @@ class KeycloakService {
                                     usuario: usuario.username,
                                     cpf: cpf,
                                     telefone: telefone,
-                                    observacoes: observacoes
+                                    observacoes: observacoes,
+                                    municipio: municipio
                                 };
 
                                 usuarios.push(user);
@@ -84,7 +87,7 @@ class KeycloakService {
         }
     }
 
-    static async salvarUsuario(idUsuario, unidadeAdministrativa, cargo, cpf, nomeCompleto, telefone, email, login, senha, observacoes, perfil, isEdit, token) {
+    static async salvarUsuario(idUsuario, unidadeAdministrativa, cargo, cpf, nomeCompleto, telefone, email, login, senha, perfil, isEdit, token, municipio) {
         console.log("SalvarUsuario")
         console.log(token)
         var retorno = {
@@ -107,7 +110,6 @@ class KeycloakService {
             "nomeCompleto": nomeCompleto,
             "unidadeAdministrativa": unidadeAdministrativa,
             "cargo": cargo,
-            "observacoes": observacoes,
             "senha": senha,
             "email": email,
             "emailVerified": true,
@@ -115,7 +117,8 @@ class KeycloakService {
             "firstName": nomeCompleto,
             "lastName": "",
             "username": login,
-            "clientRoles": perfil
+            "clientRoles": perfil,
+            "municipio": municipio.toString()
         };
 
         console.log(usuario)

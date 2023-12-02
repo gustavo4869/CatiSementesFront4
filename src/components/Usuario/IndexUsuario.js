@@ -1,15 +1,19 @@
 ﻿import React, { Component } from 'react';
 import keycloak from '../keycloak';
-import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileExcel, faFilePdf } from '@fortawesome/free-solid-svg-icons'
 
-import Carregando from '../shared/Carregando';
 import KeycloakStart from '../shared/KeycloakStart';
 import KeycloakNoAuth from '../shared/KeycloakNoAuth';
 import NavMenuLogado from '../shared/NavMenuLogado';
 import MenuLateralAdministracao from '../Administracao/MenuLateralAdministracao';
 import ModalUsuario from './ModalUsuario';
+import ModalFiltroAvancadoUsuario from './ModalFiltroAvancadoUsuario';
 import KeycloakService from '../../services/KeycloakService';
 import Notificacao from '../Util/Notificacao';
+import ExternalService from '../../services/ExternalService';
+import Dados from "../../configuration/dados.json";
+
 
 import logoUsuarios from '../images/silhueta-de-multiplos-usuarios 1.png';
 
@@ -24,17 +28,29 @@ class IndexUsuario extends Component {
             keycloak: null,
             authenticated: false,
             usuarios: [],
+            usuariosOriginal: [],
             keycloakToken: null,
             usuarioEditar: null,
             showModal: false,
+            showModalFiltro: false,
             nomeUsuario: null,
             isEdit: false,
             perfil: "",
-            idUsuario: ""
+            idUsuario: "",
+            emailBusca: "",
+            municipios: [],
+            cargos: Dados.cargos,
+            unidadesAdministrativas: Dados.unidadesAdministrativas,
+            filtroUsuario: {
+                nome: "",
+                unidadeAdministrativa: "",
+                cargo: "",
+                municipio: ""
+            }
         };
 
         this.toggleModal = React.createRef();
-
+        this.toggleModalFiltro = React.createRef();
     }
 
     componentDidMount() {
@@ -48,11 +64,18 @@ class IndexUsuario extends Component {
             });
 
             this.buscarUsuarios(keycloak.token);
+            this.buscarMunicipios();
         });
 
     }
 
-    async buscarUsuarios(token) {        
+    async buscarMunicipios() {
+        const municipios = await ExternalService.buscarMunicipios();
+        console.log(municipios.dados)
+        this.setState({ municipios: municipios.dados });
+    }
+
+    async buscarUsuarios(token) {
         this.setState({ processando: true });
         var userToken = "";
         if (token) {
@@ -66,7 +89,21 @@ class IndexUsuario extends Component {
         const result = await KeycloakService.buscarUsuarios(userToken);
         console.log(result)
         if (result.sucesso) {
-            this.setState({ usuarios: result.usuarios });
+            result.usuarios = result.usuarios.map(item => {
+                const mun = this.state.municipios.filter(f => f.value === parseInt(item.municipio === "" ? "0" : item.municipio));
+                let nomeMun = "";
+                if (mun.length > 0) {
+                    nomeMun = mun[0].label;
+                }
+
+                return {
+                    ...item,
+                    nomeMunicipio: nomeMun
+                }
+            });
+            console.log("usu tratado")
+            console.log(result.usuarios)
+            this.setState({ usuarios: result.usuarios, usuariosOriginal: result.usuarios });
         }
         else {
             Notificacao.erro("Erro", "Erro ao buscar usuários");
@@ -80,23 +117,25 @@ class IndexUsuario extends Component {
         this.toggleModal.current.toggleModal();
     }
 
+    abrirFiltroUsuario() {
+        console.log("Abrir Filtro Usuario")
+        this.toggleModalFiltro.current.toggleModalFiltro();
+    }
+
     async excluirUsuarios() {
-        console.log("Excluir usuarios")
         var selecionados = document.getElementsByClassName("radio-btn-usuario");
         var result = await KeycloakService.excluirUsuarios(selecionados);
-        console.log(result)
         if (!result.sucesso) {
             Notificacao.erro("Erro", "Erro ao excluir usuarios")
         }
         else {
-            Notificacao.sucesso("Sucesso", "Usuários excluídos com sucesso")            
+            Notificacao.sucesso("Sucesso", "Usuários excluídos com sucesso")
         }
 
         this.buscarUsuarios(null);
     }
 
     editarUsuarios() {
-        console.log("Editar usuario")
         var checkbox = document.getElementsByClassName("radio-btn-usuario");
         var selecionados = [];
         for (var i = 0; i < checkbox.length; i++) {
@@ -105,21 +144,19 @@ class IndexUsuario extends Component {
             }
         }
 
-        if (selecionados.length > 1 || selecionados.length == 0) {
-            console.log("Selecione apenas 1 usuário");
+        if (selecionados.length > 1 || selecionados.length === 0) {
+            Notificacao.alerta("Usuários", "Selecione apenas 1 usuário");
             return;
         }
 
         var id = selecionados[0].id.split("radio-")[1];
-        console.log(id)
         var usuarioEditar = this.state.usuarios.find(obj => {
             return obj.id === id;
         });
 
-        console.log(usuarioEditar)
         this.setState({ usuarioEditar: usuarioEditar, isEdit: true }, () => {
             this.toggleModal.current.toggleModal();
-        });        
+        });
     }
 
     checkAllUsuarios() {
@@ -127,6 +164,64 @@ class IndexUsuario extends Component {
         for (var i = 0; i < checks.length; i++) {
             checks[i].checked = !checks[i].checked;
         }
+    }
+
+    filtrarUsuarios(event) {
+        console.log("FiltrarUsuarios")
+        console.log(this.state.usuariosOriginal)
+        console.log(event)
+        console.log(this.state.filtroUsuario)
+        const email = event.target.value;
+        let filtroState = this.state.filtroUsuario;
+        filtroState.nome = email;
+
+        if (filtroState.nome === "" && filtroState.cargo === "" && filtroState.unidadeAdministrativa === "" && filtroState.municipio === "") {
+            console.log("Vázio")
+            this.setState(filtro => ({
+                usuarios: this.state.usuariosOriginal,
+                filtroUsuario: filtroState
+            }));
+        }
+        else {
+            console.log("Não vazio")
+            this.setState({
+                filtroUsuario: filtroState,
+                usuarios: this.state.usuariosOriginal.filter(f => (f.email !== undefined && filtroState.nome !== "" && f.email.includes(filtroState.nome)) ||
+                                                                  (f.cpf !== undefined && filtroState.nome !== "" && f.cpf.includes(filtroState.nome)) ||
+                                                                  (f.cargo !== undefined && filtroState.cargo !== "" && f.cargo.includes(filtroState.cargo)) ||
+                                                                  (f.unidadeAdministrativa !== undefined && filtroState.unidadeAdministrativa !== "" && f.unidadeAdministrativa.includes(filtroState.unidadeAdministrativa)) ||
+                                                                  (f.municipio !== undefined && filtroState.municipio !== "" && f.municipio.includes(filtroState.municipio)))               
+            });
+        }
+    }
+
+    filtrarModal(filtro) {
+        console.log("Filtrar Modal")
+        console.log(filtro)
+        this.setState(state => ({
+            filtroUsuario: {
+                ...state.filtroUsuario,
+                municipio: filtro.municipio,
+                unidadeAdministrativa: filtro.unidadeAdministrativa,
+                cargo: filtro.cargo
+            }
+        }), () => {
+            this.filtrarUsuarios({ target: { value: this.state.filtroUsuario.nome } });
+            this.toggleModalFiltro.current.toggleModalFiltro();
+        });
+    }
+
+    apagarBuscaUsuarios() {
+        this.setState({
+            filtroUsuario: {
+                nome: "",
+                municipio: "",
+                unidadeAdministrativa: "",
+                cargo: ""
+            }
+        }, () => {
+            this.filtrarUsuarios({ target: { value: "" } });
+        });
     }
 
     render() {
@@ -138,26 +233,45 @@ class IndexUsuario extends Component {
                             <NavMenuLogado keycloak={this.state.keycloak} />
                             <MenuLateralAdministracao menuAtivo="USUARIOS" texto="USUÁRIOS" />
                             <div className="container-usuario-conteudo">
-                                <div className="row container-busca">
+                                <div className="row container-busca-usuarios">
                                     <div className="col-2 container-titulo">
                                         <img src={logoUsuarios}></img>
                                         <font>GERENCIAR USUÁRIOS</font>
                                     </div>
-                                    <div className="col-10 container-input">
-                                        <input type="text" placeholder="Buscar usuários" disabled={true} />
-                                        <button
-                                            className="btn-editar"
-                                            disabled={this.state.keycloak.hasRealmRole("Visualizacao")}
-                                            onClick={this.novoUsuario.bind(this)}
-                                        >
-                                            <font>Criar usuário</font>
-                                        </button>
+                                    <div className="col-10 container-input container-input-usuarios">
+                                        <div className="wrapper-busca">
+                                            <div className="wrapper-input-busca">
+                                                <input className="input-busca-usuario" type="text" placeholder="Buscar usuários" onChange={this.filtrarUsuarios.bind(this)} value={this.state.filtroUsuario.nome} />
+                                                <div className="btn-apagar-busca-usuario" onClick={this.apagarBuscaUsuarios.bind(this)}>X</div>
+                                                <div className="btn-busca-usuario"></div>                                                
+                                            </div>
+                                            <button className="btn-filtro-avancado-usuario" onClick={this.abrirFiltroUsuario.bind(this)}></button>                                                
+                                            <button
+                                                className="btn-editar"
+                                                disabled={this.state.keycloak.hasRealmRole("Visualizacao")}
+                                                onClick={this.novoUsuario.bind(this)}
+                                            >
+                                                <font>Criar usuário</font>
+                                            </button>
+                                        </div>                                        
                                         <ModalUsuario
                                             ref={this.toggleModal}
                                             keycloakToken={this.state.keycloak.token}
                                             usuarioEditar={this.state.usuarioEditar}
                                             buscarUsuarios={this.buscarUsuarios.bind(this)}
                                             isEdit={this.state.isEdit}
+                                            municipios={this.state.municipios}
+                                            unidadesAdministrativas={this.state.unidadesAdministrativas}
+                                            cargos={this.state.cargos}
+                                        />
+                                        <ModalFiltroAvancadoUsuario
+                                            ref={this.toggleModalFiltro}
+                                            filtrarModal={this.filtrarModal.bind(this)}
+                                            buscarUsuarios={this.buscarUsuarios.bind(this)}
+                                            municipios={this.state.municipios}
+                                            unidadesAdministrativas={this.state.unidadesAdministrativas}
+                                            cargos={this.state.cargos}
+                                            filtro={this.state.filtroUsuario}
                                         />
                                     </div>
                                 </div>
@@ -184,12 +298,12 @@ class IndexUsuario extends Component {
                                                 <th>Selecionar todos <br /> <input type="checkbox" id="checkAllUsuarios" onClick={this.checkAllUsuarios.bind(this)} /></th>
                                                 <th>Unidade Administrativa</th>
                                                 <th>Cargo/Função</th>
+                                                <th>Município</th>
                                                 <th>CPF</th>
                                                 <th>Nome Completo</th>
                                                 <th>Telefone</th>
                                                 <th>E-mail</th>
                                                 <th>Login Usuário</th>
-                                                <th>Observações</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -198,12 +312,12 @@ class IndexUsuario extends Component {
                                                     <td><input type="checkbox" className="radio-btn-usuario" id={"radio-" + usuario.id} /></td>
                                                     <td>{usuario.unidadeAdministrativa}</td>
                                                     <td>{usuario.cargo}</td>
+                                                    <td>{usuario.nomeMunicipio}</td>
                                                     <td>{usuario.cpf}</td>
                                                     <td>{usuario.nomeCompleto}</td>
                                                     <td>{usuario.telefone}</td>
                                                     <td>{usuario.email}</td>
                                                     <td>{usuario.usuario}</td>
-                                                    <td>{usuario.observacoes}</td>
                                                 </tr>
                                             )}
                                         </tbody>
@@ -222,7 +336,7 @@ class IndexUsuario extends Component {
             }
         }
         return (
-            <KeycloakStart/>
+            <KeycloakStart />
         );
     }
 }
