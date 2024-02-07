@@ -120,14 +120,14 @@ class ModalUsuario extends Component {
 
     validarCPF(event) {
         const valor = event.target.value;
-        if (valor !== "" && isNaN(valor)) {
+        if (valor !== "") {
             Notificacao.alerta("CPF", "Digitar somente números");
         }
     }
 
     validarTelefone(event) {
         const valor = event.target.value;
-        if (valor !== "" && isNaN(valor)) {
+        if (valor !== "") {
             Notificacao.alerta("Telefone", "Digitar somente números");
         }
     }
@@ -203,7 +203,7 @@ class ModalUsuario extends Component {
                                             className="form-control input-modal-usuario"
                                             id="cpfUsuario"
                                             defaultValue={this.props.usuarioEditar ? this.props.usuarioEditar.cpf : ""}
-                                            onChange={this.validarCPF}
+                                            //onChange={this.validarCPF}
                                             placeholder="Digitar somente números"
                                             maxLength="11"
                                         />

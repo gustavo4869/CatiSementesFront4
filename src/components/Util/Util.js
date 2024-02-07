@@ -32,47 +32,49 @@ class Util {
         return true;
     }
 
-    static validarFormularioUsuario(unidadeAdministrativa, cargo, cpf, nomeCompleto, login, senha, confirmarSenha, isEdit, email, municipio) {
+    static validarFormularioUsuario(param) {
         var mensagensErro = [];
         var regexEmail = /\S+@\S+\.\S+/;
+        const regexTelefone = /^(?:(?:\+|00)?55\s?)?(?:\([1-9][0-9]\)\s?)?(?:[2-8]|9[1-9])[0-9]{3}\-?[0-9]{4}$/;
         
-        if (unidadeAdministrativa === 0 || unidadeAdministrativa === "") {
+        if (param.unidadeAdministrativa.value === "0" || param.unidadeAdministrativa.value === "") {
             mensagensErro.push("Preencha uma unidade administrativa válida");
         }
 
-        if (cargo === 0 || cargo === "") {
+        if (param.cargo.value === "0" || param.cargo.value === "") {
             mensagensErro.push("Preencha um cargo válido");
         }
 
-        if (!Util.validarCpf(cpf)) {
+        if (!Util.validarCpf(param.cpf)) {
             mensagensErro.push("Preencha um CPF válido");
         }
 
-        console.log("Municipio")
-        console.log(municipio)
-
-        if (municipio === "0" || municipio === "") {
+        if (param.municipio.value === "0" || param.municipio.value === "") {
             mensagensErro.push("Selecione um município válido");
         }
 
-        if (nomeCompleto === "") {
+        if (param.nomeCompleto === "") {
             mensagensErro.push("Preencha o nome completo");
         }
 
-        if (email === "" || !regexEmail.test(email)) {
+        if (param.email === "" || !regexEmail.test(param.email)) {
             mensagensErro.push("Preencha um e-mail válido");
         }
 
-        if (login === "") {
+        if (param.login === "") {
             mensagensErro.push("Preencha o login do usuário");
         }
 
-        if ((senha === "" && !isEdit)) {
+        if ((param.senha === "" && !param.isEdit)) {
             mensagensErro.push("Preencha uma senha válida");
         }
 
-        if (senha !== confirmarSenha) {
+        if (param.senha !== param.confirmarSenha) {
             mensagensErro.push("As senhas não são iguais!");
+        }
+
+        if (param.telefone === "" || !regexTelefone.test(param.telefone)) {
+            mensagensErro.push("Preencha um telefone válido");
         }
 
         return {

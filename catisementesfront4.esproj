@@ -15,9 +15,6 @@
     <None Remove="src\components\Administracao\CardMenuPrincipal.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="src\configuration\" />
-  </ItemGroup>
-  <ItemGroup>
     <TypeScriptConfiguration Remove="server\**" />
   </ItemGroup>
   <ItemGroup>

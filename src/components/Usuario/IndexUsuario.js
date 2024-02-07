@@ -12,6 +12,7 @@ import ModalFiltroAvancadoUsuario from './ModalFiltroAvancadoUsuario';
 import KeycloakService from '../../services/KeycloakService';
 import Notificacao from '../Util/Notificacao';
 import ExternalService from '../../services/ExternalService';
+import PdvService from '../../services/pontoVenda/PontoVendaService';
 import Dados from "../../configuration/dados.json";
 
 
@@ -40,7 +41,7 @@ class IndexUsuario extends Component {
             emailBusca: "",
             municipios: [],
             cargos: Dados.cargos,
-            unidadesAdministrativas: Dados.unidadesAdministrativas,
+            unidadesAdministrativas: [],
             filtroUsuario: {
                 nome: "",
                 unidadeAdministrativa: "",
@@ -62,16 +63,15 @@ class IndexUsuario extends Component {
                 perfil: "",
                 idUsuario: keycloak.subject
             });
-
             this.buscarUsuarios(keycloak.token);
             this.buscarMunicipios();
+            this.buscarUnidades();
         });
 
     }
 
     async buscarMunicipios() {
         const municipios = await ExternalService.buscarMunicipios();
-        console.log(municipios.dados)
         this.setState({ municipios: municipios.dados });
     }
 
@@ -87,43 +87,77 @@ class IndexUsuario extends Component {
         }
 
         const result = await KeycloakService.buscarUsuarios(userToken);
-        console.log(result)
         if (result.sucesso) {
             result.usuarios = result.usuarios.map(item => {
                 const mun = this.state.municipios.filter(f => f.value === parseInt(item.municipio === "" ? "0" : item.municipio));
                 let nomeMun = "";
                 if (mun.length > 0) {
-                    nomeMun = mun[0].label;
+                    nomeMun = mun[0].label ?? "";
                 }
 
+                const un = item.unidadeAdministrativa;
+                let unidade = null;
+                let unidadeNome = "";
+                let idUnidade = "";
+                if (!isNaN(un) && un !== "") {
+                    unidade = this.state.unidadesAdministrativas.filter(f => f.value === parseInt(item.unidadeAdministrativa))[0];
+                    unidadeNome = unidade.label;
+                    idUnidade = unidade.value;                    
+                }                
+                
                 return {
                     ...item,
-                    nomeMunicipio: nomeMun
+                    nomeMunicipio: nomeMun,
+                    unidadeAdministrativa: unidadeNome,
+                    idUnidadeAdministrativa: idUnidade
                 }
             });
-            console.log("usu tratado")
-            console.log(result.usuarios)
             this.setState({ usuarios: result.usuarios, usuariosOriginal: result.usuarios });
         }
         else {
+            console.log(result);
             Notificacao.erro("Erro", "Erro ao buscar usuários");
         }
 
         this.setState({ processando: false });
     }
 
+    async buscarUnidades() {
+        let result = await PdvService.getAllPdv(0, 1000);
+
+        if (!result.sucesso) {
+            Notificacao.erro("Erro", "Não foi possível buscar unidades");
+        }
+
+        this.setState({
+            unidadesAdministrativas: result.pdv.map(u => {
+                return {
+                    label: u.desUnidade,
+                    value: u.idpdv
+                }
+            })
+        });
+    }
+
     novoUsuario() {
-        this.setState({ usuarioEditar: null, isEdit: false });
-        this.toggleModal.current.toggleModal();
+        this.setState({ usuarioEditar: null, isEdit: false },
+            function () {
+                this.toggleModal.current.toggleModal();
+            });        
     }
 
     abrirFiltroUsuario() {
-        console.log("Abrir Filtro Usuario")
         this.toggleModalFiltro.current.toggleModalFiltro();
     }
 
     async excluirUsuarios() {
         var selecionados = document.getElementsByClassName("radio-btn-usuario");
+
+        if (Array.from(selecionados).filter(x => x.id === "radio-" + keycloak.subject).length > 0) {
+            Notificacao.erro("Erro", "Não é possível excluir seu próprio acesso. Desmarque o seu usuário e tente novamente.");
+            return;
+        }
+
         var result = await KeycloakService.excluirUsuarios(selecionados);
         if (!result.sucesso) {
             Notificacao.erro("Erro", "Erro ao excluir usuarios")
@@ -160,44 +194,46 @@ class IndexUsuario extends Component {
     }
 
     checkAllUsuarios() {
+        const checkAll = document.getElementById("checkAllUsuarios").checked;
         var checks = document.getElementsByClassName("radio-btn-usuario");
         for (var i = 0; i < checks.length; i++) {
-            checks[i].checked = !checks[i].checked;
+            checks[i].checked = checkAll;
+        }
+    }
+
+    uncheckAllUsuarios() {
+        var checks = document.getElementsByClassName("radio-btn-usuario");
+        for (var i = 0; i < checks.length; i++) {
+            checks[i].checked = false;
         }
     }
 
     filtrarUsuarios(event) {
-        console.log("FiltrarUsuarios")
-        console.log(this.state.usuariosOriginal)
-        console.log(event)
-        console.log(this.state.filtroUsuario)
         const email = event.target.value;
         let filtroState = this.state.filtroUsuario;
         filtroState.nome = email;
-
         if (filtroState.nome === "" && filtroState.cargo === "" && filtroState.unidadeAdministrativa === "" && filtroState.municipio === "") {
-            console.log("Vázio")
             this.setState(filtro => ({
                 usuarios: this.state.usuariosOriginal,
                 filtroUsuario: filtroState
             }));
         }
         else {
-            console.log("Não vazio")
             this.setState({
                 filtroUsuario: filtroState,
-                usuarios: this.state.usuariosOriginal.filter(f => (f.email !== undefined && filtroState.nome !== "" && f.email.includes(filtroState.nome)) ||
-                                                                  (f.cpf !== undefined && filtroState.nome !== "" && f.cpf.includes(filtroState.nome)) ||
-                                                                  (f.cargo !== undefined && filtroState.cargo !== "" && f.cargo.includes(filtroState.cargo)) ||
-                                                                  (f.unidadeAdministrativa !== undefined && filtroState.unidadeAdministrativa !== "" && f.unidadeAdministrativa.includes(filtroState.unidadeAdministrativa)) ||
-                                                                  (f.municipio !== undefined && filtroState.municipio !== "" && f.municipio.includes(filtroState.municipio)))               
+                usuarios: this.state.usuariosOriginal.filter(usuario => {
+                    const verificaNome = filtroState.nome === "" || usuario.email?.includes(filtroState.nome) || usuario.cpf?.includes(filtroState.nome);
+                    const verificaCargo = filtroState.cargo === "" || usuario.cargo === filtroState.cargo;
+                    const verificaUnidadeAdministrativa = filtroState.unidadeAdministrativa === "" || usuario.idUnidadeAdministrativa == filtroState.unidadeAdministrativa; // Usando == para coerção de tipo
+                    const verificaMunicipio = filtroState.municipio === "" || usuario.municipio.includes(filtroState.municipio);
+
+                    return verificaNome && verificaCargo && verificaUnidadeAdministrativa && verificaMunicipio;
+                })
             });
         }
     }
 
     filtrarModal(filtro) {
-        console.log("Filtrar Modal")
-        console.log(filtro)
         this.setState(state => ({
             filtroUsuario: {
                 ...state.filtroUsuario,
@@ -222,6 +258,10 @@ class IndexUsuario extends Component {
         }, () => {
             this.filtrarUsuarios({ target: { value: "" } });
         });
+    }
+
+    getUnidadeAdministrativa(id) {
+        return this.state.unidadesAdministrativas.filter(f => f.value === id)[0].label;
     }
 
     render() {

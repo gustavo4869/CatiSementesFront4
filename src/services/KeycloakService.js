@@ -4,7 +4,7 @@ import configData from "../configuration/config.json";
 /* Services -> Keycloak */
 const ambienteProd = configData.ambienteProd;
 const urlBaseKeycloak = ambienteProd ? configData.urlBaseApiKeycloakProd : configData.urlBaseApiKeycloakDev;
-const urlBaseKeycloakNode = ambienteProd ? configData.urlBaseApiNodeKeycloakProd : configData.urlBaseApiNodeKeycloakDev;
+const urlBaseKeycloakNode = (ambienteProd ? configData.urlBaseApiNodeKeycloakProd : configData.urlBaseApiNodeKeycloakDev) + "AdminApi/";
 var bearerToken = "";
 /* Services -> Keycloak */
 
@@ -18,7 +18,7 @@ class KeycloakService {
         };
 
         console.log("BuscarUsuarios")
-
+        console.log(urlBaseKeycloakNode + "usuarios")
         try {
             return axios.get(urlBaseKeycloakNode + "usuarios")
                 .then(response => {

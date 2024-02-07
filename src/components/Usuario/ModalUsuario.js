@@ -4,6 +4,7 @@ import ReactModal from 'react-modal';
 import validator from 'validator';
 import Select from 'react-select';
 import { Tooltip } from 'react-tooltip';
+import InputMask from 'react-input-mask';
 
 import KeycloakService from '../../services/KeycloakService';
 import Util from '../Util/Util';
@@ -22,7 +23,7 @@ class ModalUsuario extends Component {
             usuario: "",
             municipioUsuario: "",
             cargo: "",
-            unidadeAdministrativa: ""
+            unidadeAdministrativa: { value: 0, label: "Selecione..." }
         };
 
         this.salvarUsuario = this.salvarUsuario.bind(this);
@@ -40,16 +41,28 @@ class ModalUsuario extends Component {
         this.setState(state => ({
             showModal: !state.showModal,
             usuarioEditar: this.props.usuarioEditar,
-            isEdit: this.props.isEdit
+            isEdit: this.props.isEdit,
+            municipioUsuario: {
+                value: this.props.usuarioEditar ? (this.props.usuarioEditar.municipio === "" ? "0": this.props.usuarioEditar.municipio) : "0",
+                label: this.props.usuarioEditar ? (this.props.usuarioEditar.nomeMunicipio === "" ? "Selecione..." : this.props.usuarioEditar.nomeMunicipio) : "Selecione..."
+            },
+            unidadeAdministrativa: {
+                value: this.props.usuarioEditar ? (this.props.usuarioEditar.idUnidadeAdministrativa === "" ? "0" : this.props.usuarioEditar.idUnidadeAdministrativa) : "0",
+                label: this.props.usuarioEditar ? (this.props.usuarioEditar.unidadeAdministrativa === "" ? "Selecione..." : this.props.usuarioEditar.unidadeAdministrativa) : "Selecione..."
+            },
+            cargo: {
+                value: this.props.usuarioEditar ? (this.props.usuarioEditar.cargo === "" ? "0" : this.props.usuarioEditar.cargo) : "0",
+                label: this.props.usuarioEditar ? (this.props.usuarioEditar.cargo === "" ? "Selecione..." : this.props.usuarioEditar.cargo) : "Selecione..."
+            }
         }));        
     }
 
     async salvarUsuario() {
         var unidadeAdministrativa = this.state.unidadeAdministrativa;
         var cargo = this.state.cargo;
-        var cpf = document.getElementById("cpfUsuario").value;
+        var cpf = document.getElementById("cpfUsuario").value.replaceAll(".", "").replaceAll("-", "");
         var nomeCompleto = document.getElementById("nomeCompletoUsuario").value;
-        var telefone = document.getElementById("telefoneUsuario").value;
+        var telefone = document.getElementById("telefoneUsuario").value;//.replaceAll("(", "").replaceAll(")", "").replaceAll(" ", "").replaceAll("-", "");
         var email = document.getElementById("emailUsuario").value;
         var login = document.getElementById("loginUsuario").value;
         var senha = document.getElementById("senhaUsuario").value;
@@ -57,8 +70,23 @@ class ModalUsuario extends Component {
         var idUsuario = this.state.isEdit ? this.props.usuarioEditar.id : null;
         var perfil = document.getElementById("perfilUsuario").value;
         var municipio = this.state.municipioUsuario;
-        
-        var retornoValidacao = Util.validarFormularioUsuario(unidadeAdministrativa, cargo, cpf, nomeCompleto, login, senha, confirmarSenha, this.state.isEdit, email, municipio);
+
+        let param = {
+            unidadeAdministrativa: unidadeAdministrativa,
+            cargo: cargo,
+            cpf: cpf,
+            nomeCompleto: nomeCompleto,
+            login: login,
+            senha: senha,
+            confirmarSenha: confirmarSenha,
+            isEdit: this.state.isEdit,
+            email: email,
+            municipio: municipio,
+            telefone: telefone
+        };
+
+        var retornoValidacao = Util.validarFormularioUsuario(param);
+
         if (!retornoValidacao.sucesso) {
             retornoValidacao.erros.forEach(function (mensagem) {
                 Notificacao.erro("", mensagem);
@@ -67,9 +95,6 @@ class ModalUsuario extends Component {
         }
 
         const result = await KeycloakService.salvarUsuario(idUsuario, unidadeAdministrativa, cargo, cpf, nomeCompleto, telefone, email, login, senha, perfil, this.state.isEdit, this.props.keycloakToken, municipio);
-
-        console.log("Salvar usuário result")
-        console.log(result)
 
         if (result.sucesso) {
             this.props.buscarUsuarios();
@@ -127,7 +152,7 @@ class ModalUsuario extends Component {
 
     validarTelefone(event) {
         const valor = event.target.value;
-        if (valor !== "" && isNaN(valor)) {
+        if (valor !== "") {
             Notificacao.alerta("Telefone", "Digitar somente números");
         }
     }
@@ -176,6 +201,7 @@ class ModalUsuario extends Component {
                                             classNamePrefix="select"
                                             placeholder="Selecione..."
                                             onChange={this.onChangeUnidadeAdministrativa}
+                                            defaultValue={this.state.unidadeAdministrativa || "0"}
                                         />
                                     </div>
                                 </div>
@@ -190,6 +216,7 @@ class ModalUsuario extends Component {
                                             classNamePrefix="select"
                                             placeholder="Selecione..."
                                             onChange={this.onChangeCargo}
+                                            defaultValue={this.state.cargo || "0"}
                                         />
                                     </div>
                                 </div>
@@ -198,14 +225,14 @@ class ModalUsuario extends Component {
                                 <div className="col-6">
                                     <div className="form-group">
                                         <label htmlFor="cpfUsuario" className="label-modal-usuario">CPF</label>
-                                        <input
+                                        <InputMask mask="999.999.999-99"
                                             type="text"
                                             className="form-control input-modal-usuario"
                                             id="cpfUsuario"
                                             defaultValue={this.props.usuarioEditar ? this.props.usuarioEditar.cpf : ""}
-                                            onChange={this.validarCPF}
+                                            //onChange={this.validarCPF}
                                             placeholder="Digitar somente números"
-                                            maxLength="11"
+                                            maxLength="20"
                                         />
                                     </div>
                                 </div>
@@ -220,7 +247,7 @@ class ModalUsuario extends Component {
                                             classNamePrefix="select"
                                             onChange={this.onChangeMunicipio}
                                             placeholder="Selecione..."
-                                            defaultValue={this.props.municipios.filter(f => f.value === this.state.municipioUsuario) || ""}
+                                            defaultValue={this.state.municipioUsuario || "0"}
                                         />
                                     </div>
                                 </div>                                
@@ -237,14 +264,14 @@ class ModalUsuario extends Component {
                                 <div className="col-6">
                                     <div className="form-group">
                                         <label htmlFor="telefoneUsuario" className="label-modal-usuario">Telefone</label>
-                                        <input
+                                        <InputMask mask="(99) 99999-9999"
                                             type="text"
                                             className="form-control input-modal-usuario"
                                             id="telefoneUsuario"
                                             defaultValue={this.props.usuarioEditar ? this.props.usuarioEditar.telefone : ""}
-                                            onChange={this.validarTelefone}
+                                            //onChange={this.validarTelefone}
                                             placeholder="Digitar somente números"
-                                            maxLength="11"
+                                            maxLength="30"
                                         />
                                     </div>
                                 </div>
