@@ -1,22 +1,25 @@
 ﻿import React, { Component } from 'react';
 
-import keycloak from '../keycloak';
+import KeycloakService from '../../services/KeycloakService';
 
 import setaBaixo from '../images/dropdown-seta-baixo.png';
 import setaCima from '../images/dropdown-seta-cima.png';
 
 import '../css/navMenuLogado.css'
+import Notificacao from '../Util/Notificacao';
 
 class NavMenuLogado extends Component {
     constructor(props) {
         super(props);
         this.state = {
             showDropDown: false,
-            nomeUsuario: ""
+            nomeUsuario: "",
+            emailUsuario: ""
         };
 
         this.toggleDropDown = this.toggleDropDown.bind(this);
         this.logout = this.logout.bind(this);
+        this.alterarSenha = this.alterarSenha.bind(this);
         this.loadUsername = this.loadUsername.bind(this);
     }
 
@@ -34,10 +37,22 @@ class NavMenuLogado extends Component {
         this.props.keycloak.logout();
     }
 
+    async alterarSenha() {
+        console.log(this.state)
+        if (this.state.emailUsuario === "") {
+            Notificacao.alerta("Ops!", "e-mail não configurado");
+            return;
+        }
+        const resultado = await KeycloakService.alterarSenha(this.props.keycloak.userInfo.sub);
+        if (resultado.sucesso) {
+            Notificacao.sucesso("Senha", "Foi enviado um e-mail para sua caixa de entrada, verifique as instruções");
+        }
+    }
+
     async loadUsername() {
         var usuario = "Usuário";
-        console.log("loadUsername")
-        console.log(this.props.keycloak)
+        var email = "";
+
         if (!this.props.keycloak) {
             return usuario;
         }
@@ -45,15 +60,16 @@ class NavMenuLogado extends Component {
         if (!this.props.keycloak.userInfo) {
             await this.props.keycloak.loadUserInfo()
                 .then(function (userInfo) {
+                    console.log("info")
+                    console.log(userInfo)
                     usuario = userInfo.preferred_username;
-                    console.log("usuario")
-                    console.log(usuario)
+                    email = userInfo.email ?? "";
                 });
 
-            this.setState({ nomeUsuario: usuario });
+            this.setState({ nomeUsuario: usuario, emailUsuario: email });
         }
         else {
-            this.setState({ nomeUsuario: this.props.keycloak.userInfo.preferred_username });
+            this.setState({ nomeUsuario: this.props.keycloak.userInfo.preferred_username, emailUsuario: this.props.keycloak.userInfo.email ?? "" });
         }
     }
 
@@ -67,6 +83,9 @@ class NavMenuLogado extends Component {
                             <img alt="" src={this.state.showDropDown?setaCima:setaBaixo}></img>
                         </button>
                         <ul className={this.state.showDropDown ? "menu-active" : "menu-inactive"}>
+                            <li>
+                                <button onClick={this.alterarSenha}>Alterar senha</button>
+                            </li>
                             <li>
                                 <button onClick={this.logout}>Sair</button>
                             </li>

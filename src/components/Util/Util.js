@@ -35,13 +35,13 @@ class Util {
     static validarFormularioUsuario(param) {
         var mensagensErro = [];
         var regexEmail = /\S+@\S+\.\S+/;
-        const regexTelefone = /^(?:(?:\+|00)?55\s?)?(?:\([1-9][0-9]\)\s?)?(?:[2-8]|9[1-9])[0-9]{3}\-?[0-9]{4}$/;
+        const regexTelefone = /^\(\d{2}\) \d{4,5}-\d{4}$/;
         
-        if (param.unidadeAdministrativa.value === "0" || param.unidadeAdministrativa.value === "") {
+        if (param.unidadeAdministrativa === "0" || param.unidadeAdministrativa === "") {
             mensagensErro.push("Preencha uma unidade administrativa válida");
         }
 
-        if (param.cargo.value === "0" || param.cargo.value === "") {
+        if (param.cargo === "0" || param.cargo === "") {
             mensagensErro.push("Preencha um cargo válido");
         }
 
@@ -49,7 +49,7 @@ class Util {
             mensagensErro.push("Preencha um CPF válido");
         }
 
-        if (param.municipio.value === "0" || param.municipio.value === "") {
+        if (param.municipio === "0" || param.municipio === "") {
             mensagensErro.push("Selecione um município válido");
         }
 
@@ -72,7 +72,7 @@ class Util {
         if (param.senha !== param.confirmarSenha) {
             mensagensErro.push("As senhas não são iguais!");
         }
-
+        console.log(param.telefone)
         if (param.telefone === "" || !regexTelefone.test(param.telefone)) {
             mensagensErro.push("Preencha um telefone válido");
         }

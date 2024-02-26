@@ -42,6 +42,7 @@ class IndexUsuario extends Component {
             municipios: [],
             cargos: Dados.cargos,
             unidadesAdministrativas: [],
+            listaPerfil: Dados.perfil,
             filtroUsuario: {
                 nome: "",
                 unidadeAdministrativa: "",
@@ -88,7 +89,8 @@ class IndexUsuario extends Component {
 
         const result = await KeycloakService.buscarUsuarios(userToken);
         if (result.sucesso) {
-            result.usuarios = result.usuarios.map(item => {
+            const usuarios = Array.isArray(result.usuarios) ? result.usuarios : [];
+            result.usuarios = usuarios.map(item => {
                 const mun = this.state.municipios.filter(f => f.value === parseInt(item.municipio === "" ? "0" : item.municipio));
                 let nomeMun = "";
                 if (mun.length > 0) {
@@ -99,7 +101,9 @@ class IndexUsuario extends Component {
                 let unidade = null;
                 let unidadeNome = "";
                 let idUnidade = "";
-                if (!isNaN(un) && un !== "") {
+                console.log("UNIDADE")
+                console.log(un)
+                if (!isNaN(un) && un !== "" && un !== "0") {
                     unidade = this.state.unidadesAdministrativas.filter(f => f.value === parseInt(item.unidadeAdministrativa))[0];
                     unidadeNome = unidade.label;
                     idUnidade = unidade.value;                    
@@ -151,9 +155,14 @@ class IndexUsuario extends Component {
     }
 
     async excluirUsuarios() {
-        var selecionados = document.getElementsByClassName("radio-btn-usuario");
+        var selecionados = Array.from(document.getElementsByClassName("radio-btn-usuario")).filter(x => x.checked === true);
 
-        if (Array.from(selecionados).filter(x => x.id === "radio-" + keycloak.subject).length > 0) {
+        if (selecionados.length === 0) {
+            Notificacao.alerta("Ops!", "Selecione um usuário");
+            return;
+        }
+
+        if (selecionados.filter(x => x.id === "radio-" + keycloak.subject && x.checked === true).length > 0) {
             Notificacao.erro("Erro", "Não é possível excluir seu próprio acesso. Desmarque o seu usuário e tente novamente.");
             return;
         }
@@ -161,9 +170,11 @@ class IndexUsuario extends Component {
         var result = await KeycloakService.excluirUsuarios(selecionados);
         if (!result.sucesso) {
             Notificacao.erro("Erro", "Erro ao excluir usuarios")
+            return;
         }
         else {
             Notificacao.sucesso("Sucesso", "Usuários excluídos com sucesso")
+            this.uncheckAllUsuarios();
         }
 
         this.buscarUsuarios(null);
@@ -303,6 +314,7 @@ class IndexUsuario extends Component {
                                             municipios={this.state.municipios}
                                             unidadesAdministrativas={this.state.unidadesAdministrativas}
                                             cargos={this.state.cargos}
+                                            listaPerfil={this.state.listaPerfil}
                                         />
                                         <ModalFiltroAvancadoUsuario
                                             ref={this.toggleModalFiltro}
@@ -338,6 +350,7 @@ class IndexUsuario extends Component {
                                                 <th>Selecionar todos <br /> <input type="checkbox" id="checkAllUsuarios" onClick={this.checkAllUsuarios.bind(this)} /></th>
                                                 <th>Unidade Administrativa</th>
                                                 <th>Cargo/Função</th>
+                                                <th>Perfil</th>
                                                 <th>Município</th>
                                                 <th>CPF</th>
                                                 <th>Nome Completo</th>
@@ -352,6 +365,7 @@ class IndexUsuario extends Component {
                                                     <td><input type="checkbox" className="radio-btn-usuario" id={"radio-" + usuario.id} /></td>
                                                     <td>{usuario.unidadeAdministrativa}</td>
                                                     <td>{usuario.cargo}</td>
+                                                    <td>{usuario.perfil}</td>
                                                     <td>{usuario.nomeMunicipio}</td>
                                                     <td>{usuario.cpf}</td>
                                                     <td>{usuario.nomeCompleto}</td>

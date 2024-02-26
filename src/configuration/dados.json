@@ -10,5 +10,19 @@
       "value": "Cargo Padrão",
       "label": "Cargo Padrão"
     }
+  ],
+  "perfil": [
+    {
+      "value": "Administrador",
+      "label": "Administrador"
+    },
+    {
+      "value": "Comum",
+      "label": "Comum"
+    },
+    {
+      "value": "Visualizacao",
+      "label": "Visualização"
+    }
   ]
 }

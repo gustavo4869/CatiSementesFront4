@@ -78,9 +78,10 @@
     border: 2px solid red;
 }
 
-#municipioUsuario .select__control, 
-#unidadeAdministrativaUsuario .select__control, 
-#cargoUsuario .select__control 
+#municipioUsuario .select__control,
+#unidadeAdministrativaUsuario .select__control,
+#cargoUsuario .select__control,
+#perfilUsuario .select__control
 {
     background-color: #F6F6F6;
 }

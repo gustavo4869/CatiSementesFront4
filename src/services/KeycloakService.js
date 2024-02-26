@@ -17,8 +17,6 @@ class KeycloakService {
             usuarios: []
         };
 
-        console.log("BuscarUsuarios")
-        console.log(urlBaseKeycloakNode + "usuarios")
         try {
             return axios.get(urlBaseKeycloakNode + "usuarios")
                 .then(response => {
@@ -28,13 +26,14 @@ class KeycloakService {
                         var usuarios = [];
                         response.data.dados.forEach(function (usuario) {
                             if (usuario.username !== "admin") {
-                                var unidadeAdministrativa = "";
-                                var cargo = "";
-                                var cpf = "";
-                                var nomeCompleto = "";
-                                var telefone = "";
-                                var observacoes = "";
-                                var municipio = "";
+                                let unidadeAdministrativa = "";
+                                let cargo = "";
+                                let cpf = "";
+                                let nomeCompleto = "";
+                                let telefone = "";
+                                let observacoes = "";
+                                let municipio = "";
+                                let perfil = "";
 
                                 if (usuario.attributes) {
                                     unidadeAdministrativa = usuario.attributes.UnidadeAdministrativa ? usuario.attributes.UnidadeAdministrativa[0] : "";
@@ -44,6 +43,7 @@ class KeycloakService {
                                     telefone = usuario.attributes.Telefone ? usuario.attributes.Telefone[0] : "";
                                     observacoes = usuario.attributes.Observacoes ? usuario.attributes.Observacoes[0] : "";
                                     municipio = usuario.attributes.Municipio ? usuario.attributes.Municipio[0] : "";
+                                    perfil = usuario.attributes.Perfil ? usuario.attributes.Perfil[0] : "";
                                 }
 
                                 var user = {
@@ -56,7 +56,8 @@ class KeycloakService {
                                     cpf: cpf,
                                     telefone: telefone,
                                     observacoes: observacoes,
-                                    municipio: municipio
+                                    municipio: municipio,
+                                    perfil: perfil
                                 };
 
                                 usuarios.push(user);
@@ -87,45 +88,38 @@ class KeycloakService {
         }
     }
 
-    static async salvarUsuario(idUsuario, unidadeAdministrativa, cargo, cpf, nomeCompleto, telefone, email, login, senha, perfil, isEdit, token, municipio) {
+    static async salvarUsuario(param) {
         console.log("SalvarUsuario")
-        console.log(token)
+        console.log(param)
         var retorno = {
             sucesso: false,
             mensagem: "",
             usuarioEditar: null
         };
 
-        const config = {
-            headers: {
-                "Authorization": 'Bearer ' + token,
-                "Access-Control-Allow-Origin": "*",
-                "Content-Type": "application/json"
-            }
-        };
-
         const usuario = {
-            "cpf": cpf,
-            "telefone": telefone,
-            "nomeCompleto": nomeCompleto,
-            "unidadeAdministrativa": unidadeAdministrativa,
-            "cargo": cargo,
-            "senha": senha,
-            "email": email,
+            "cpf": param.cpf,
+            "telefone": param.telefone,
+            "nomeCompleto": param.nomeCompleto,
+            "unidadeAdministrativa": param.unidadeAdministrativa,
+            "cargo": param.cargo,
+            "senha": param.senha,
+            "email": param.email,
             "emailVerified": true,
             "enabled": true,
-            "firstName": nomeCompleto,
+            "firstName": param.nomeCompleto,
             "lastName": "",
-            "username": login,
-            "clientRoles": perfil,
-            "municipio": municipio.toString()
+            "username": param.login,
+            "clientRoles": param.perfil,
+            "municipio": param.municipio.toString(),
+            "perfil": param.perfil
         };
 
         console.log(usuario)
 
-        if (isEdit) {
+        if (param.isEdit) {
             console.log("isEdit")
-            await axios.post(urlBaseKeycloakNode + "editarUsuario", usuario, config)
+            await axios.post(urlBaseKeycloakNode + "editarUsuario", usuario)
                 .then(response => {
                     console.log("Response")
                     console.log(response)
@@ -141,7 +135,7 @@ class KeycloakService {
                 });
         }
         else {
-            await axios.post(urlBaseKeycloakNode + "criarUsuario", usuario, config)
+            await axios.post(urlBaseKeycloakNode + "criarUsuario", usuario)
                 .then(response => {
                     console.log("Response post")
                     console.log(response)
@@ -149,6 +143,7 @@ class KeycloakService {
                     if (response.sucesso) {
                         retorno.sucesso = true;
                         retorno.mensagem = "Usuário incluído com sucesso!";
+                        this.EnviarEmailCriacaoUsuario(usuario.email, usuario.nomeCompleto, usuario.senha, usuario.username);
                     }
                     else {
                         retorno.sucesso = false;
@@ -208,6 +203,37 @@ class KeycloakService {
         return retorno;
     }
 
+    static async alterarSenha(idUsuario) {
+        console.log("alterar Senha")
+        console.log(idUsuario)
+        var retorno = {
+            sucesso: false,
+            mensagem: "",
+            usuarioEditar: null
+        };
+
+        var body = {
+            id: idUsuario,
+            redirectUri: configData.resetSenhaRedirectUri
+        };
+        
+        await axios.post(urlBaseKeycloakNode + "AtualizarSenha", body)
+            .then(response => {
+                console.log("Response")
+                console.log(response)
+                retorno.sucesso = response.data.sucesso;
+            })
+            .catch(error => {
+                console.log("Erro")
+                console.log(error)
+
+                retorno.sucesso = false;
+                retorno.mensagem = error;
+            });
+
+        return retorno;
+    }
+
     static async GetBearerToken() {
         if (bearerToken === "") {
             var urlBearer = urlBaseKeycloak + "protocol/openid-connect/token"
@@ -231,6 +257,39 @@ class KeycloakService {
         }
 
         return bearerToken;
+    }
+
+    static async EnviarEmailCriacaoUsuario(email, nome, senha, usuario) {
+        console.log("EnviarEmailCriacaoUsuario")
+
+        const config = {
+            headers: {
+                "Access-Control-Allow-Origin": "*"
+            }
+        };
+
+        if (email === "") {
+            return;
+        }
+
+        var url = configData.urlApiEmail + "?email=" + email + "&nome=" + nome + "&senha=" + senha + "&usuario=" + usuario;
+
+        var result = null;
+        await axios.post(url, {} , config)
+            .then(response => {
+                console.log("sucesso envio e-mail")
+                console.log(response)
+            })
+            .catch(error => {
+                console.log("Error envio e-mail")
+                console.log(error)
+                result = {
+                    sucesso: false,
+                    erros: error
+                };
+            });
+
+        return result;
     }
 }
 

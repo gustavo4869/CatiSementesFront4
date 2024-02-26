@@ -21,9 +21,10 @@ class ModalUsuario extends Component {
             usuarioEditar: this.props.usuarioEditar,
             isEdit: this.props.isEdit,
             usuario: "",
-            municipioUsuario: "",
+            unidadeAdministrativa: "",
             cargo: "",
-            unidadeAdministrativa: { value: 0, label: "Selecione..." }
+            municipioUsuario: "",
+            perfil: ""
         };
 
         this.salvarUsuario = this.salvarUsuario.bind(this);
@@ -35,6 +36,7 @@ class ModalUsuario extends Component {
         this.onChangeMunicipio = this.onChangeMunicipio.bind(this);
         this.onChangeCargo = this.onChangeCargo.bind(this);
         this.onChangeUnidadeAdministrativa = this.onChangeUnidadeAdministrativa.bind(this);
+        this.onChangePerfil = this.onChangePerfil.bind(this);
     }
 
     toggleModal() {
@@ -42,18 +44,10 @@ class ModalUsuario extends Component {
             showModal: !state.showModal,
             usuarioEditar: this.props.usuarioEditar,
             isEdit: this.props.isEdit,
-            municipioUsuario: {
-                value: this.props.usuarioEditar ? (this.props.usuarioEditar.municipio === "" ? "0": this.props.usuarioEditar.municipio) : "0",
-                label: this.props.usuarioEditar ? (this.props.usuarioEditar.nomeMunicipio === "" ? "Selecione..." : this.props.usuarioEditar.nomeMunicipio) : "Selecione..."
-            },
-            unidadeAdministrativa: {
-                value: this.props.usuarioEditar ? (this.props.usuarioEditar.idUnidadeAdministrativa === "" ? "0" : this.props.usuarioEditar.idUnidadeAdministrativa) : "0",
-                label: this.props.usuarioEditar ? (this.props.usuarioEditar.unidadeAdministrativa === "" ? "Selecione..." : this.props.usuarioEditar.unidadeAdministrativa) : "Selecione..."
-            },
-            cargo: {
-                value: this.props.usuarioEditar ? (this.props.usuarioEditar.cargo === "" ? "0" : this.props.usuarioEditar.cargo) : "0",
-                label: this.props.usuarioEditar ? (this.props.usuarioEditar.cargo === "" ? "Selecione..." : this.props.usuarioEditar.cargo) : "Selecione..."
-            }
+            municipioUsuario: this.props.usuarioEditar ? (this.props.usuarioEditar.municipio === "" ? "0" : this.props.usuarioEditar.municipio) : "0",
+            unidadeAdministrativa: this.props.usuarioEditar ? (this.props.usuarioEditar.idUnidadeAdministrativa === "" ? "0" : this.props.usuarioEditar.idUnidadeAdministrativa) : "0",
+            cargo: this.props.usuarioEditar ? (this.props.usuarioEditar.cargo === "" ? "0" : this.props.usuarioEditar.cargo) : "0",
+            perfil: this.props.usuarioEditar ? (this.props.usuarioEditar.perfil === "" ? "0" : this.props.usuarioEditar.perfil) : "0",
         }));        
     }
 
@@ -62,16 +56,17 @@ class ModalUsuario extends Component {
         var cargo = this.state.cargo;
         var cpf = document.getElementById("cpfUsuario").value.replaceAll(".", "").replaceAll("-", "");
         var nomeCompleto = document.getElementById("nomeCompletoUsuario").value;
-        var telefone = document.getElementById("telefoneUsuario").value;//.replaceAll("(", "").replaceAll(")", "").replaceAll(" ", "").replaceAll("-", "");
+        var telefone = document.getElementById("telefoneUsuario").value;
         var email = document.getElementById("emailUsuario").value;
         var login = document.getElementById("loginUsuario").value;
         var senha = document.getElementById("senhaUsuario").value;
         var confirmarSenha = document.getElementById("confirmarSenhaUsuario").value;
         var idUsuario = this.state.isEdit ? this.props.usuarioEditar.id : null;
-        var perfil = document.getElementById("perfilUsuario").value;
+        var perfil = this.state.perfil;
         var municipio = this.state.municipioUsuario;
 
         let param = {
+            idUsuario: idUsuario,
             unidadeAdministrativa: unidadeAdministrativa,
             cargo: cargo,
             cpf: cpf,
@@ -82,7 +77,8 @@ class ModalUsuario extends Component {
             isEdit: this.state.isEdit,
             email: email,
             municipio: municipio,
-            telefone: telefone
+            telefone: telefone,
+            perfil: perfil
         };
 
         var retornoValidacao = Util.validarFormularioUsuario(param);
@@ -94,7 +90,7 @@ class ModalUsuario extends Component {
             return;
         }
 
-        const result = await KeycloakService.salvarUsuario(idUsuario, unidadeAdministrativa, cargo, cpf, nomeCompleto, telefone, email, login, senha, perfil, this.state.isEdit, this.props.keycloakToken, municipio);
+        const result = await KeycloakService.salvarUsuario(param);
 
         if (result.sucesso) {
             this.props.buscarUsuarios();
@@ -158,21 +154,44 @@ class ModalUsuario extends Component {
     }
 
     onChangeEmail(event) {
-        const valor = event.target.value;
-        this.setState({ usuario: valor });
+        //const valor = event.target.value;
+        //this.setState({ usuario: valor });
     }
 
     onChangeMunicipio(event) {
-        const valor = event.value;
-        this.setState({ municipioUsuario: valor });
+        if (event === null) {
+            this.setState({ municipioUsuario: 0 });
+        }
+        else {
+            this.setState({ municipioUsuario: event.value });
+        }        
     }
 
     onChangeCargo(event) {
-        this.setState({ cargo: event.value });
+        if (event === null) {
+            this.setState({ cargo: "0" });
+        }
+        else {
+            this.setState({ cargo: event.value });
+        }        
     }
 
     onChangeUnidadeAdministrativa(event) {
-        this.setState({ unidadeAdministrativa: event.value });
+        if (event === null) {
+            this.setState({ unidadeAdministrativa: 0 });
+        }
+        else {
+            this.setState({ unidadeAdministrativa: event.value });
+        }        
+    }
+
+    onChangePerfil(event) {
+        if (event === null) {
+            this.setState({ perfil: 0 });
+        }
+        else {
+            this.setState({ perfil: event.value });
+        }
     }
 
     render() {
@@ -201,7 +220,8 @@ class ModalUsuario extends Component {
                                             classNamePrefix="select"
                                             placeholder="Selecione..."
                                             onChange={this.onChangeUnidadeAdministrativa}
-                                            defaultValue={this.state.unidadeAdministrativa || "0"}
+                                            defaultValue={this.state.isEdit ? this.props.unidadesAdministrativas.filter(f => f.value === this.state.usuarioEditar.idUnidadeAdministrativa) : "0"}
+                                            isClearable={true}
                                         />
                                     </div>
                                 </div>
@@ -216,7 +236,8 @@ class ModalUsuario extends Component {
                                             classNamePrefix="select"
                                             placeholder="Selecione..."
                                             onChange={this.onChangeCargo}
-                                            defaultValue={this.state.cargo || "0"}
+                                            defaultValue={this.state.isEdit ? this.props.cargos.filter(f => f.value === this.state.usuarioEditar.cargo) : "0"}
+                                            isClearable={true}
                                         />
                                     </div>
                                 </div>
@@ -230,9 +251,7 @@ class ModalUsuario extends Component {
                                             className="form-control input-modal-usuario"
                                             id="cpfUsuario"
                                             defaultValue={this.props.usuarioEditar ? this.props.usuarioEditar.cpf : ""}
-                                            //onChange={this.validarCPF}
                                             placeholder="Digitar somente números"
-                                            maxLength="20"
                                         />
                                     </div>
                                 </div>
@@ -247,7 +266,8 @@ class ModalUsuario extends Component {
                                             classNamePrefix="select"
                                             onChange={this.onChangeMunicipio}
                                             placeholder="Selecione..."
-                                            defaultValue={this.state.municipioUsuario || "0"}
+                                            defaultValue={this.state.isEdit ? this.props.municipios.filter(f => f.value == this.state.usuarioEditar.municipio) : "0"}
+                                            isClearable={true}
                                         />
                                     </div>
                                 </div>                                
@@ -269,9 +289,7 @@ class ModalUsuario extends Component {
                                             className="form-control input-modal-usuario"
                                             id="telefoneUsuario"
                                             defaultValue={this.props.usuarioEditar ? this.props.usuarioEditar.telefone : ""}
-                                            //onChange={this.validarTelefone}
                                             placeholder="Digitar somente números"
-                                            maxLength="30"
                                         />
                                     </div>
                                 </div>
@@ -286,17 +304,23 @@ class ModalUsuario extends Component {
                                 <div className="col-6">
                                     <div className="form-group">
                                         <label htmlFor="perfilUsuario" className="label-modal-usuario">Perfil</label>
-                                        <select id="perfilUsuario" className="form-control input-modal-usuario">
-                                            <option value="Administrador">Administrador</option>
-                                            <option value="Comum">Comum</option>
-                                            <option value="Visualizacao">Visualização</option>
-                                        </select>
+                                        <Select
+                                            name="perfilUsuario"
+                                            id="perfilUsuario"
+                                            options={this.props.listaPerfil}
+                                            className="basic-multi-select"
+                                            classNamePrefix="select"
+                                            placeholder="Selecione..."
+                                            onChange={this.onChangePerfil}
+                                            defaultValue={this.state.isEdit ? this.props.listaPerfil.filter(f => f.value === this.state.usuarioEditar.perfil) : "0"}
+                                            isClearable={true}
+                                        />
                                     </div>
                                 </div>
                                 <div className="col-6">
                                     <div className="form-group">
                                         <label htmlFor="loginUsuario" className="label-modal-usuario">Login usuário</label>
-                                        <input readOnly={true} type="text" className="form-control input-modal-usuario" id="loginUsuario" defaultValue={this.props.usuarioEditar ? this.props.usuarioEditar.usuario : this.state.usuario} />
+                                        <input readOnly={this.props.usuarioEditar} type="text" className="form-control input-modal-usuario" id="loginUsuario" defaultValue={this.props.usuarioEditar ? this.props.usuarioEditar.usuario : this.state.usuario} />
                                     </div>
                                 </div>                                
                             </div>

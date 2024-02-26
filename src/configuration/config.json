@@ -2,14 +2,16 @@
   "ambienteProd": true,
   "urlBaseApiProduto": "https://api-dev.agricultura.sp.gov.br/apiCat",
   "urlBaseApiPontoVenda": "https://api-dev.agricultura.sp.gov.br/Apipdv/",
-  "urlBaseApiNodeKeycloakProd": "https://app-hml.agricultura.sp.gov.br/",
+  "urlBaseApiNodeKeycloakProd": "https://app-dev.agricultura.sp.gov.br/apiusuario/",
   "urlBaseApiKeycloakProd": "https://aut-hml.agricultura.sp.gov.br:8443/admin/realms/CatiSementesV3/",
   "urlBaseApiKeycloakUsersProd": "https://aut-hml.agricultura.sp.gov.br:8443/admin/realms/CatiSementesV3/users",
   "urlBaseKeycloakProd": "https://aut-hml.agricultura.sp.gov.br:8443",
+  "keycloakRealm": "CatiSementesV3",
+  "keycloakClientId": "CatiSementesFront",
+  "resetSenhaRedirectUri": "https://app-hml.agricultura.sp.gov.br/",
+  "urlApiEmail": "https://api-dev.agricultura.sp.gov.br/apiemail/SendEmail",
   "urlBaseApiNodeKeycloakDev": "https://app-dev.agricultura.sp.gov.br/apiusuario/adminApi/",
   "urlBaseKeycloakDev": "http://localhost:8080",
   "urlBaseApiKeycloakUsersDev": "http://localhost:8080/admin/realms/CatiSementesV3/users",
-  "urlBaseApiKeycloakDev": "http://localhost:8080/admin/realms/CatiSementesV3/",
-  "keycloakRealm": "CatiSementesV3",
-  "keycloakClientId": "CatiSementesFront"
+  "urlBaseApiKeycloakDev": "http://localhost:8080/admin/realms/CatiSementesV3/"
 }
