@@ -102,12 +102,9 @@ class GerenciarProdutos extends Component {
     async carregarTodosProdutosAtivos() {
         const produtos = await ApiService.ProdutoGetAll();
         this.setState({ produtos: produtos.filter(f => f.flgAtivo != false) });
-        console.log("TodosProdutos")
-        console.log(produtos)
     }
 
     async excluirProdutos() {
-        console.log("Excluir produtos")
         var selecionados = Array.from(document.getElementsByClassName("radio-btn-produto")).filter(f => f.checked);
 
         if (selecionados.length == 0) {
@@ -228,34 +225,6 @@ class GerenciarProdutos extends Component {
         });
 
         report.save(nomeArquivo);
-        /*let titulosFechados = [];
-        let titulos = Array.from(document.querySelectorAll(".row-tabela-produtos"));
-        titulos.forEach(function (item) {   
-            let children = Array.from(item.children);
-            let label = children.filter(f => f.classList.contains("label-tabela-produtos"))[0];
-            let table = children.filter(f => f.classList.contains("tabela-produtos"))[0];
-            if (table.classList.contains("hidden")) {
-                titulosFechados.push(label);
-                label.click();
-            }
-        });
-
-        const report = new JsPDF('landscape', 'px', 'a4');
-        report.html(document.querySelector('#tabelas-produtos'), {
-            html2canvas: {
-                scale: 0.45,
-                scrollX: -window.scrollX,
-                scrollY: -window.scrollY
-            },
-            margin: [50, 50, 50, 50],
-            view: 'fit'
-        }).then(() => {
-            const nomeArquivo = "ExportacaoProdutos_" + moment().format("DDMMYYYYHHmmss") + ".pdf";
-            report.save(nomeArquivo);
-            titulosFechados.forEach(function (item) {
-                item.click();
-            });
-        });*/
     }
 
     render() {

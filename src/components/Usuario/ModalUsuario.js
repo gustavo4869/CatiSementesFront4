@@ -81,7 +81,7 @@ class ModalUsuario extends Component {
             perfil: perfil
         };
 
-        var retornoValidacao = Util.validarFormularioUsuario(param);
+        var retornoValidacao = Util.validarFormularioUsuario(param, this.props.listaUsuarios);
 
         if (!retornoValidacao.sucesso) {
             retornoValidacao.erros.forEach(function (mensagem) {
@@ -99,8 +99,12 @@ class ModalUsuario extends Component {
             Notificacao.sucesso("Sucesso", "Usuário atualizado com sucesso");
         }
         else {
-            console.log("Erro ao salvar usuário")
-            console.log(result.mensagem)
+            if (result.mensagem === "User exists with same email") {
+                result.mensagem = "E-mail já cadastrado no sistema";
+            }
+            if (result.mensagem === "User exists with same username") {
+                result.mensagem = "Nome de usuário já cadastrado no sistema";
+            }
             Notificacao.erro("Erro ao salvar", result.mensagem);
         }        
     }
@@ -334,7 +338,7 @@ class ModalUsuario extends Component {
                                             id="senhaUsuario"
                                             onChange={this.validarSenhaForte}
                                             data-tooltip-id="senha-tooltip"
-                                            data-tooltip-html="<div><b>Requisitos para senha válida:</b><br><ul><li>Conter no minímo 8 caractéres</li><li>Uma letra minúscula</li><li>Uma letra maiúscula</li><li>Um número</li><li>Um caractére especial (!, @, #, $, %...)</li></ul></div>"
+                                            data-tooltip-html="<div><b>Requisitos para senha válida:</b><br><ul><li>Conter no minímo 6 caractéres</li><li>Uma letra</li><li>Um número</li><li>Um caractére especial (!, @, #, $, %...)</li></ul></div>"
                                         />
                                         <Tooltip
                                             id="senha-tooltip"

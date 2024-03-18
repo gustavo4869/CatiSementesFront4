@@ -2,6 +2,10 @@
 import keycloak from '../keycloak';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileExcel, faFilePdf } from '@fortawesome/free-solid-svg-icons'
+import { utils, writeFile } from 'xlsx';
+import moment from 'moment';
+import JsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 import KeycloakStart from '../shared/KeycloakStart';
 import KeycloakNoAuth from '../shared/KeycloakNoAuth';
@@ -14,7 +18,7 @@ import Notificacao from '../Util/Notificacao';
 import ExternalService from '../../services/ExternalService';
 import PdvService from '../../services/pontoVenda/PontoVendaService';
 import Dados from "../../configuration/dados.json";
-
+import Util from '../Util/Util';
 
 import logoUsuarios from '../images/silhueta-de-multiplos-usuarios 1.png';
 
@@ -64,11 +68,16 @@ class IndexUsuario extends Component {
                 perfil: "",
                 idUsuario: keycloak.subject
             });
-            this.buscarUsuarios(keycloak.token);
-            this.buscarMunicipios();
-            this.buscarUnidades();
+            
+            this.carregarDadosIndex();
         });
 
+    }
+
+    async carregarDadosIndex() {
+        await this.buscarMunicipios();
+        await this.buscarUnidades();
+        await this.buscarUsuarios(keycloak.token);
     }
 
     async buscarMunicipios() {
@@ -101,9 +110,8 @@ class IndexUsuario extends Component {
                 let unidade = null;
                 let unidadeNome = "";
                 let idUnidade = "";
-                console.log("UNIDADE")
-                console.log(un)
-                if (!isNaN(un) && un !== "" && un !== "0") {
+                
+                if (!isNaN(un) && un !== "" && un !== "0" && this.state.unidadesAdministrativas.length > 0) {
                     unidade = this.state.unidadesAdministrativas.filter(f => f.value === parseInt(item.unidadeAdministrativa))[0];
                     unidadeNome = unidade.label;
                     idUnidade = unidade.value;                    
@@ -132,7 +140,6 @@ class IndexUsuario extends Component {
         if (!result.sucesso) {
             Notificacao.erro("Erro", "Não foi possível buscar unidades");
         }
-
         this.setState({
             unidadesAdministrativas: result.pdv.map(u => {
                 return {
@@ -189,8 +196,13 @@ class IndexUsuario extends Component {
             }
         }
 
-        if (selecionados.length > 1 || selecionados.length === 0) {
-            Notificacao.alerta("Usuários", "Selecione apenas 1 usuário");
+        if (selecionados.length === 0) {
+            Notificacao.alerta("Usuários", "Selecione um usuário");
+            return;
+        }
+
+        if (selecionados.length > 1) {
+            Notificacao.alerta("Usuários", "Selecione apenas um usuário");
             return;
         }
 
@@ -275,6 +287,38 @@ class IndexUsuario extends Component {
         return this.state.unidadesAdministrativas.filter(f => f.value === id)[0].label;
     }
 
+    exportarExcel() {
+        const wb = utils.book_new();
+        const ws = utils.json_to_sheet(this.state.usuarios);
+        utils.book_append_sheet(wb, ws, "Usuários");
+        const nomeArquivo = "ExportacaoUsuarios_" + moment().format("DDMMYYYYHHmmss") + ".xlsx";
+        writeFile(wb, nomeArquivo);
+    }
+
+    exportarPdf() {
+        const nomeArquivo = "ExportacaoUsuarios_" + moment().format("DDMMYYYYHHmmss") + ".pdf";
+        const report = new JsPDF('landscape', 'px', 'a4');
+
+        const produtoModelo = this.state.usuarios[0];
+        let cols = [];
+        Object.keys(produtoModelo).forEach(function (k) {
+            const col = {
+                title: k, dataKey: k
+            };
+            cols.push(col);
+        });
+
+        let rows = this.state.usuarios;
+        report.autoTable({
+            columns: cols,
+            body: rows,
+            styles: { overflow: 'linebreak', cellWidth: 'wrap', cellPadding: 1, fontSize: 6 },
+            columnStyles: { text: { cellWidth: 'auto' } }
+        });
+
+        report.save(nomeArquivo);
+    }
+
     render() {
         if (this.state.keycloak) {
             if (this.state.authenticated) {
@@ -315,6 +359,7 @@ class IndexUsuario extends Component {
                                             unidadesAdministrativas={this.state.unidadesAdministrativas}
                                             cargos={this.state.cargos}
                                             listaPerfil={this.state.listaPerfil}
+                                            listaUsuarios={this.state.usuarios}
                                         />
                                         <ModalFiltroAvancadoUsuario
                                             ref={this.toggleModalFiltro}
@@ -328,6 +373,8 @@ class IndexUsuario extends Component {
                                     </div>
                                 </div>
                                 <div className="row container-acoes">
+                                    <button className="btn-exportacao btn-pdf" onClick={this.exportarPdf.bind(this)}><FontAwesomeIcon size="6x" icon={faFilePdf} className="btn fa-regular" /></button>
+                                    <button className="btn-exportacao btn-excel" onClick={this.exportarExcel.bind(this)}><FontAwesomeIcon icon={faFileExcel} className="btn fa-regular" /></button>
                                     <button
                                         className="btn-editar"
                                         onClick={this.editarUsuarios.bind(this)}

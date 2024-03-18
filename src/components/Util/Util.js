@@ -32,25 +32,33 @@ class Util {
         return true;
     }
 
-    static validarFormularioUsuario(param) {
+    static validarSenha(senha) {
+        const comprimentoValido = senha.length >= 6;
+        const contemLetra = /[a-zA-Z]/.test(senha);
+        const contemCaractereEspecial = /[!@#$%^&*(),.?":{}|<>]/.test(senha);
+
+        return comprimentoValido && contemLetra && contemCaractereEspecial;
+    }
+
+    static validarFormularioUsuario(param, listaUsuarios) {
         var mensagensErro = [];
         var regexEmail = /\S+@\S+\.\S+/;
         const regexTelefone = /^\(\d{2}\) \d{4,5}-\d{4}$/;
-        
-        if (param.unidadeAdministrativa === "0" || param.unidadeAdministrativa === "") {
-            mensagensErro.push("Preencha uma unidade administrativa válida");
+
+        if (param.unidadeAdministrativa.toString() === "0" || param.unidadeAdministrativa === "") {
+            mensagensErro.push("Selecione uma unidade");
         }
 
-        if (param.cargo === "0" || param.cargo === "") {
-            mensagensErro.push("Preencha um cargo válido");
+        if (param.cargo.toString() === "0" || param.cargo === "") {
+            mensagensErro.push("Selecione um cargo/função");
         }
 
         if (!Util.validarCpf(param.cpf)) {
             mensagensErro.push("Preencha um CPF válido");
         }
 
-        if (param.municipio === "0" || param.municipio === "") {
-            mensagensErro.push("Selecione um município válido");
+        if (param.municipio.toString() === "0" || param.municipio === "") {
+            mensagensErro.push("Selecione um município");
         }
 
         if (param.nomeCompleto === "") {
@@ -61,11 +69,23 @@ class Util {
             mensagensErro.push("Preencha um e-mail válido");
         }
 
+        if (param.perfil === "" || param.perfil.toString() === "0") {
+            mensagensErro.push("Selecione um perfil de acesso");
+        }
+
+        if (param.login.length < 5) {
+            mensagensErro.push("O nome de usuário deve conter pelo menos 5 caracteres");
+        }
+
         if (param.login === "") {
             mensagensErro.push("Preencha o login do usuário");
         }
 
-        if ((param.senha === "" && !param.isEdit)) {
+        if (param.senha === "" && !param.isEdit) {
+            mensagensErro.push("Preencha uma senha válida");
+        }
+
+        if (param.senha !== "" && !this.validarSenha(param.senha)) {
             mensagensErro.push("Preencha uma senha válida");
         }
 
@@ -74,7 +94,11 @@ class Util {
         }
         console.log(param.telefone)
         if (param.telefone === "" || !regexTelefone.test(param.telefone)) {
-            mensagensErro.push("Preencha um telefone válido");
+            mensagensErro.push("Preencher um nº de telefone");
+        }
+
+        if (!param.isEdit && listaUsuarios.filter(f => f.cpf === param.cpf).length > 0) {
+            mensagensErro.push("CPF já cadastrado no sistema");
         }
 
         return {
@@ -93,7 +117,7 @@ class Util {
                 var ano = data[2];
                 resultado = ano + "-" + mes + "-" + dia + "T00:00:00";
             }
-        }        
+        }
         return resultado;
     }
 
